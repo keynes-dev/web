@@ -5,7 +5,10 @@
 */
 import { CONFIG } from "./config.js";
 
-export const mod = (a, n) => ((a % n) + n) % n;
+export const mod = (a, n) => {
+  const remainder = a % n;
+  return remainder < 0 ? remainder + n : remainder;
+};
 export const clamp = (x, lo, hi) => Math.min(hi, Math.max(lo, x));
 export const clamp01 = (x) => clamp(x, 0, 1);
 export const easeInOut = (x) =>

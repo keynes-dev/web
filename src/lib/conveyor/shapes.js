@@ -73,18 +73,36 @@ export const SHAPES = METRICS.map((metrics, index) => ({
   round: index === 2,
 }));
 
-export function item(index) {
-  const shape = SHAPES[index];
-  const g = new THREE.Group();
-  g.add(new THREE.Mesh(shape.geometry, shape.material));
-  g.add(
-    shape.round
-      ? sphereSilhouette(ITEM.sphereR, new THREE.Vector3(0, ITEM.sphereR, 0))
-      : edgeLines(shape.geometry, 1),
-  );
-  g.userData.shape = index;
-  return g;
+/*
+  A shape as a drawn object, built against a caller's own drafting toolkit and
+  materials. A machine that owns its material set — so that its ink inverts
+  with the page — has to build its shapes from that set rather than from the
+  conveyor's, or its Resources stay the one colour the module happened to load
+  with. The geometry is shared: only the line work and the fill differ.
+*/
+export function createShapeItems({
+  draft = { edgeLines, sphereSilhouette },
+  materials = { shapeMats },
+} = {}) {
+  const mats = materials.shapeMats ?? shapeMats;
+  return function item(index) {
+    const shape = SHAPES[index];
+    const g = new THREE.Group();
+    g.add(new THREE.Mesh(shape.geometry, mats[index]));
+    g.add(
+      shape.round
+        ? draft.sphereSilhouette(
+            ITEM.sphereR,
+            new THREE.Vector3(0, ITEM.sphereR, 0),
+          )
+        : draft.edgeLines(shape.geometry, 1),
+    );
+    g.userData.shape = index;
+    return g;
+  };
 }
+
+export const item = createShapeItems();
 
 const REST_TURN = new THREE.Quaternion();
 const spinTurn = new THREE.Quaternion();

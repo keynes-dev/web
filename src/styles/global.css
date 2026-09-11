@@ -2,83 +2,87 @@
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 @import "@fontsource-variable/ibm-plex-sans";
+@import "@fontsource/ibm-plex-serif";
+@import "@fontsource/ibm-plex-mono";
 
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  --background: var(--color-white);
-  --foreground: var(--color-blue-900);
-  --card: var(--color-white);
-  --card-foreground: var(--color-blue-900);
-  --popover: var(--color-white);
-  --popover-foreground: var(--color-blue-900);
-  --primary: var(--color-blue-700);
-  --primary-foreground: var(--color-blue-50);
-  --secondary: var(--color-slate-100);
-  --secondary-foreground: var(--color-blue-900);
-  --muted: var(--color-slate-100);
-  --muted-foreground: var(--color-slate-500);
-  --accent: var(--color-blue-50);
-  --accent-foreground: var(--color-blue-900);
-  --destructive: var(--color-red-600);
-  --border: var(--color-blue-100);
-  --input: var(--color-blue-200);
-  --ring: var(--color-blue-400);
-  --chart-1: var(--color-blue-900);
-  --chart-2: var(--color-blue-700);
-  --chart-3: var(--color-blue-400);
-  --chart-4: var(--color-blue-200);
-  --chart-5: var(--color-blue-100);
-  --chart-accent: var(--color-blue-600);
-  --chart-denied: var(--color-red-600);
-  --radius: 0.625rem;
-  --sidebar: var(--color-blue-50);
-  --sidebar-foreground: var(--color-blue-900);
-  --sidebar-primary: var(--color-blue-700);
-  --sidebar-primary-foreground: var(--color-blue-50);
-  --sidebar-accent: var(--color-blue-50);
-  --sidebar-accent-foreground: var(--color-blue-900);
-  --sidebar-border: var(--color-blue-100);
-  --sidebar-ring: var(--color-blue-400);
+  --background: var(--color-emerald-800);
+  --foreground: var(--color-white);
+  --card: var(--color-emerald-800);
+  --card-foreground: var(--color-white);
+  --popover: var(--color-emerald-900);
+  --popover-foreground: var(--color-white);
+  --primary: var(--color-white);
+  --primary-foreground: var(--color-emerald-900);
+  --secondary: var(--color-emerald-700);
+  --secondary-foreground: var(--color-white);
+  --muted: var(--color-emerald-700);
+  --muted-foreground: var(--color-emerald-200);
+  --accent: var(--color-emerald-700);
+  --accent-foreground: var(--color-white);
+  --destructive: var(--color-red-400);
+  --border: var(--color-emerald-700);
+  --input: var(--color-emerald-400);
+  --ring: var(--color-emerald-200);
+  --chart-1: var(--color-white);
+  --chart-2: var(--color-emerald-200);
+  --chart-3: var(--color-sky-300);
+  --chart-4: var(--color-emerald-300);
+  --chart-5: var(--color-cyan-200);
+  --chart-accent: var(--color-sky-300);
+  --chart-denied: var(--color-red-400);
+  --radius: 0.25rem;
+  --sidebar: var(--color-emerald-900);
+  --sidebar-foreground: var(--color-white);
+  --sidebar-primary: var(--color-white);
+  --sidebar-primary-foreground: var(--color-emerald-900);
+  --sidebar-accent: var(--color-emerald-700);
+  --sidebar-accent-foreground: var(--color-white);
+  --sidebar-border: var(--color-emerald-700);
+  --sidebar-ring: var(--color-emerald-200);
 }
 
 .dark {
-  --background: var(--color-slate-950);
-  --foreground: var(--color-blue-50);
-  --card: var(--color-slate-900);
-  --card-foreground: var(--color-blue-50);
-  --popover: var(--color-slate-900);
-  --popover-foreground: var(--color-blue-50);
-  --primary: var(--color-blue-200);
-  --primary-foreground: var(--color-blue-950);
-  --secondary: var(--color-slate-800);
-  --secondary-foreground: var(--color-blue-50);
-  --muted: var(--color-slate-800);
-  --muted-foreground: var(--color-slate-400);
-  --accent: var(--color-blue-900);
-  --accent-foreground: var(--color-blue-50);
+  --background: var(--color-emerald-950);
+  --foreground: var(--color-white);
+  --card: var(--color-emerald-950);
+  --card-foreground: var(--color-white);
+  --popover: var(--color-emerald-900);
+  --popover-foreground: var(--color-white);
+  --primary: var(--color-white);
+  --primary-foreground: var(--color-emerald-950);
+  --secondary: var(--color-emerald-900);
+  --secondary-foreground: var(--color-white);
+  --muted: var(--color-emerald-900);
+  --muted-foreground: var(--color-emerald-300);
+  --accent: var(--color-emerald-900);
+  --accent-foreground: var(--color-white);
   --destructive: var(--color-red-400);
-  --border: color-mix(in oklab, var(--color-blue-400) 18%, transparent);
-  --input: color-mix(in oklab, var(--color-blue-200) 18%, transparent);
-  --ring: var(--color-blue-400);
-  --chart-1: var(--color-blue-100);
-  --chart-2: var(--color-blue-300);
-  --chart-3: var(--color-blue-400);
-  --chart-4: var(--color-blue-600);
-  --chart-5: var(--color-blue-800);
-  --chart-accent: var(--color-blue-400);
+  --border: var(--color-emerald-300);
+  --input: var(--color-emerald-500);
+  --ring: var(--color-emerald-200);
+  --chart-1: var(--color-white);
+  --chart-2: var(--color-emerald-200);
+  --chart-3: var(--color-sky-300);
+  --chart-4: var(--color-emerald-300);
+  --chart-5: var(--color-cyan-200);
+  --chart-accent: var(--color-sky-300);
   --chart-denied: var(--color-red-400);
-  --sidebar-foreground: var(--color-blue-50);
-  --sidebar-primary: var(--color-blue-200);
-  --sidebar-primary-foreground: var(--color-blue-950);
-  --sidebar-accent: var(--color-blue-900);
-  --sidebar-accent-foreground: var(--color-blue-50);
-  --sidebar-border: color-mix(in oklab, var(--color-blue-400) 18%, transparent);
-  --sidebar-ring: var(--color-blue-400);
+  --sidebar: var(--color-emerald-950);
+  --sidebar-foreground: var(--color-white);
+  --sidebar-primary: var(--color-white);
+  --sidebar-primary-foreground: var(--color-emerald-950);
+  --sidebar-accent: var(--color-emerald-900);
+  --sidebar-accent-foreground: var(--color-white);
+  --sidebar-border: var(--color-emerald-300);
+  --sidebar-ring: var(--color-emerald-200);
 }
 
 @theme inline {
-  --font-heading: var(--font-sans);
+  --font-heading: "IBM Plex Serif", serif;
+  --font-mono: "IBM Plex Mono", monospace;
   --font-sans: "IBM Plex Sans Variable", sans-serif;
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
@@ -146,29 +150,78 @@
   color: var(--foreground);
 }
 
-.ascii .c-blue,
+.ascii .c-emerald,
 .ascii .c-dim {
-  color: var(--chart-2);
+  color: var(--color-emerald-200);
 }
 
 .ascii .c-amber {
-  color: var(--chart-3);
+  color: var(--color-amber-300);
+}
+
+.ascii .c-blue {
+  color: var(--color-sky-300);
 }
 
 .ascii .c-green {
-  color: var(--chart-5);
+  color: var(--color-lime-300);
 }
 
 .ascii .c-plum {
-  color: var(--chart-4);
+  color: var(--color-fuchsia-300);
 }
 
 .ascii .c-tomato {
-  color: var(--destructive);
+  color: var(--color-red-400);
+}
+
+.ascii .c-kw {
+  color: var(--color-sky-300);
+}
+
+.ascii .c-fn {
+  color: var(--color-yellow-200);
+}
+
+.ascii .c-type {
+  color: var(--color-cyan-300);
+}
+
+.ascii .c-prop {
+  color: var(--color-emerald-200);
+}
+
+.ascii .c-str {
+  color: var(--color-orange-300);
+}
+
+.ascii .c-num {
+  color: var(--color-amber-200);
 }
 
 .ascii .c-dim {
   opacity: 0.65;
+}
+
+.step-indicator-rail {
+  filter: brightness(0) invert(1);
+  opacity: 0.78;
+}
+
+.journey-step-fill {
+  position: absolute;
+  top: 50%;
+  width: 16px;
+  height: 16px;
+  border: 1px solid color-mix(in oklab, var(--foreground) 78%, transparent);
+  border-radius: 9999px;
+  background: var(--card);
+  transform: translate(-50%, -50%);
+  transition: background-color 180ms ease;
+}
+
+.journey-step-fill.is-active {
+  background: #30a46c;
 }
 
 .keynes-chart-tooltip {
@@ -207,6 +260,10 @@
   .tab-progress {
     height: 100%;
     animation: none;
+  }
+
+  .journey-step-fill {
+    transition: none;
   }
 }
 

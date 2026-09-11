@@ -14,6 +14,7 @@ declare module "react" {
     interface IntrinsicElements {
       // The conveyor drawing. See src/lib/conveyor/element.js.
       "conveyor-belt": HTMLAttributes<HTMLElement>;
+      "keynes-machine": HTMLAttributes<HTMLElement>;
     }
   }
 }

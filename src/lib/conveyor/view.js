@@ -11,18 +11,18 @@ export const ISO_DIR = new THREE.Vector3(1, 1, 1).normalize();
 export const VIEW = ISO_DIR.clone().negate();
 export const UP = new THREE.Vector3(0, 1, 0);
 
-// One camera for the module, not one per conveyor: the parts draw their
-// outlines against it once at build time, so it is baked into their geometry
-// and cannot be swapped underneath them. `createConveyor` refuses a second
-// conveyor for this reason.
-const H = CONFIG.frustum;
-export const camera = new THREE.OrthographicCamera(-H, H, H, -H, 0.1, 200);
-const target = new THREE.Vector3(...CONFIG.lookAt);
-camera.position.copy(target).addScaledVector(ISO_DIR, 40);
-camera.lookAt(target);
-camera.updateMatrixWorld();
+export function createView({
+  height = CONFIG.frustum * 2,
+  target: lookAt = CONFIG.lookAt,
+} = {}) {
+  const H = height / 2;
+  const camera = new THREE.OrthographicCamera(-H, H, H, -H, 0.1, 200);
+  const target = new THREE.Vector3(...lookAt);
+  camera.position.copy(target).addScaledVector(ISO_DIR, 40);
+  camera.lookAt(target);
+  camera.updateMatrixWorld();
 
-/*
+  /*
   Fit the frame to the shape of the element it is drawn in, and stand the
   machine where the caller wants it inside that frame.
 
@@ -37,24 +37,29 @@ camera.updateMatrixWorld();
   amount, so the camera itself never moves and every silhouette drawn against it
   still holds.
 */
-export function frameCamera(aspect, { x = 0, y = 0, zoom = 1 } = {}) {
-  const height = H * zoom;
-  const width = height * Math.max(aspect, 0.001);
-  camera.left = -width - x * width;
-  camera.right = width - x * width;
-  camera.top = height - y * height;
-  camera.bottom = -height - y * height;
-  camera.updateProjectionMatrix();
+  function frameCamera(aspect, { x = 0, y = 0, zoom = 1 } = {}) {
+    const height = H * zoom;
+    const width = height * Math.max(aspect, 0.001);
+    camera.left = -width - x * width;
+    camera.right = width - x * width;
+    camera.top = height - y * height;
+    camera.bottom = -height - y * height;
+    camera.updateProjectionMatrix();
+  }
+
+  // How far above `point` an item must start to sit outside the top of the frame.
+  // Each tube's mouth projects to a different screen height, so this is per tube.
+  function skyOffset(point) {
+    const here = point.clone().project(camera).y;
+    const perUnit =
+      point
+        .clone()
+        .setY(point.y + 1)
+        .project(camera).y - here;
+    return Math.max(0.6, (CONFIG.skyMargin - here) / perUnit);
+  }
+
+  return { camera, frameCamera, skyOffset };
 }
 
-// How far above `point` an item must start to sit outside the top of the frame.
-// Each tube's mouth projects to a different screen height, so this is per tube.
-export function skyOffset(point) {
-  const here = point.clone().project(camera).y;
-  const perUnit =
-    point
-      .clone()
-      .setY(point.y + 1)
-      .project(camera).y - here;
-  return Math.max(0.6, (CONFIG.skyMargin - here) / perUnit);
-}
+export const { camera, frameCamera, skyOffset } = createView();

@@ -6,7 +6,6 @@ interface AsciiProps {
 }
 
 export function Ascii({ className, html }: AsciiProps) {
-  // paintAscii escapes source text before adding its controlled span markup.
   return (
     <pre
       className={cn(

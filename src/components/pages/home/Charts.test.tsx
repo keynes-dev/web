@@ -15,14 +15,15 @@ describe("homepage charts", () => {
     render(<HeroResourcesChart />);
 
     const chart = screen.getByRole("img", {
-      name: "Reserved and available resources by scope",
+      name: /budget resources: tokens 3 used, 2 reserved, 5 available/i,
     });
 
     expect(chart).toBeInTheDocument();
-    expect(chart).toHaveAttribute("viewBox", "0 0 320 108");
-    for (const label of ["tokens", "toolCalls", "retries", "escalations"]) {
+    expect(chart).toHaveAttribute("viewBox", "0 0 320 56");
+    for (const label of ["tokens", "toolCalls"]) {
       expect(screen.getByText(label)).toHaveAttribute("text-anchor", "start");
     }
+    expect(screen.getByText("Used")).toBeInTheDocument();
     expect(screen.getByText("Reserved")).toBeInTheDocument();
     expect(screen.getByText("Available")).toBeInTheDocument();
   });

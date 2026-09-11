@@ -71,7 +71,20 @@ function paint(colour, over) {
   well as the framing, so a placement resolved for only one of the two draws the
   right camera in the wrong strokes.
 */
-export function host(container, { scene, camera, update, loop, still, place }) {
+export function host(
+  container,
+  {
+    scene,
+    camera,
+    update,
+    loop,
+    still,
+    place,
+    styling = { setTheme, setResolution },
+    framing = frameCamera,
+    onPlaybackChange = () => {},
+  },
+) {
   // Followed rather than read once: a reader who turns motion off does so to
   // stop something already moving, and waiting for a reload to honour that is
   // most of the way to not honouring it.
@@ -112,7 +125,7 @@ export function host(container, { scene, camera, update, loop, still, place }) {
       CONFIG.ground;
     const ink = paint(style.color, ground) ?? CONFIG.ink;
     const rule = paint(style.borderTopColor, ground) ?? CONFIG.rule;
-    setTheme(ground, ink, rule);
+    styling.setTheme(ground, ink, rule);
     renderer.setClearColor(ground, 1);
     scene.background = new THREE.Color(ground);
   }
@@ -121,6 +134,9 @@ export function host(container, { scene, camera, update, loop, still, place }) {
   let running = false,
     last = 0,
     elapsed = 0;
+  let animationFrame = 0;
+  let paused = false;
+  let visible = false;
   const render = () => renderer.render(scene, camera);
 
   function frame(now) {
@@ -129,16 +145,19 @@ export function host(container, { scene, camera, update, loop, still, place }) {
     last = now;
     update(elapsed % loop);
     render();
-    requestAnimationFrame(frame);
+    animationFrame = requestAnimationFrame(frame);
   }
   function start() {
-    if (running || reducedMotion) return;
+    if (running || reducedMotion || paused) return;
     running = true;
+    onPlaybackChange(true, reducedMotion);
     last = performance.now();
-    requestAnimationFrame(frame);
+    animationFrame = requestAnimationFrame(frame);
   }
   function stop() {
     running = false;
+    onPlaybackChange(false, reducedMotion);
+    cancelAnimationFrame(animationFrame);
   }
   function seek(t) {
     stop();
@@ -160,10 +179,10 @@ export function host(container, { scene, camera, update, loop, still, place }) {
     // chosen at: the frame's own height in pixels over the world height it
     // covers, which `zoom` is what changes.
     const weight = height / (CONFIG.weighedAt * (standing?.zoom ?? 1));
-    setResolution(width * dpr, height * dpr, dpr, weight);
-    frameCamera(width / height, standing);
+    styling.setResolution(width * dpr, height * dpr, dpr, weight);
+    framing(width / height, standing);
     if (!running) {
-      update(reducedMotion ? still : elapsed % loop);
+      update(elapsed % loop);
       render();
     }
   }
@@ -188,7 +207,9 @@ export function host(container, { scene, camera, update, loop, still, place }) {
   function watch() {
     if (watching) return;
     watching = new IntersectionObserver((entries) => {
-      entries.some((e) => e.isIntersecting) ? start() : stop();
+      visible = entries.some((e) => e.isIntersecting);
+      if (visible) start();
+      else stop();
     });
     // The observer reports where the element is as soon as it is given one, so
     // this is also what starts the drawing.
@@ -210,7 +231,8 @@ export function host(container, { scene, camera, update, loop, still, place }) {
     if (!reducedMotion) return watch();
     unwatch();
     stop();
-    update(still);
+    elapsed = still;
+    update(elapsed);
     render();
   }
   settle();
@@ -225,9 +247,8 @@ export function host(container, { scene, camera, update, loop, still, place }) {
   // until it runs out and starts discarding them.
   //
   // Dropping the context releases what the scene holds on the GPU, and the
-  // geometries go with the scene once the caller lets go of it. Nothing here
-  // walks the scene disposing them, and nothing should dispose the materials at
-  // all: those are the module's, shared with whatever is drawn next.
+  // caller owns scene geometry and materials. The original conveyor shares its
+  // materials, while the motion studies dispose their isolated instances.
   function destroy() {
     stop();
     sizing.disconnect();
@@ -239,5 +260,25 @@ export function host(container, { scene, camera, update, loop, still, place }) {
     renderer.forceContextLoss();
   }
 
-  return { renderer, seek, start, stop, destroy };
+  return {
+    renderer,
+    seek,
+    start,
+    stop,
+    destroy,
+    pause() {
+      paused = true;
+      stop();
+    },
+    resume() {
+      paused = false;
+      if (visible) start();
+    },
+    get running() {
+      return running;
+    },
+    get reducedMotion() {
+      return reducedMotion;
+    },
+  };
 }

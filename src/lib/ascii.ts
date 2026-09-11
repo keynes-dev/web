@@ -76,11 +76,20 @@ export const baseRules: Rule[] = [
 ];
 
 export const codeRules: Rule[] = [
-  { re: /\b(when|else)\b/, cls: "c-blue" },
-  { re: /allow up to/, cls: "c-blue" },
   {
-    re: /\b(tokens|toolCalls|retries|escalations|leadScore|context)\b/,
-    cls: "c-green",
+    re: /\b(name|context|query|leadScore|lead_score|tokens|toolCalls|status|budget|reasons|shortBy|resource|ceiling|reason|requested|available|retries|escalations|pending|allow)\b/,
+    cls: "c-prop",
   },
-  { re: /\b\d[\d,]*\b/, cls: "c-plum" },
+  {
+    re: /\b(definePolicy|policyValue|integer|selectFrom|crossJoin|innerJoin|select|onRef|request|runWorkflow|settle|val)\b/,
+    cls: "c-fn",
+  },
+  {
+    re: /\b(const|await|if|else|when|then|end|case|as)\b/,
+    cls: "c-kw",
+  },
+  { re: /allow up to/, cls: "c-kw" },
+  { re: /\b(number|string|boolean)\b/, cls: "c-type" },
+  { re: /"[^"]*"|'[^']*'/, cls: "c-str" },
+  { re: /\b\d[\d,_]*\b/, cls: "c-num" },
 ];

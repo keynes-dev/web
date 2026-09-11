@@ -7,8 +7,8 @@
 import * as THREE from "three";
 
 import { IRIS } from "../config.js";
-import { edgeLines, segments, silhouette, solid, thin } from "../draft.js";
-import { black, shell, white } from "../materials.js";
+import * as defaultDraft from "../draft.js";
+import * as defaultMaterials from "../materials.js";
 
 // One tapered leaf, hinged at the origin: its long edge is the chord, and it
 // narrows to a tip so the far corner never swings outside the frame.
@@ -25,7 +25,7 @@ bladeGeo.rotateX(Math.PI / 2);
 
 // Only the chord and the taper are drawn. Outlining all three sides of every
 // leaf turns a shut iris into a black smudge at this size.
-function leaf() {
+function leaf(segments, white) {
   const g = new THREE.Group();
   g.add(new THREE.Mesh(bladeGeo, white));
   g.add(
@@ -47,9 +47,21 @@ function leaf() {
   return g;
 }
 
-// `centre` is the mouth, level with the bottom of the glass tube above it.
-export function iris(centre, holeR) {
-  const g = new THREE.Group();
+/*
+  An iris built against a caller's own drafting toolkit and material set, so a
+  machine that owns its materials — and so inverts with the page — gets a
+  diaphragm drawn in its own ink rather than in this module's.
+*/
+export function createIris({
+  draft = defaultDraft,
+  materials = defaultMaterials,
+} = {}) {
+  const { black, shell, white } = materials;
+  const { edgeLines, segments, silhouette, solid, thin } = draft;
+
+  // `centre` is the mouth, level with the bottom of the glass tube above it.
+  return function iris(centre, holeR) {
+    const g = new THREE.Group();
   const frameGeo = new THREE.CylinderGeometry(
     IRIS.frameR,
     IRIS.frameR,
@@ -121,7 +133,7 @@ export function iris(centre, holeR) {
           IRIS.pivotR * Math.sin(phi),
         ),
       );
-    const blade = thin(leaf());
+    const blade = thin(leaf(segments, white));
     blade.position.y = IRIS.thickness / 2;
     pivot.add(blade);
     pivot.userData.phi = phi;
@@ -133,5 +145,8 @@ export function iris(centre, holeR) {
     const beta = IRIS.betaShut + amount * (IRIS.betaOpen - IRIS.betaShut);
     for (const blade of blades) blade.rotation.y = -(blade.userData.phi + beta);
   };
-  return { group: g, open };
+    return { group: g, open };
+  };
 }
+
+export const iris = createIris();

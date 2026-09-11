@@ -5,16 +5,15 @@
 
 export interface HeroResourceRow {
   name: string;
+  used: number;
   reserved: number;
   available: number;
   display: string;
 }
 
 export const heroResourcesData: HeroResourceRow[] = [
-  { name: "tokens", reserved: 4, available: 6, display: "6,500" },
-  { name: "toolCalls", reserved: 6, available: 4, display: "4" },
-  { name: "retries", reserved: 7, available: 3, display: "3" },
-  { name: "escalations", reserved: 8, available: 2, display: "2" },
+  { name: "tokens", used: 3, reserved: 2, available: 5, display: "6,500" },
+  { name: "toolCalls", used: 4, reserved: 2, available: 4, display: "4" },
 ];
 
 export const BUDGET_RESOURCE_KEYS = ["tokens", "toolCalls", "retries"] as const;

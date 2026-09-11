@@ -1,34 +1,44 @@
+export type ArrowPosition = "keynes" | "transit" | "app";
+
 interface ArrowProps {
-  length?: number;
+  position?: ArrowPosition;
   vertical?: boolean;
 }
 
-export function Arrow({ length = 72, vertical = false }: ArrowProps) {
-  const width = vertical ? 10 : length;
-  const height = vertical ? length : 10;
-  const line = vertical ? `M5 8 V${length - 8}` : `M8 5 H${length - 8}`;
-  const headA = vertical ? "M5 1 L2 7 L8 7 Z" : "M1 5 L7 2 L7 8 Z";
-  const headB = vertical
-    ? `M5 ${length - 1} L2 ${length - 7} L8 ${length - 7} Z`
-    : `M${length - 1} 5 L${length - 7} 2 L${length - 7} 8 Z`;
+const STEP_CENTERS = [12, 52, 92] as const;
+
+export function Arrow({ position = "app", vertical = false }: ArrowProps) {
+  const activeStep = position === "keynes" ? 1 : position === "transit" ? 2 : 3;
 
   return (
-    <svg
+    <div
       aria-hidden="true"
-      className="block shrink-0"
-      fill="none"
-      height={height}
-      viewBox={`0 0 ${width} ${height}`}
-      width={width}
+      className="step-indicator relative block shrink-0"
+      data-indicator-position={position}
+      style={{ height: vertical ? 104 : 24, width: vertical ? 24 : 104 }}
     >
-      <path
-        d={line}
-        stroke="currentColor"
-        strokeDasharray="2 4"
-        strokeWidth="1"
-      />
-      <path d={headA} fill="currentColor" />
-      <path d={headB} fill="currentColor" />
-    </svg>
+      <div
+        className={
+          vertical
+            ? "absolute left-1/2 top-1/2 h-6 w-[104px] -translate-x-1/2 -translate-y-1/2 rotate-90"
+            : "relative h-6 w-[104px]"
+        }
+      >
+        <img
+          alt=""
+          className="step-indicator-rail absolute inset-0 block h-6 w-[104px] max-w-none"
+          data-node-id="572:56"
+          src="/indicator.svg"
+        />
+        {STEP_CENTERS.map((center, index) => (
+          <span
+            className={`journey-step-fill${activeStep === index + 1 ? " is-active" : ""}`}
+            data-journey-step={index + 1}
+            key={center}
+            style={{ left: center }}
+          />
+        ))}
+      </div>
+    </div>
   );
 }

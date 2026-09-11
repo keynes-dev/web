@@ -52,6 +52,7 @@ interface ChartFrameProps<
   note?: ReactNode;
   className?: string;
   chartClassName?: string;
+  legendClassName?: string;
 }
 
 export function ChartFrame<
@@ -68,6 +69,7 @@ export function ChartFrame<
   note,
   className,
   chartClassName,
+  legendClassName,
 }: ChartFrameProps<TDatum, TXValue, TYValue>) {
   const legendRef = useRef<HTMLDivElement>(null);
   const [legendHeight, setLegendHeight] = useState(LEGEND_HEIGHT);
@@ -111,7 +113,7 @@ export function ChartFrame<
           initialWidth={320}
         />
         <ChartLegend
-          className={LEGEND_CLASS}
+          className={cn(LEGEND_CLASS, legendClassName)}
           config={config}
           items={legendItems}
           ref={legendRef}
