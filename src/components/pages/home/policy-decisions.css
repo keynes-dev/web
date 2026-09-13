@@ -10,7 +10,6 @@
 .policy-demo__rules,
 .policy-demo__budget {
   padding: 1rem;
-  background: var(--background);
 }
 .policy-demo__budget {
   border-left: 1px solid var(--border);
@@ -101,7 +100,6 @@
   gap: 0.75rem;
   padding: 0.75rem 1rem;
   border: 1px solid var(--border);
-  background: var(--background);
 }
 .policy-demo__requests small {
   display: block;
@@ -157,8 +155,8 @@
   max-height: 18rem;
   overflow: auto;
   padding: 1rem;
-  border: 1px solid var(--foreground);
-  background: var(--background);
+  border: 1px solid var(--border);
+  background: var(--popover);
   color: var(--foreground);
 }
 .policy-demo pre {
@@ -196,7 +194,6 @@
 .policy-demo__request,
 .policy-demo__response {
   padding: 0.75rem 1rem;
-  background: var(--background);
 }
 .policy-demo__response {
   border-top: 1px solid var(--border);

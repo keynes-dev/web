@@ -1,3 +1,4 @@
+import { GridMarks } from "@/components/GridMarks";
 import { Logo } from "@/components/Logo";
 
 const links = [
@@ -10,7 +11,8 @@ const links = [
 export function Footer() {
   return (
     <footer>
-      <div className="container mx-auto flex flex-col items-start justify-between gap-6 border-x px-5 py-8 sm:px-8 md:flex-row md:items-center">
+      <div className="relative container mx-auto flex flex-col items-start justify-between gap-6 border-x px-5 py-8 sm:px-8 md:flex-row md:items-center">
+        <GridMarks />
         <div className="flex items-center gap-6">
           <a aria-label="Keynes home" href="/">
             <Logo />

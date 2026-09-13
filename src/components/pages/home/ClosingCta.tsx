@@ -6,10 +6,10 @@ import { Button } from "@/components/ui/button";
 export function ClosingCta() {
   return (
     <Section containerClassName="flex flex-col items-center gap-8 py-24 text-center">
-      <h2 className="font-heading text-4xl tracking-tight text-balance sm:text-5xl">
+      <h2 className="font-heading text-section text-balance">
         Put your agents on a Budget
       </h2>
-      <p className="max-w-3xl text-lg leading-8 text-muted-foreground sm:text-xl">
+      <p className="max-w-2xl text-muted-foreground">
         Apache-2.0 open core. One TypeScript SDK. Start locally with zero setup
         — no account, no keys, no network.
       </p>

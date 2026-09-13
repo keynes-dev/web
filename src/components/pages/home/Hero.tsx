@@ -7,12 +7,12 @@ export function Hero() {
   return (
     <Section containerClassName='relative flex min-h-[40rem] flex-col justify-start overflow-hidden pt-8 pb-24 lg:min-h-[32rem] lg:justify-center lg:py-24'>
       <conveyor-belt
-        className='pointer-events-none absolute inset-0'
+        className='pointer-events-none absolute inset-0 border-emerald-700 bg-background'
         role='img'
         aria-label='A machine sorting shapes into boxes on a conveyor belt: each box receives the shape that fits the hole in its lid, and one that arrives the wrong way up is turned over by a mechanical arm.'
       />
       <div className='relative flex flex-col gap-4'>
-        <h1 className='font-heading text-4xl tracking-tight text-balance'>
+        <h1 className='font-heading text-display text-balance'>
           Runtime economics for agents
         </h1>
         <p className='text-lg lg:max-w-[50%]'>

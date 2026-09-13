@@ -4,10 +4,10 @@ import { Button } from "@/components/ui/button";
 export function Thesis() {
   return (
     <Section containerClassName='flex flex-col items-center gap-6 py-20 text-center'>
-      <h2 className='font-heading text-2xl tracking-tight sm:text-3xl'>
+      <h2 className='font-heading text-section'>
         Observability is a two-way road
       </h2>
-      <p className='max-w-4xl text-muted-foreground sm:text-xl'>
+      <p className='max-w-2xl text-muted-foreground'>
         Traditional observability tells your business what your agents did{" "}
         <em className='text-foreground underline underline-offset-4'>after</em>{" "}
         they did it. Keynes gives your agents live business context{" "}

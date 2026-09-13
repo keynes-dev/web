@@ -11,7 +11,7 @@ import {
 
 export function ExperimentSweep() {
   return (
-    <Card className="how-it-works__floating-card experiment-sweep">
+    <Card className="experiment-sweep">
       <CardHeader className="border-b">
         <CardTitle>Support ticket experiments</CardTitle>
       </CardHeader>

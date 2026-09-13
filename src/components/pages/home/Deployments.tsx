@@ -63,7 +63,7 @@ export function Deployments() {
   return (
     <Section containerClassName="flex flex-col gap-12 py-16">
       <header className="space-y-4">
-        <h2 className="font-heading text-3xl tracking-tight sm:text-4xl">
+        <h2 className="font-heading text-section">
           Three ways to run it
         </h2>
         <p className="max-w-3xl text-muted-foreground">
