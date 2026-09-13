@@ -7,63 +7,63 @@
 
 :root {
   color-scheme: light;
-  --background: var(--color-mauve-50);
-  --foreground: var(--color-mauve-950);
-  --card: var(--color-mauve-50);
-  --card-foreground: var(--color-mauve-950);
+  --background: var(--color-gray-50);
+  --foreground: var(--color-blue-950);
+  --card: var(--color-gray-100);
+  --card-foreground: var(--color-blue-950);
   --popover: var(--color-white);
-  --primary: var(--color-mauve-900);
+  --primary: var(--color-blue-700);
   --primary-foreground: var(--color-white);
-  --secondary: var(--color-mauve-100);
-  --secondary-foreground: var(--color-mauve-950);
-  --muted: var(--color-mauve-100);
-  --muted-foreground: var(--color-mauve-900);
+  --secondary: var(--color-blue-100);
+  --secondary-foreground: var(--color-blue-950);
+  --muted: var(--color-blue-100);
+  --muted-foreground: var(--color-blue-900);
   --destructive: var(--color-red-700);
-  --border: var(--color-mauve-300);
-  --input: var(--color-mauve-700);
-  --ring: var(--color-mauve-700);
-  --chart-1: var(--color-mauve-950);
-  --chart-2: var(--color-mauve-800);
+  --border: var(--color-gray-300);
+  --input: var(--color-blue-700);
+  --ring: var(--color-blue-700);
+  --chart-1: var(--color-blue-950);
+  --chart-2: var(--color-blue-800);
   --chart-3: var(--color-sky-800);
-  --chart-4: var(--color-mauve-700);
+  --chart-4: var(--color-blue-700);
   --chart-5: var(--color-cyan-800);
   --chart-accent: var(--color-sky-700);
   --chart-denied: var(--color-red-700);
   --chart-recommended: var(--color-amber-700);
-  --diagram-mauve: var(--color-mauve-700);
+  --diagram-blue: var(--color-blue-700);
   --diagram-plum: var(--color-fuchsia-700);
-  --grid: var(--color-mauve-100);
+  --grid: var(--color-gray-200);
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
     color-scheme: dark;
-    --background: var(--color-mauve-950);
+    --background: var(--color-gray-950);
     --foreground: var(--color-white);
-    --card: var(--color-mauve-950);
+    --card: var(--color-gray-900);
     --card-foreground: var(--color-white);
-    --popover: var(--color-mauve-900);
-    --primary: var(--color-white);
-    --primary-foreground: var(--color-mauve-950);
-    --secondary: var(--color-mauve-900);
+    --popover: var(--color-blue-900);
+    --primary: var(--color-blue-700);
+    --primary-foreground: var(--color-white);
+    --secondary: var(--color-blue-900);
     --secondary-foreground: var(--color-white);
-    --muted: var(--color-mauve-900);
-    --muted-foreground: var(--color-mauve-300);
+    --muted: var(--color-blue-900);
+    --muted-foreground: var(--color-gray-300);
     --destructive: var(--color-red-400);
-    --border: var(--color-mauve-700);
-    --input: var(--color-mauve-500);
-    --ring: var(--color-mauve-200);
+    --border: var(--color-gray-700);
+    --input: var(--color-blue-500);
+    --ring: var(--color-blue-200);
     --chart-1: var(--color-white);
-    --chart-2: var(--color-mauve-200);
+    --chart-2: var(--color-blue-200);
     --chart-3: var(--color-sky-300);
-    --chart-4: var(--color-mauve-300);
+    --chart-4: var(--color-blue-300);
     --chart-5: var(--color-cyan-200);
     --chart-accent: var(--color-sky-300);
     --chart-denied: var(--color-red-400);
     --chart-recommended: var(--color-yellow-400);
-    --diagram-mauve: var(--color-lime-300);
+    --diagram-blue: var(--color-lime-300);
     --diagram-plum: var(--color-fuchsia-300);
-    --grid: var(--color-mauve-900);
+    --grid: var(--color-gray-900);
   }
 }
 
@@ -115,8 +115,8 @@
   color: var(--foreground);
 }
 
-.ascii .c-mauve {
-  color: var(--diagram-mauve);
+.ascii .c-blue {
+  color: var(--diagram-blue);
 }
 
 .ascii .c-plum {

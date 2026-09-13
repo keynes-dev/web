@@ -5,10 +5,10 @@ import { SiteLinks } from "./SiteLinks";
 
 export function Nav() {
   return (
-    <header className='sticky top-0 z-50 border-b border-grid bg-background'>
-      <div className='relative container mx-auto border-x border-grid'>
+    <header className='sticky top-0 z-50 border-b bg-background'>
+      <div className='relative container mx-auto border-x'>
         <GridMarks />
-        <nav className='relative container mx-auto max-w-screen-xl flex items-center justify-between gap-6 border-x border-grid px-4 py-3 sm:px-8'>
+        <nav className='relative container mx-auto max-w-screen-xl flex items-center justify-between gap-6 border-x px-4 py-3 sm:px-8'>
           <GridMarks />
           <div className='flex items-center gap-8'>
             <a aria-label='Keynes home' href='/'>

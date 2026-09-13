@@ -19,24 +19,24 @@ export function ResourceBar({
 }) {
   return (
     <div
-      className="flex h-3.5 overflow-hidden border border-foreground"
-      role="img"
+      className='flex h-3 overflow-hidden border border-foreground'
+      role='img'
       aria-label={label}
       title={label}
     >
       <i
-        aria-hidden="true"
-        className="min-w-0 bg-foreground mask-center mask-repeat-x"
+        aria-hidden='true'
+        className='min-w-0 bg-foreground mask-center mask-repeat-x'
         style={{ maskImage: texture.available, flex: available }}
       />
       <i
-        aria-hidden="true"
-        className="min-w-0 bg-foreground mask-center mask-repeat-x"
+        aria-hidden='true'
+        className='min-w-0 bg-foreground mask-center mask-repeat-x'
         style={{ maskImage: texture.reserved, flex: reserved }}
       />
       <i
-        aria-hidden="true"
-        className="min-w-0 bg-foreground mask-center mask-repeat-x"
+        aria-hidden='true'
+        className='min-w-0 bg-foreground mask-center mask-repeat-x'
         style={{ maskImage: texture.used, flex: used }}
       />
     </div>

@@ -6,7 +6,7 @@ export function Hero() {
     <Section>
       <div className='flex min-h-96 flex-col justify-center gap-6'>
         <conveyor-belt
-          className='pointer-events-none absolute inset-0 block border-grid bg-background'
+          className='pointer-events-none absolute inset-0 block border-grid bg-background text-muted-foreground'
           role='img'
           aria-label='A machine sorting shapes into boxes on a conveyor belt: each box receives the shape that fits the hole in its lid, and one that arrives the wrong way up is turned over by a mechanical arm.'
         />
