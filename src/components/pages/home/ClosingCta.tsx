@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 
 export function ClosingCta() {
   return (
-    <Section className="flex flex-col items-center gap-8 py-24 text-center">
+    <Section containerClassName="flex flex-col items-center gap-8 py-24 text-center">
       <h2 className="font-heading text-4xl tracking-tight text-balance sm:text-5xl">
         Put your agents on a Budget
       </h2>

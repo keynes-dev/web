@@ -1,148 +1,148 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
-import { BudgetsFigure } from "./BudgetsFigure";
-import { HOW_IT_WORKS_CHART_BLOCK_HEIGHT } from "./ChartFrame";
-import { EvalsChart } from "./EvalsChart";
-import { PoliciesFigure } from "./PoliciesFigure";
-import { WorkflowsChart } from "./WorkflowsChart";
+import { BudgetTree } from "./BudgetTree";
+import { ExperimentSweep } from "./ExperimentSweep";
+import { PolicyDecisions } from "./PolicyDecisions";
 import { Section } from "@/components/Section";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
-import { Card, CardContent } from "@/components/ui/card";
+import "./how-it-works.css";
+import "./resource-states.css";
 
-const TICK_MS = 8_000;
-
-const items = [
+const steps = [
   {
-    value: "budgets",
+    id: "budgets",
     label: "Budgets",
-    body: "A Budget holds many Resources at once and hands them down. A request is one envelope: it either reserves every Resource it asked for and returns a child Budget, or one Resource falls short and the whole request is denied with nothing reserved.",
-    mono: "budget.request({ tokens: 2400, toolCalls: 9 })",
-    caption: "org to run · three Resources · one denied step",
-    Chart: BudgetsFigure,
+    title: "Give every agent a budget.",
+    body: "A furniture retailer uses agents to create product listings and help customers with deliveries. Give each team the tokens, image generations, API calls, and messages its work needs.",
+    detail:
+      "Give each workflow the resources it needs, within its team’s limits.",
+    Figure: BudgetTree,
   },
   {
-    value: "policies",
+    id: "policies",
     label: "Policies",
-    body: "Constraints are written in a typed TypeScript builder and compiled to one restricted SQL subset. When Policies disagree, the lowest ceiling wins. A request above that ceiling is denied outright — Keynes never revises the quantities you asked for.",
-    mono: "when leadScore >= 80",
-    caption: "four ceilings · one binds · request denied",
-    Chart: PoliciesFigure,
+    title: "Agents ask before they act.",
+    body: "Define policies in SQL. Attach them to a budget. Pass context with each request.",
+    detail: "Get a funded child budget or the reasons for denial.",
+    Figure: PolicyDecisions,
   },
   {
-    value: "workflows",
-    label: "Workflows",
-    body: "Your application owns execution. Keynes holds the reservation while the workflow runs, then the Budget settles with what was actually used — unused Resources return to the parent.",
-    mono: "budget.settle({ tokens: 1300 })",
-    caption: "reserve · run · settle",
-    Chart: WorkflowsChart,
+    id: "experiments",
+    label: "Experiments",
+    title: "Find the right budget.",
+    body: "Run the same support tickets with different token budgets and search limits. Compare how many tickets get resolved to see where extra spending helps.",
+    detail: "Use what you learn to set the limits for your next run.",
+    Figure: ExperimentSweep,
   },
-  {
-    value: "evals",
-    label: "Evals",
-    body: "Every Budget command leaves canonical evidence in the projection and history. Your harness compares variants by what they actually cost and what they denied — Keynes records the facts; you decide what they mean.",
-    mono: "47 settled runs · 3 variants",
-    caption: "evidence for every command",
-    Chart: EvalsChart,
-  },
-] as const;
+];
 
-export function HowItWorks() {
-  const [active, setActive] = useState<(typeof items)[number]["value"]>(
-    items[0].value,
-  );
+function usePinnedSteps(stepCount: number) {
+  const sectionRef = useRef<HTMLElement>(null);
+  const [pinned, setPinned] = useState(false);
+  const [active, setActive] = useState(0);
 
   useEffect(() => {
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      return;
-    }
+    const query = window.matchMedia(
+      "(min-width: 1024px) and (min-height: 720px) and (prefers-reduced-motion: no-preference)",
+    );
+    const syncLayout = () => setPinned(query.matches);
+    syncLayout();
+    query.addEventListener("change", syncLayout);
+    return () => query.removeEventListener("change", syncLayout);
+  }, []);
 
-    const timer = window.setInterval(() => {
-      setActive((current) => {
-        const index = items.findIndex((item) => item.value === current);
-        return items[(index + 1) % items.length].value;
-      });
-    }, TICK_MS);
+  useEffect(() => {
+    if (!pinned) return;
+    let frame = 0;
+    const syncStep = () => {
+      const section = sectionRef.current;
+      if (!section) return;
+      const { top, height } = section.getBoundingClientRect();
+      const distance = height - window.innerHeight;
+      const progress = distance > 0 ? -top / distance : 0;
+      setActive(
+        Math.max(0, Math.min(stepCount - 1, Math.floor(progress * stepCount))),
+      );
+    };
+    const schedule = () => {
+      window.cancelAnimationFrame(frame);
+      frame = window.requestAnimationFrame(syncStep);
+    };
+    syncStep();
+    window.addEventListener("scroll", schedule, { passive: true });
+    window.addEventListener("resize", schedule);
+    return () => {
+      window.cancelAnimationFrame(frame);
+      window.removeEventListener("scroll", schedule);
+      window.removeEventListener("resize", schedule);
+    };
+  }, [pinned, stepCount]);
 
-    return () => window.clearInterval(timer);
-  }, [active]);
+  const goToStep = (index: number) => {
+    const section = sectionRef.current;
+    if (!section) return;
+    const { top, height } = section.getBoundingClientRect();
+    const distance = height - window.innerHeight;
+    window.scrollTo({
+      top: window.scrollY + top + (distance * (index + 0.15)) / stepCount,
+      behavior: "instant",
+    });
+  };
 
-  const activeItem = items.find((item) => item.value === active) ?? items[0];
-  const ActiveChart = activeItem.Chart;
+  return { active, goToStep, pinned, sectionRef };
+}
+
+export function HowItWorks() {
+  const { active, goToStep, pinned, sectionRef } = usePinnedSteps(steps.length);
 
   return (
-    <Section className="flex flex-col gap-12">
-      <header className="space-y-4">
-        <h2 className="font-heading text-3xl tracking-tight">How it works</h2>
-        <p className="text-muted-foreground">
-          Budgets hold Resources. Policies constrain them. Workflows spend them.
-          Evidence tells you what it cost.
-        </p>
-      </header>
-
-      <div className="flex flex-col lg:flex-row gap-8">
-        <Accordion
-          className="w-full"
-          onValueChange={(value) => {
-            if (value) {
-              setActive(value as (typeof items)[number]["value"]);
-            }
-          }}
-          type="single"
-          value={active}
-        >
-          {items.map((item, index) => (
-            <AccordionItem
-              className="flex border-b last:border-b-0"
-              key={item.value}
-              value={item.value}
+    <Section
+      id="how-it-works"
+      aria-label="How it works"
+      ref={sectionRef}
+      data-pinned={pinned}
+      containerClassName="how-it-works"
+    >
+      <div className="how-it-works__stage">
+        <p className="how-it-works__eyebrow">How it works</p>
+        <div className="how-it-works__scenes">
+          {steps.map(({ id, label, title, body, detail, Figure }, index) => (
+            <article
+              id={`how-${id}`}
+              className="how-it-works__scene"
+              data-active={index === active}
+              aria-hidden={pinned && index !== active ? true : undefined}
+              inert={pinned && index !== active ? true : undefined}
+              key={id}
             >
-              <div
-                aria-hidden
-                className="relative w-1 shrink-0 self-stretch bg-muted"
-              >
-                {active === item.value ? (
-                  <span
-                    className="tab-progress absolute inset-x-0 top-0 block w-full bg-primary motion-reduce:h-full"
-                    key={active}
-                  />
-                ) : null}
+              <div className="how-it-works__copy">
+                <p className="how-it-works__step">
+                  0{index + 1} / {label}
+                </p>
+                <h2>{title}</h2>
+                <p className="how-it-works__body">{body}</p>
+                <p className="how-it-works__detail">{detail}</p>
               </div>
-              <div className="min-w-0 flex-1">
-                <AccordionTrigger className="px-4 py-3 hover:no-underline [&_[data-slot=accordion-trigger-icon]]:hidden">
-                  <span className="flex items-center gap-3">
-                    <span className="font-mono text-xs text-muted-foreground">
-                      {String(index + 1).padStart(2, "0")}
-                    </span>
-                    <span className="text-base">{item.label}</span>
-                  </span>
-                </AccordionTrigger>
-                <AccordionContent className="px-4 pb-4">
-                  <div className="grid gap-2">
-                    <p className="text-sm text-muted-foreground">{item.body}</p>
-                  </div>
-                </AccordionContent>
+              <div className="how-it-works__illustration">
+                <Figure />
               </div>
-            </AccordionItem>
+            </article>
           ))}
-        </Accordion>
-
-        <Card className="h-full w-full min-w-0">
-          <CardContent className="px-0">
-            <div className="min-w-0 w-full overflow-x-hidden p-4 sm:p-5">
-              <div
-                className="h-full min-w-0 w-full"
-                style={{ height: HOW_IT_WORKS_CHART_BLOCK_HEIGHT }}
+        </div>
+        {pinned && (
+          <nav className="how-it-works__nav" aria-label="How it works steps">
+            {steps.map((step, index) => (
+              <button
+                type="button"
+                aria-current={index === active ? "step" : undefined}
+                aria-controls={`how-${step.id}`}
+                onClick={() => goToStep(index)}
+                key={step.id}
               >
-                <ActiveChart />
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+                <span>0{index + 1}</span> {step.label}
+              </button>
+            ))}
+          </nav>
+        )}
       </div>
     </Section>
   );

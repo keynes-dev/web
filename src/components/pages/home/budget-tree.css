@@ -1,0 +1,226 @@
+.budget-tree {
+  --tree-gap: 1.25rem;
+  padding: 0.5rem;
+}
+.budget-tree__root {
+  width: 100%;
+}
+.budget-node {
+  --budget-node-padding: 0.75rem;
+  width: 100%;
+  min-width: 0;
+  padding: var(--budget-node-padding);
+  container-type: inline-size;
+}
+.budget-node h3 {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  margin-bottom: 0.6rem;
+}
+.budget-node dl {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0.4rem;
+}
+@container (min-width: 12rem) {
+  .budget-node dl:has(> div:nth-child(3)) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: var(--budget-node-padding);
+  }
+}
+.budget-node dl > div {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: end;
+  gap: 0.25rem;
+  font-size: 0.7rem;
+}
+.budget-node dt {
+  color: var(--muted-foreground);
+}
+.budget-node dd {
+  font-family: var(--font-mono);
+}
+.budget-node__bar {
+  display: flex;
+  grid-column: 1 / -1;
+  height: 14px;
+  overflow: hidden;
+  outline: 1px solid var(--foreground);
+}
+.budget-node__bar i,
+.policy-demo__bar i {
+  min-width: 0;
+}
+.budget-tree__legend,
+.budget-tree__legend span {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+}
+.budget-tree__legend {
+  gap: 1rem;
+}
+.budget-tree__legend i {
+  width: 22px;
+  height: 12px;
+  outline: 1px solid var(--foreground);
+}
+.budget-tree figcaption {
+  text-align: center;
+  color: var(--muted-foreground);
+  font-size: 0.7rem;
+  margin-top: 0.75rem;
+}
+
+.budget-tree__fork {
+  position: relative;
+  height: 22px;
+  margin-block: 9px;
+}
+
+.budget-tree__fork::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  height: 50%;
+  border-left: 1px solid var(--foreground);
+}
+
+.budget-tree__fork::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: calc(25% - var(--tree-gap) / 4);
+  right: calc(25% - var(--tree-gap) / 4);
+  border-top: 1px solid var(--foreground);
+}
+
+.budget-tree__fork i {
+  position: absolute;
+  top: 50%;
+  bottom: 0;
+  left: calc(25% - var(--tree-gap) / 4);
+  border-left: 1px solid var(--foreground);
+}
+
+.budget-tree__fork i:last-child {
+  left: calc(75% + var(--tree-gap) / 4);
+}
+
+.budget-tree__fork i::after,
+.budget-tree__branch-fork i::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: -4px;
+  width: 7px;
+  height: 7px;
+  border-right: 1px solid var(--foreground);
+  border-bottom: 1px solid var(--foreground);
+  transform: rotate(45deg);
+}
+
+.budget-tree__branch-fork {
+  position: relative;
+  height: 22px;
+  margin-block: 9px;
+}
+
+.budget-tree__branch-fork::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  height: 50%;
+  border-left: 1px solid var(--foreground);
+}
+
+.budget-tree__branch-fork::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: calc(25% - 0.125rem);
+  right: calc(25% - 0.125rem);
+  border-top: 1px solid var(--foreground);
+}
+
+.budget-tree__branch-fork i {
+  position: absolute;
+  top: 50%;
+  bottom: 0;
+  left: calc(25% - 0.125rem);
+  border-left: 1px solid var(--foreground);
+}
+
+.budget-tree__branch-fork i:last-child {
+  left: calc(75% + 0.125rem);
+}
+
+.budget-tree__fork b,
+.budget-tree__branch-fork b {
+  position: absolute;
+  z-index: 1;
+  top: -3px;
+  left: calc(50% - 3px);
+  width: 6px;
+  height: 6px;
+  background: var(--background);
+  border: 1px solid var(--foreground);
+  border-radius: 999px;
+}
+
+.budget-tree__children {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--tree-gap);
+}
+.budget-tree__children > div {
+  display: grid;
+  min-width: 0;
+  grid-template-rows: subgrid;
+  grid-row: span 3;
+  row-gap: 0;
+}
+
+.budget-tree__workflows {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.5rem;
+}
+
+.budget-tree__workflows .budget-node {
+  padding: 0.5rem;
+}
+
+.budget-tree__workflows .budget-node h3 {
+  min-height: 2.2em;
+  overflow-wrap: anywhere;
+  margin-bottom: 0.6rem;
+}
+
+@media (max-width: 479px) {
+  .budget-tree {
+    --tree-gap: 1.25rem;
+  }
+  .budget-tree {
+    padding-inline: 0;
+    --tree-gap: 0.75rem;
+  }
+  .budget-node {
+    --budget-node-padding: 0.65rem;
+  }
+  .budget-node h3 {
+    font-size: 0.7rem;
+  }
+  .budget-tree__workflows .budget-node h3 {
+    font-size: 0.6rem;
+  }
+  .budget-node dl > div {
+    font-size: 0.6rem;
+    gap: 0.2rem;
+  }
+  .budget-node dt {
+    gap: 0.2rem;
+  }
+}

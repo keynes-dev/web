@@ -8,8 +8,7 @@
     "dev:network": "astro dev --host 0.0.0.0",
     "build": "astro build",
     "preview": "astro preview",
-    "typecheck": "astro check",
-    "test": "vitest run"
+    "typecheck": "astro check"
   },
   "dependencies": {
     "@astrojs/react": "^6.0.5",
@@ -35,16 +34,10 @@
   },
   "devDependencies": {
     "@astrojs/check": "0.9.10",
-    "@testing-library/jest-dom": "^7.0.1",
-    "@testing-library/react": "^16.3.3",
-    "@testing-library/user-event": "^14.6.6",
     "@types/d3-shape": "^3.2.0",
     "@types/react": "^19.2.18",
     "@types/react-dom": "^19.2.5",
-    "@vitejs/plugin-react": "^6.1.1",
-    "jsdom": "^30.0.1",
-    "typescript": "6.0.3",
-    "vitest": "4.1.11"
+    "typescript": "6.0.3"
   },
   "engines": {
     "node": ">=24"

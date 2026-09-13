@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 
 export function Thesis() {
   return (
-    <Section className='flex flex-col items-center gap-6 py-20 text-center'>
+    <Section containerClassName='flex flex-col items-center gap-6 py-20 text-center'>
       <h2 className='font-heading text-2xl tracking-tight sm:text-3xl'>
         Observability is a two-way road
       </h2>

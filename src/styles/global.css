@@ -203,27 +203,6 @@
   opacity: 0.65;
 }
 
-.step-indicator-rail {
-  filter: brightness(0) invert(1);
-  opacity: 0.78;
-}
-
-.journey-step-fill {
-  position: absolute;
-  top: 50%;
-  width: 16px;
-  height: 16px;
-  border: 1px solid color-mix(in oklab, var(--foreground) 78%, transparent);
-  border-radius: 9999px;
-  background: var(--card);
-  transform: translate(-50%, -50%);
-  transition: background-color 180ms ease;
-}
-
-.journey-step-fill.is-active {
-  background: #30a46c;
-}
-
 .keynes-chart-tooltip {
   --ts-chart-tooltip-background: var(--background);
   --ts-chart-tooltip-border: 1px solid
@@ -243,28 +222,6 @@
 .keynes-chart-tooltip .ts-chart-tooltip__row > :last-child {
   font-family: var(--font-mono);
   font-weight: 500;
-}
-
-.tab-progress {
-  height: 0;
-  animation: tab-progress 8s linear forwards;
-}
-
-@keyframes tab-progress {
-  to {
-    height: 100%;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .tab-progress {
-    height: 100%;
-    animation: none;
-  }
-
-  .journey-step-fill {
-    transition: none;
-  }
 }
 
 /* Custom elements lay out inline until told otherwise; this one is a drawing

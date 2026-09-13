@@ -8,6 +8,7 @@ export type ChartConfig = Record<
   {
     label: string;
     color: string;
+    symbol?: "line" | "circle" | "star";
   }
 >;
 
@@ -53,11 +54,22 @@ export function ChartLegend({
 
         return (
           <div className="flex items-center gap-1.5" key={key}>
-            <span
-              aria-hidden="true"
-              className="h-2 w-2 shrink-0 rounded-[2px]"
-              style={{ backgroundColor: item.color }}
-            />
+            {item.symbol === "star" ? (
+              <span aria-hidden="true" style={{ color: item.color }}>
+                ★
+              </span>
+            ) : (
+              <span
+                aria-hidden="true"
+                className="shrink-0"
+                style={{
+                  backgroundColor: item.color,
+                  width: item.symbol === "line" ? 18 : 8,
+                  height: item.symbol === "line" ? 2 : 8,
+                  borderRadius: item.symbol === "circle" ? "50%" : 2,
+                }}
+              />
+            )}
             {item.label}
           </div>
         );

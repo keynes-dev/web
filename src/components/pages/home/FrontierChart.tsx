@@ -14,36 +14,35 @@ import {
   type ChartConfig,
   chartTheme,
 } from "@/components/ui/chart";
-import {
-  buildFrontierRows,
-  KNEE_T,
-  lowerAt,
-  T_MAX,
-  upperAt,
-} from "@/lib/charts";
+import { buildFrontierRows, KNEE_T, T_MAX, upperAt } from "@/lib/charts";
 
 import { ChartFrame } from "./ChartFrame";
 
 const chartConfig = {
   upper: {
-    label: "Efficient frontier",
+    label: "More tickets resolved",
     color: "var(--chart-accent)",
+    symbol: "line",
   },
   lower: {
-    label: "Dominated",
+    label: "Fewer tickets resolved",
     color: "var(--chart-3)",
+    symbol: "line",
   },
   measured: {
-    label: "Measured run",
+    label: "Experiment",
     color: "var(--chart-4)",
+    symbol: "circle",
   },
   knee: {
-    label: "Ceiling at the knee",
-    color: "var(--chart-accent)",
+    label: "Recommended limit",
+    color: "var(--color-yellow-400)",
+    symbol: "star",
   },
-  ungoverned: {
-    label: "Ungoverned agents",
+  unlimited: {
+    label: "No limit",
     color: "var(--chart-denied)",
+    symbol: "circle",
   },
 } satisfies ChartConfig;
 
@@ -64,16 +63,10 @@ const measuredData = frontierData.filter(
 const kneeData = frontierData.filter(
   (row): row is typeof row & { knee: number } => row.knee != null,
 );
-const ungovernedData = frontierData.filter(
+const unlimitedData = frontierData.filter(
   (row): row is typeof row & { ungoverned: number } => row.ungoverned != null,
 );
-const legendItems = [
-  "upper",
-  "lower",
-  "measured",
-  "knee",
-  "ungoverned",
-] as const;
+const legendItems = ["measured", "knee"] as const;
 
 const definition = defineChart(
   {
@@ -114,26 +107,26 @@ const definition = defineChart(
         anchor: "middle",
         dy: 1,
       }),
-      text(ungovernedData, {
-        id: "ungoverned",
+      text(unlimitedData, {
+        id: "unlimited",
         x: "tokens",
         y: "ungoverned",
         text: () => "×",
         key: "tokens",
-        fill: chartConfig.ungoverned.color,
+        fill: chartConfig.unlimited.color,
         fontSize: 18,
         fontWeight: 600,
         anchor: "middle",
         dy: 1,
       }),
       ruleX([KNEE_T], {
-        id: "ceiling-rule",
+        id: "recommended-limit",
         stroke: chartConfig.knee.color,
         strokeDasharray: "4 4",
       }),
       decorative(
-        text([{ tokens: KNEE_T, resolved: 95, label: "ceiling" }], {
-          id: "ceiling-label",
+        text([{ tokens: KNEE_T, resolved: 95, label: "recommended limit" }], {
+          id: "recommended-limit-label",
           x: "tokens",
           y: "resolved",
           text: "label",
@@ -150,11 +143,9 @@ const definition = defineChart(
         scale: scaleLinear().domain([0, T_MAX]),
         axis: {
           line: false,
-          ticks: {
-            size: 0,
-            format: (value) => value.toLocaleString(),
-          },
+          ticks: { size: 0, format: (value) => value.toLocaleString() },
           tickLabels: { fontSize: 11 },
+          label: "Average tokens per ticket",
         },
       },
       y: {
@@ -162,16 +153,13 @@ const definition = defineChart(
         grid: true,
         axis: {
           line: false,
-          ticks: {
-            size: 0,
-            format: (value) => `${value}%`,
-          },
+          ticks: { size: 0, format: (value) => `${value}%` },
           tickLabels: { fontSize: 11 },
-          label: "% resolved",
+          label: "Tickets resolved",
         },
       },
     },
-    margin: { top: 8, right: 8, bottom: 24, left: 44 },
+    margin: { top: 8, right: 8, bottom: 40, left: 44 },
     theme: chartTheme,
   },
   {
@@ -185,17 +173,15 @@ const definition = defineChart(
       content: (points) => {
         const point = points[0];
         if (!point) return { rows: [] };
-
         return {
           title: `${Number(point.xValue).toLocaleString()} tokens`,
           rows: points.flatMap((candidate) => {
             if (!isLegendItem(candidate.markId)) return [];
             const item = chartConfig[candidate.markId];
-
             return [
               {
                 label: item.label,
-                value: `${Math.round(Number(candidate.yValue))}% resolved`,
+                value: `${Math.round(Number(candidate.yValue))}% tickets resolved`,
                 color: item.color,
               },
             ];
@@ -206,30 +192,18 @@ const definition = defineChart(
   },
 );
 
-export function FrontierChart() {
-  const kneeResolved = upperAt(KNEE_T);
-  const ungovernedTokens =
-    frontierData.find((row) => row.ungoverned)?.tokens ?? 0;
-
+export function FrontierChart({ compact = false }: { compact?: boolean }) {
   return (
     <ChartFrame
       ariaLabel="Token spend and resolved outcome frontier"
       config={chartConfig}
       definition={definition}
-      height={280}
+      height={compact ? 260 : 300}
       legendItems={legendItems}
       note={
-        <div className="space-y-1 text-left">
-          <p>
-            ceiling at the knee · {KNEE_T.toLocaleString()} tokens ·{" "}
-            {Math.round(kneeResolved)}% resolved
-          </p>
-          <p>
-            ungoverned agents · {ungovernedTokens.toLocaleString()} tokens ·{" "}
-            {Math.round(lowerAt(ungovernedTokens))}% resolved
-          </p>
-          <p className="text-chart-denied">more spend, worse outcomes</p>
-        </div>
+        compact
+          ? null
+          : `Recommended setting: ${KNEE_T.toLocaleString()} tokens resolves ${Math.round(upperAt(KNEE_T))}% of tickets.`
       }
     />
   );

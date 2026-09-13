@@ -30,5 +30,7 @@ followed, since it repaints when the theme class changes. Tailwind only emits
 classes it finds in scanned source, so the utility has to be written literally
 on the element rather than composed at runtime.
 
-Run the web typecheck, tests, production build, and desktop and mobile browser
-checks for website changes. Use a repository-supported Node.js version.
+Run the web typecheck, production build, and desktop and mobile browser checks
+for website changes. Treat browser inspection as part of the design process;
+do not add automated tests for the website. Use a repository-supported Node.js
+version.

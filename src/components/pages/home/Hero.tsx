@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 
 export function Hero() {
   return (
-    <Section className='relative flex min-h-[40rem] flex-col justify-start overflow-hidden pt-8 pb-24 lg:min-h-[32rem] lg:justify-center lg:py-24'>
+    <Section containerClassName='relative flex min-h-[40rem] flex-col justify-start overflow-hidden pt-8 pb-24 lg:min-h-[32rem] lg:justify-center lg:py-24'>
       <conveyor-belt
         className='pointer-events-none absolute inset-0'
         role='img'

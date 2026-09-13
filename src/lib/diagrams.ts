@@ -281,10 +281,7 @@ const glyphRules: Rule[] = [
   ...baseRules,
   { re: /\[ [^\]]+ \]/, cls: "c-dark" },
   { re: /keynes\.\*/, cls: "c-green" },
-  {
-    re: /in-memory · lost on exit|commits or rolls back together|durable · network required|network/,
-    cls: "c-muted",
-  },
+  { re: /network/, cls: "c-muted" },
   nameRule([
     "node process",
     "your postgresql 18.6",
@@ -295,11 +292,7 @@ const glyphRules: Rule[] = [
 ];
 
 export const localGlyph = paintAscii(
-  [
-    ...glyphBox("node process", ["", "   [ app ]  <------->  [ sqlite ]", ""]),
-    "",
-    "   in-memory · lost on exit",
-  ],
+  [...glyphBox("node process", ["", "   [ app ]  <------->  [ sqlite ]", ""])],
   glyphRules,
 );
 
@@ -319,8 +312,6 @@ export const embeddedGlyph = paintAscii(
       "your postgresql 18.6",
       transactionBox.map((line) => "  " + line),
     ),
-    "",
-    "   commits or rolls back together",
   ],
   glyphRules,
 );
@@ -332,8 +323,6 @@ export const hostedGlyph = paintAscii(
     "|   remote sdk     |-----:---->|  postgres |",
     "|                  |     :     |           |",
     "+------------------+     :     +-----------+",
-    "",
-    "   durable · network required",
   ],
   glyphRules,
 );
