@@ -2,10 +2,12 @@
 import BaseLayout from "../layouts/BaseLayout.astro";
 import { Footer } from "../components/Footer";
 import { Nav } from "../components/Nav";
+import { BudgetSection } from "../components/pages/home/BudgetSection";
 import { ClosingCta } from "../components/pages/home/ClosingCta";
 import { Deployments } from "../components/pages/home/Deployments";
+import { ExperimentSection } from "../components/pages/home/ExperimentSection";
 import { Hero } from "../components/pages/home/Hero";
-import { HowItWorks } from "../components/pages/home/HowItWorks";
+import { PolicySection } from "../components/pages/home/PolicySection";
 import { Thesis } from "../components/pages/home/Thesis";
 ---
 
@@ -16,7 +18,9 @@ import { Thesis } from "../components/pages/home/Thesis";
   <Nav />
   <main>
     <Hero />
-    <HowItWorks client:load />
+    <BudgetSection />
+    <PolicySection client:load />
+    <ExperimentSection client:load />
     <Thesis />
     <Deployments />
     <ClosingCta />

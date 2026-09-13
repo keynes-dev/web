@@ -15,7 +15,7 @@ export function SiteLinks({ className }: { className?: string }) {
       {links.map(({ label, href }) => (
         <li key={href}>
           <a
-            className="type-small text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-2 focus-visible:outline-ring"
+            className="text-sm text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-2 focus-visible:outline-ring"
             href={href}
           >
             {label}

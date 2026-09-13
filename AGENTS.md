@@ -1,9 +1,14 @@
 Astro owns the document shell and routing. Keep routes under `src/pages/` and
 implement page sections as React TSX under `src/components/pages/<route>/`.
 
-Define fonts, type scales, and content typography in `src/styles/typography.css`.
-Use `SectionHeader` and `SectionTitle` for section copy, `AccessLinks` for the
-shared homepage calls to action, and `SiteLinks` for site navigation.
+Define global fonts, type scales, and element typography in `src/styles/global.css`.
+Use `Section` for every page section. It owns the rails, crossing marks, inner
+width, responsive padding, and border rhythm. Compose headings, eyebrows, and
+descriptions directly in each section so their semantics, layout, and Tailwind
+classes remain visible and independently customizable. Section implementations
+must not recreate or override the shared frame.
+Use `AccessLinks` for the shared homepage calls to action and `SiteLinks` for
+site navigation.
 
 Use the app-local shadcn components under `src/components/ui/`. Prefer the
 shared `Section` and Card primitives over new page-specific wrappers. Keep the

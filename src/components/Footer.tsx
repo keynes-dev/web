@@ -12,7 +12,7 @@ export function Footer() {
           <a aria-label="Keynes home" href="/">
             <Logo />
           </a>
-          <span className="type-small text-muted-foreground">
+          <span className="text-sm text-muted-foreground">
             © 2026 Keynes · Apache-2.0
           </span>
         </div>

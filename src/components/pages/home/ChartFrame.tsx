@@ -20,7 +20,7 @@ export function ChartFrame<
   legendItems: readonly string[];
 }) {
   return (
-    <div className="type-caption w-full" data-slot="chart">
+    <div className="w-full font-mono text-xs" data-slot="chart">
       <Chart
         ariaLabel={ariaLabel}
         className="w-full"

@@ -1,4 +1,3 @@
-import { SectionHeader } from "@/components/SectionHeader";
 import { Check, Minus } from "lucide-react";
 
 import { Section } from "@/components/Section";
@@ -61,67 +60,72 @@ function BooleanValue({ value }: { value: boolean }) {
 
 export function Deployments() {
   return (
-    <Section containerClassName="flex flex-col gap-12 py-16">
-      <SectionHeader title="Three ways to run it">
-        The same Budget workflow, whether it lives in your process, inside your
-        database, or behind the service. What changes is durability,
-        transactions, and who operates it.
-      </SectionHeader>
+    <Section>
+      <div className="flex flex-col gap-12">
+        <header className="relative max-w-3xl space-y-4">
+          <h2>Three ways to run it</h2>
+          <p className="text-base leading-relaxed text-muted-foreground">
+            The same Budget workflow, whether it lives in your process, inside
+            your database, or behind the service. What changes is durability,
+            transactions, and who operates it.
+          </p>
+        </header>
 
-      <div className="grid gap-6 lg:grid-cols-3">
-        {modes.map((mode) => (
-          <Card className="min-w-0" key={mode.name}>
-            <CardHeader className="border-b">
-              <CardTitle>{mode.name}</CardTitle>
-            </CardHeader>
-            <CardContent className="p-0">
-              <div
-                className="flex min-h-32 items-center justify-center overflow-hidden border-b p-2 sm:p-3"
-                style={{ containerType: "inline-size" }}
-              >
-                <pre
-                  className="ascii m-0 max-w-full overflow-hidden whitespace-pre"
-                  dangerouslySetInnerHTML={{ __html: mode.glyph }}
-                />
-              </div>
-              <p className="p-4 type-small leading-6 text-muted-foreground">
-                {mode.desc}
-              </p>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
+        <div className="grid gap-6 lg:grid-cols-3">
+          {modes.map((mode) => (
+            <Card className="min-w-0" key={mode.name}>
+              <CardHeader className="border-b">
+                <CardTitle>{mode.name}</CardTitle>
+              </CardHeader>
+              <CardContent className="p-0">
+                <div
+                  className="flex min-h-32 items-center justify-center overflow-hidden border-b p-2 sm:p-3"
+                  style={{ containerType: "inline-size" }}
+                >
+                  <pre
+                    className="ascii m-0 max-w-full overflow-hidden whitespace-pre"
+                    dangerouslySetInnerHTML={{ __html: mode.glyph }}
+                  />
+                </div>
+                <p className="p-4 text-sm leading-6 text-muted-foreground">
+                  {mode.desc}
+                </p>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
 
-      <Card className="min-w-0">
-        <CardContent className="p-0">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead className="min-w-56">Capability</TableHead>
-                <TableHead>Local</TableHead>
-                <TableHead>Hosted</TableHead>
-                <TableHead>Embedded</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {tableRows.map((row) => (
-                <TableRow key={row.label}>
-                  <TableCell className="font-medium">{row.label}</TableCell>
-                  {row.values.map((value, index) => (
-                    <TableCell key={`${row.label}-${modes[index].name}`}>
-                      {typeof value === "boolean" ? (
-                        <BooleanValue value={value} />
-                      ) : (
-                        value
-                      )}
-                    </TableCell>
-                  ))}
+        <Card className="min-w-0">
+          <CardContent className="p-0">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead className="min-w-56">Capability</TableHead>
+                  <TableHead>Local</TableHead>
+                  <TableHead>Hosted</TableHead>
+                  <TableHead>Embedded</TableHead>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </CardContent>
-      </Card>
+              </TableHeader>
+              <TableBody>
+                {tableRows.map((row) => (
+                  <TableRow key={row.label}>
+                    <TableCell className="font-medium">{row.label}</TableCell>
+                    {row.values.map((value, index) => (
+                      <TableCell key={`${row.label}-${modes[index].name}`}>
+                        {typeof value === "boolean" ? (
+                          <BooleanValue value={value} />
+                        ) : (
+                          value
+                        )}
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </CardContent>
+        </Card>
+      </div>
     </Section>
   );
 }
