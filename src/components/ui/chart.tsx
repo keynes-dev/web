@@ -1,5 +1,4 @@
 import type { ChartTheme } from "@tanstack/charts";
-import type { Ref } from "react";
 
 import { cn } from "@/lib/utils";
 
@@ -32,20 +31,15 @@ interface ChartLegendProps {
   config: ChartConfig;
   items?: readonly string[];
   className?: string;
-  ref?: Ref<HTMLDivElement>;
 }
 
 export function ChartLegend({
   config,
   items = Object.keys(config),
   className,
-  ref,
 }: ChartLegendProps) {
   return (
-    <div
-      className={cn("flex items-center justify-center gap-4", className)}
-      ref={ref}
-    >
+    <div className={cn("flex items-center justify-center gap-4", className)}>
       {items.map((key) => {
         const item = config[key];
         if (!item) {

@@ -27,7 +27,7 @@ function BudgetNode({
   allocations: readonly Allocation[];
 }) {
   return (
-    <Card className="budget-node" size="sm">
+    <Card className="budget-node">
       <h3>{name}</h3>
       <dl>
         {allocations.map(
@@ -49,8 +49,14 @@ function BudgetNode({
                   aria-label={`${resource.label}: ${available.toLocaleString()} available, ${reserved.toLocaleString()} reserved, ${used.toLocaleString()} used`}
                   title={`${available.toLocaleString()} available · ${reserved.toLocaleString()} reserved · ${used.toLocaleString()} used`}
                 >
-                  <i className="budget-state-available" style={{ flex: available }} />
-                  <i className="budget-state-reserved" style={{ flex: reserved }} />
+                  <i
+                    className="budget-state-available"
+                    style={{ flex: available }}
+                  />
+                  <i
+                    className="budget-state-reserved"
+                    style={{ flex: reserved }}
+                  />
                   <i className="budget-state-used" style={{ flex: used }} />
                 </dd>
               </div>
@@ -173,9 +179,18 @@ export function BudgetTree() {
         </div>
       </div>
       <figcaption className="budget-tree__legend">
-        <span><i className="budget-state-available" />Available</span>
-        <span><i className="budget-state-reserved" />Reserved</span>
-        <span><i className="budget-state-used" />Used</span>
+        <span>
+          <i className="budget-state-available" />
+          Available
+        </span>
+        <span>
+          <i className="budget-state-reserved" />
+          Reserved
+        </span>
+        <span>
+          <i className="budget-state-used" />
+          Used
+        </span>
       </figcaption>
     </figure>
   );

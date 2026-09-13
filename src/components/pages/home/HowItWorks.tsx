@@ -2,7 +2,8 @@ import { BudgetTree } from "./BudgetTree";
 import { ExperimentSweep } from "./ExperimentSweep";
 import { PolicyDecisions } from "./PolicyDecisions";
 import { Section } from "@/components/Section";
-import "./how-it-works.css";
+import { SectionTitle } from "@/components/SectionHeader";
+import "@/styles/sections.css";
 import "./resource-states.css";
 
 const steps = [
@@ -40,22 +41,26 @@ export function HowItWorks() {
         <Section
           id={`how-${id}`}
           aria-label={label}
-          containerClassName="how-it-works"
+          containerClassName="py-16 max-[479px]:px-5"
           key={id}
         >
           {index === 0 && (
-            <p className="how-it-works__eyebrow">How it works</p>
+            <p className="type-eyebrow mb-12 text-muted-foreground uppercase">
+              How it works
+            </p>
           )}
-          <article className="how-it-works__scene">
-            <div className="how-it-works__copy">
-              <p className="how-it-works__step">
+          <article className="section-scene">
+            <div>
+              <p className="type-eyebrow">
                 0{index + 1} / {label}
               </p>
-              <h2 className="font-heading text-section text-balance">{title}</h2>
-              <p className="how-it-works__body">{body}</p>
-              <p className="how-it-works__detail">{detail}</p>
+              <SectionTitle className="my-5 max-w-[22ch]">{title}</SectionTitle>
+              <p className="type-body max-w-[42ch]">{body}</p>
+              <p className="type-body mt-6 max-w-[40ch] text-muted-foreground">
+                {detail}
+              </p>
             </div>
-            <div className="how-it-works__illustration">
+            <div className="section-illustration">
               <Figure />
             </div>
           </article>

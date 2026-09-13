@@ -1,12 +1,7 @@
 import { GridMarks } from "@/components/GridMarks";
 import { Logo } from "@/components/Logo";
 
-const links = [
-  { label: "Thesis", href: "/thesis" },
-  { label: "Product", href: "/product" },
-  { label: "Docs", href: "/docs" },
-  { label: "Pricing", href: "/pricing" },
-];
+import { SiteLinks } from "./SiteLinks";
 
 export function Footer() {
   return (
@@ -17,22 +12,11 @@ export function Footer() {
           <a aria-label="Keynes home" href="/">
             <Logo />
           </a>
-          <span className="text-sm text-muted-foreground">
+          <span className="type-small text-muted-foreground">
             © 2026 Keynes · Apache-2.0
           </span>
         </div>
-        <ul className="flex flex-wrap items-center gap-x-6 gap-y-2">
-          {links.map((link) => (
-            <li key={link.href}>
-              <a
-                className="text-sm text-muted-foreground transition-colors hover:text-foreground"
-                href={link.href}
-              >
-                {link.label}
-              </a>
-            </li>
-          ))}
-        </ul>
+        <SiteLinks />
       </div>
     </footer>
   );

@@ -40,7 +40,7 @@ function BudgetBar() {
     >
       {budgetSegments.map(({ kind, units }) => (
         <i
-          className={`policy-demo__bar-${kind}`}
+          className={`budget-state-${kind}`}
           key={kind}
           style={{ flex: units }}
         />
@@ -50,7 +50,9 @@ function BudgetBar() {
 }
 
 export function PolicyDecisions() {
-  const [request, setRequest] = useState<(typeof requests)[number]>(requests[0]);
+  const [request, setRequest] = useState<(typeof requests)[number]>(
+    requests[0],
+  );
 
   return (
     <Card
@@ -73,12 +75,14 @@ export function PolicyDecisions() {
         </section>
         <div className="policy-demo__budget">
           <h3>budget.inspect()</h3>
-          <p>Model tokens <strong>10k total</strong></p>
+          <p>
+            Model tokens <strong>10k total</strong>
+          </p>
           <BudgetBar />
           <div className="policy-demo__bar-legend">
             {budgetSegments.map(({ kind, label }) => (
               <span key={kind}>
-                <i className={`policy-demo__bar-${kind}`} />
+                <i className={`budget-state-${kind}`} />
                 {label}
               </span>
             ))}
@@ -106,7 +110,9 @@ export function PolicyDecisions() {
         </div>
         <div className="policy-demo__response">
           <h3>Result</h3>
-          <pre aria-label="Response fields"><code>{request.result}</code></pre>
+          <pre aria-label="Response fields">
+            <code>{request.result}</code>
+          </pre>
         </div>
       </div>
     </Card>

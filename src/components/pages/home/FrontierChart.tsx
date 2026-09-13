@@ -14,7 +14,7 @@ import {
   type ChartConfig,
   chartTheme,
 } from "@/components/ui/chart";
-import { buildFrontierRows, KNEE_T, T_MAX, upperAt } from "@/lib/charts";
+import { buildFrontierSeries, KNEE_T, T_MAX } from "@/lib/charts";
 
 import { ChartFrame } from "./ChartFrame";
 
@@ -50,56 +50,41 @@ function isLegendItem(key: string): key is keyof typeof chartConfig {
   return key in chartConfig;
 }
 
-const frontierData = buildFrontierRows();
-const upperData = frontierData.filter(
-  (row): row is typeof row & { upper: number } => row.upper != null,
-);
-const lowerData = frontierData.filter(
-  (row): row is typeof row & { lower: number } => row.lower != null,
-);
-const measuredData = frontierData.filter(
-  (row): row is typeof row & { measured: number } => row.measured != null,
-);
-const kneeData = frontierData.filter(
-  (row): row is typeof row & { knee: number } => row.knee != null,
-);
-const unlimitedData = frontierData.filter(
-  (row): row is typeof row & { ungoverned: number } => row.ungoverned != null,
-);
+const { upper, lower, measuredRuns, knee, ungoverned } = buildFrontierSeries();
 const legendItems = ["measured", "knee"] as const;
 
 const definition = defineChart(
   {
     marks: [
-      lineY(upperData, {
+      lineY(upper, {
         id: "upper",
         x: "tokens",
-        y: "upper",
+        y: "resolved",
         stroke: chartConfig.upper.color,
         strokeWidth: 1.5,
         curve: d3Curve(curveMonotoneX),
       }),
-      lineY(lowerData, {
+      lineY(lower, {
         id: "lower",
         x: "tokens",
-        y: "lower",
+        y: "resolved",
         stroke: chartConfig.lower.color,
         strokeDasharray: "4 4",
         strokeWidth: 1.5,
         curve: d3Curve(curveMonotoneX),
       }),
-      dot(measuredData, {
+      dot(measuredRuns, {
         id: "measured",
         x: "tokens",
-        y: "measured",
+        y: "resolved",
         key: "tokens",
         fill: chartConfig.measured.color,
         r: 3.5,
       }),
-      text(kneeData, {
+      text([knee], {
         id: "knee",
         x: "tokens",
-        y: "knee",
+        y: "resolved",
         text: () => "★",
         key: "tokens",
         fill: chartConfig.knee.color,
@@ -107,10 +92,10 @@ const definition = defineChart(
         anchor: "middle",
         dy: 1,
       }),
-      text(unlimitedData, {
+      text([ungoverned], {
         id: "unlimited",
         x: "tokens",
-        y: "ungoverned",
+        y: "resolved",
         text: () => "×",
         key: "tokens",
         fill: chartConfig.unlimited.color,
@@ -192,19 +177,14 @@ const definition = defineChart(
   },
 );
 
-export function FrontierChart({ compact = false }: { compact?: boolean }) {
+export function FrontierChart() {
   return (
     <ChartFrame
       ariaLabel="Token spend and resolved outcome frontier"
       config={chartConfig}
       definition={definition}
-      height={compact ? 260 : 300}
+      height={236}
       legendItems={legendItems}
-      note={
-        compact
-          ? null
-          : `Recommended setting: ${KNEE_T.toLocaleString()} tokens resolves ${Math.round(upperAt(KNEE_T))}% of tickets.`
-      }
     />
   );
 }

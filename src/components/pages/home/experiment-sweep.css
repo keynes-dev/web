@@ -4,7 +4,7 @@
 }
 .experiment-sweep__array > p:first-child {
   text-align: right;
-  font-size: 0.7rem;
+  font-size: var(--text-detail);
   color: var(--muted-foreground);
   margin-bottom: 0.4rem;
 }
@@ -14,12 +14,12 @@
   width: 100%;
   table-layout: fixed;
   font-family: var(--font-mono);
-  font-size: 0.7rem;
+  font-size: var(--text-detail);
 }
 .experiment-sweep th {
   font-weight: 400;
   color: var(--muted-foreground);
-  font-size: 0.65rem;
+  font-size: var(--text-fine);
 }
 .experiment-sweep th:first-child {
   width: 6rem;
@@ -35,7 +35,7 @@
   color: var(--color-yellow-400);
 }
 .experiment-sweep__count {
-  font-size: 0.65rem;
+  font-size: var(--text-fine);
   color: var(--muted-foreground);
   margin-top: 0.5rem;
 }
@@ -48,7 +48,7 @@
     padding-inline: 0.4rem;
   }
   .experiment-sweep table {
-    font-size: 0.6rem;
+    font-size: var(--text-tiny);
     border-spacing: 3px;
   }
   .experiment-sweep__chart {

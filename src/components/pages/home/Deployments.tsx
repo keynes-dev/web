@@ -1,6 +1,6 @@
+import { SectionHeader } from "@/components/SectionHeader";
 import { Check, Minus } from "lucide-react";
 
-import { Ascii } from "./Ascii";
 import { Section } from "@/components/Section";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
@@ -62,16 +62,11 @@ function BooleanValue({ value }: { value: boolean }) {
 export function Deployments() {
   return (
     <Section containerClassName="flex flex-col gap-12 py-16">
-      <header className="space-y-4">
-        <h2 className="font-heading text-section">
-          Three ways to run it
-        </h2>
-        <p className="max-w-3xl text-muted-foreground">
-          The same Budget workflow, whether it lives in your process, inside
-          your database, or behind the service. What changes is durability,
-          transactions, and who operates it.
-        </p>
-      </header>
+      <SectionHeader title="Three ways to run it">
+        The same Budget workflow, whether it lives in your process, inside your
+        database, or behind the service. What changes is durability,
+        transactions, and who operates it.
+      </SectionHeader>
 
       <div className="grid gap-6 lg:grid-cols-3">
         {modes.map((mode) => (
@@ -84,12 +79,12 @@ export function Deployments() {
                 className="flex min-h-32 items-center justify-center overflow-hidden border-b p-2 sm:p-3"
                 style={{ containerType: "inline-size" }}
               >
-                <Ascii
-                  className="!overflow-hidden !text-[clamp(7px,3.4cqw,12px)] !leading-[1.65]"
-                  html={mode.glyph}
+                <pre
+                  className="ascii m-0 max-w-full overflow-hidden whitespace-pre"
+                  dangerouslySetInnerHTML={{ __html: mode.glyph }}
                 />
               </div>
-              <p className="p-4 text-sm leading-6 text-muted-foreground">
+              <p className="p-4 type-small leading-6 text-muted-foreground">
                 {mode.desc}
               </p>
             </CardContent>

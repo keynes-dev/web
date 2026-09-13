@@ -1,13 +1,9 @@
-import type { ReactNode } from "react";
+import type { ComponentProps } from "react";
 
 import { GridMarks } from "@/components/GridMarks";
 import { cn } from "@/lib/utils";
 
-interface SectionProps extends React.ComponentProps<"section"> {
-  children: ReactNode;
-  containerClassName?: string;
-  className?: string;
-}
+type SectionProps = ComponentProps<"section"> & { containerClassName?: string };
 
 export function Section({
   children,
@@ -17,9 +13,9 @@ export function Section({
 }: SectionProps) {
   return (
     <section className={cn("border-b", className)} {...props}>
-      <div className={cn("relative container mx-auto border-x")}>
+      <div className="relative container mx-auto border-x">
         <GridMarks />
-        <div className={cn("relative container max-w-screen-xl mx-auto border-x")}>
+        <div className="relative container max-w-screen-xl mx-auto border-x">
           <GridMarks />
           <div className={cn("p-8", containerClassName)}>{children}</div>
         </div>

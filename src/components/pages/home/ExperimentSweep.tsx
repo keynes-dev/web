@@ -34,7 +34,8 @@ export function ExperimentSweep() {
                   {tokenLimits.map((limit) => {
                     const run = experimentRuns.find(
                       (candidate) =>
-                        candidate.limit === limit && candidate.searches === searches,
+                        candidate.limit === limit &&
+                        candidate.searches === searches,
                     );
                     if (!run) return null;
 
@@ -47,7 +48,9 @@ export function ExperimentSweep() {
                         }}
                       >
                         {run === productionExample ? (
-                          <span aria-label="Example production setting">★ </span>
+                          <span aria-label="Example production setting">
+                            ★{" "}
+                          </span>
                         ) : null}
                         {run.resolved}%
                       </td>
@@ -58,11 +61,12 @@ export function ExperimentSweep() {
             </tbody>
           </table>
           <p className="experiment-sweep__count">
-            12 configurations. Each cell shows tickets resolved out of the same 100.
+            12 configurations. Each cell shows tickets resolved out of the same
+            100.
           </p>
         </div>
         <div className="experiment-sweep__chart">
-          <FrontierChart compact />
+          <FrontierChart />
         </div>
       </CardContent>
     </Card>
