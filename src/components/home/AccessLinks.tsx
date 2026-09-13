@@ -8,7 +8,7 @@ export function AccessLinks({ className }: { className?: string }) {
       <Button asChild size="lg">
         <a href="/access">
           Get access today
-          <ArrowRight data-icon="inline-end" />
+          <ArrowRight className="size-4" aria-hidden="true" />
         </a>
       </Button>
       <Button asChild size="lg" variant="outline">

@@ -1,7 +1,13 @@
 import { Check, Minus } from "lucide-react";
 
 import { Section } from "@/components/Section";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import {
   Table,
   TableBody,
@@ -78,19 +84,16 @@ export function Deployments() {
                 <CardTitle>{mode.name}</CardTitle>
               </CardHeader>
               <CardContent className="p-0">
-                <div
-                  className="flex min-h-32 items-center justify-center overflow-hidden border-b p-2 sm:p-3"
-                  style={{ containerType: "inline-size" }}
-                >
+                <div className="flex min-h-32 items-center justify-center overflow-hidden border-b p-2 sm:p-3">
                   <pre
-                    className="ascii m-0 max-w-full overflow-hidden whitespace-pre"
+                    className="ascii m-0 max-w-full overflow-hidden font-mono text-xs leading-relaxed font-medium whitespace-pre"
                     dangerouslySetInnerHTML={{ __html: mode.glyph }}
                   />
                 </div>
-                <p className="p-4 text-sm leading-6 text-muted-foreground">
-                  {mode.desc}
-                </p>
               </CardContent>
+              <CardFooter className="text-sm leading-6 text-muted-foreground">
+                {mode.desc}
+              </CardFooter>
             </Card>
           ))}
         </div>

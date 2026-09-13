@@ -7,16 +7,11 @@ import { ruleX } from "@tanstack/charts/rule";
 import { scaleLinear } from "@tanstack/charts/scales/linear";
 import { text } from "@tanstack/charts/text";
 import { tooltip } from "@tanstack/charts/tooltip";
+import { Chart } from "@tanstack/charts/react";
 import { curveMonotoneX } from "d3-shape";
 
-import {
-  CHART_TOOLTIP_CLASS,
-  type ChartConfig,
-  chartTheme,
-} from "@/components/ui/chart";
+import { CHART_TOOLTIP_CLASS, type ChartConfig, chartTheme } from "@/lib/chart";
 import { buildFrontierSeries, KNEE_T, T_MAX } from "@/lib/charts";
-
-import { ChartFrame } from "./ChartFrame";
 
 const chartConfig = {
   upper: {
@@ -36,7 +31,7 @@ const chartConfig = {
   },
   knee: {
     label: "Recommended limit",
-    color: "var(--color-yellow-400)",
+    color: "var(--chart-recommended)",
     symbol: "star",
   },
   unlimited: {
@@ -51,8 +46,6 @@ function isLegendItem(key: string): key is keyof typeof chartConfig {
 }
 
 const { upper, lower, measuredRuns, knee, ungoverned } = buildFrontierSeries();
-const legendItems = ["measured", "knee"] as const;
-
 const definition = defineChart(
   {
     marks: [
@@ -179,12 +172,32 @@ const definition = defineChart(
 
 export function FrontierChart() {
   return (
-    <ChartFrame
-      ariaLabel="Token spend and resolved outcome frontier"
-      config={chartConfig}
-      definition={definition}
-      height={236}
-      legendItems={legendItems}
-    />
+    <div className="w-full font-mono text-xs">
+      <Chart
+        ariaLabel="Token spend and resolved outcome frontier"
+        className="w-full"
+        definition={definition}
+        height={236}
+        initialWidth={320}
+      />
+      <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-1 pt-2">
+        <span className="flex items-center gap-1.5">
+          <i
+            aria-hidden="true"
+            className="size-2 shrink-0 rounded-full bg-mauve-700 dark:bg-mauve-300"
+          />
+          {chartConfig.measured.label}
+        </span>
+        <span className="flex items-center gap-1.5">
+          <i
+            aria-hidden="true"
+            className="text-amber-700 not-italic dark:text-yellow-400"
+          >
+            ★
+          </i>
+          {chartConfig.knee.label}
+        </span>
+      </div>
+    </div>
   );
 }

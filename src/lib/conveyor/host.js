@@ -190,16 +190,12 @@ export function host(
   sizing.observe(container);
   resize();
 
-  // The theme is a class on the document, so the drawing repaints when that
-  // changes rather than being read once at mount.
-  const theming = new MutationObserver(() => {
+  const themeQuery = window.matchMedia("(prefers-color-scheme: dark)");
+  const followTheme = () => {
     repaint();
     if (!running) render();
-  });
-  theming.observe(document.documentElement, {
-    attributes: true,
-    attributeFilter: ["class"],
-  });
+  };
+  themeQuery.addEventListener("change", followTheme);
 
   // Only run while it is on screen — and only watch for that while motion is
   // wanted at all, since with it turned off there is never anything to pause.
@@ -252,7 +248,7 @@ export function host(
   function destroy() {
     stop();
     sizing.disconnect();
-    theming.disconnect();
+    themeQuery.removeEventListener("change", followTheme);
     motionQuery.removeEventListener("change", followMotion);
     unwatch();
     renderer.domElement.remove();

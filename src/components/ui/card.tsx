@@ -5,9 +5,9 @@ import { cn } from "@/lib/utils";
 function Card({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
-      data-slot="card"
+      data-slot='card'
       className={cn(
-        "flex flex-col overflow-hidden border bg-card text-sm text-card-foreground shadow-sm [--card-spacing:--spacing(3)]",
+        "flex flex-col overflow-hidden border bg-card text-sm text-card-foreground",
         className,
       )}
       {...props}
@@ -18,8 +18,8 @@ function Card({ className, ...props }: React.ComponentProps<"div">) {
 function CardHeader({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
-      data-slot="card-header"
-      className={cn("px-(--card-spacing) py-3", className)}
+      data-slot='card-header'
+      className={cn("px-3 py-3", className)}
       {...props}
     />
   );
@@ -28,7 +28,7 @@ function CardHeader({ className, ...props }: React.ComponentProps<"div">) {
 function CardTitle({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
-      data-slot="card-title"
+      data-slot='card-title'
       className={cn("font-mono leading-normal", className)}
       {...props}
     />
@@ -38,11 +38,21 @@ function CardTitle({ className, ...props }: React.ComponentProps<"div">) {
 function CardContent({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
-      data-slot="card-content"
-      className={cn("px-(--card-spacing)", className)}
+      data-slot='card-content'
+      className={cn("px-3", className)}
       {...props}
     />
   );
 }
 
-export { Card, CardHeader, CardTitle, CardContent };
+function CardFooter({ className, ...props }: React.ComponentProps<"div">) {
+  return (
+    <div
+      data-slot='card-footer'
+      className={cn("px-3 py-3", className)}
+      {...props}
+    />
+  );
+}
+
+export { Card, CardHeader, CardTitle, CardContent, CardFooter };

@@ -1,30 +1,28 @@
 import { Section } from "@/components/Section";
-import "@/styles/sections.css";
 import { BudgetTree } from "./BudgetTree";
-import "./resource-states.css";
 
 export function BudgetSection() {
   return (
     <Section id="how-budgets" aria-label="Budgets">
-      <article className="section-scene">
+      <article className="grid min-w-0 items-center gap-10 lg:grid-cols-2 lg:gap-16">
         <header className="relative space-y-4">
-          <p className="font-mono text-[0.6875rem] leading-[1.5] tracking-[0.05em] uppercase text-muted-foreground">
+          <p className="font-mono text-xs leading-normal tracking-wider uppercase text-muted-foreground">
             01 / Budgets
           </p>
           <h2>Give every agent a budget.</h2>
           <div className="max-w-3xl text-base leading-relaxed text-muted-foreground">
-            <p className="max-w-[42ch] text-foreground">
+            <p className="max-w-md text-foreground">
               A furniture retailer uses agents to create product listings and
               help customers with deliveries. Give each team the tokens, image
               generations, API calls, and messages its work needs.
             </p>
-            <p className="mt-6 max-w-[40ch]">
+            <p className="mt-6 max-w-md">
               Give each workflow the resources it needs, within its team’s
               limits.
             </p>
           </div>
         </header>
-        <div className="section-illustration">
+        <div className="min-w-0 py-5">
           <BudgetTree />
         </div>
       </article>

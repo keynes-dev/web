@@ -356,14 +356,8 @@ export const PLATE_BORE = Math.max(...SHAPES.map((s) => s.radius));
   Whether there is room to set something beside the machine, which decides which
   of `CONFIG.aside` and `CONFIG.below` the frame is drawn to.
 
-  This is the same query Tailwind's `lg:` is, and it has to be: the caller lays
-  its text out on that breakpoint (`Hero.tsx` uses `lg:max-w-[52%]`,
-  `lg:min-h-[32rem]`, `lg:justify-center`), and a camera that switched on
-  anything else — a pixel width of the container, say — would agree with the
-  text only by coincidence and drift the day the padding or the root font size
-  changed. Asked rather than subscribed to: crossing this width necessarily
-  resizes the container, so the host's resize observer already fires on every
-  transition and a second subscription could only disagree with the first.
+  This matches Tailwind's `lg:` breakpoint so the camera and the caller's layout
+  switch together. The host's resize observer already handles the transition.
 */
 export function choosePlace() {
   return window.matchMedia("(min-width: 64rem)").matches

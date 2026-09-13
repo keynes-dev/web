@@ -4,7 +4,7 @@ export function Logo() {
   return (
     <span
       aria-hidden
-      className="block h-9 w-auto text-foreground [&_svg]:block [&_svg]:h-9 [&_svg]:w-auto"
+      className="text-foreground"
       dangerouslySetInnerHTML={{ __html: logoSvg }}
     />
   );

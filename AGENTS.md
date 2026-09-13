@@ -1,5 +1,7 @@
 Astro owns the document shell and routing. Keep routes under `src/pages/` and
-implement page sections as React TSX under `src/components/pages/<route>/`.
+put page-specific React components in a shallow feature folder such as
+`src/components/home/`. Keep reusable primitives in `src/components/ui/` and
+shared site components at the root of `src/components/`.
 
 Define global fonts, type scales, and element typography in `src/styles/global.css`.
 Use `Section` for every page section. It owns the rails, crossing marks, inner
@@ -34,10 +36,9 @@ drawn at a time — it keeps one camera and one set of materials — and
 
 The drawing takes its three colours from the element's own computed style, so
 give them to it as utilities: `text-*` is the ink, `bg-*` the ground (falling
-back to `--card`), `border-*` the grid's rule. `dark:` and other variants are
-followed, since it repaints when the theme class changes. Tailwind only emits
-classes it finds in scanned source, so the utility has to be written literally
-on the element rather than composed at runtime.
+back to `--card`), `border-*` the grid's rule. System theme changes are followed.
+Tailwind only emits classes it finds in scanned source, so the utility has to be
+written literally on the element rather than composed at runtime.
 
 Run the web typecheck, production build, and desktop and mobile browser checks
 for website changes. Treat browser inspection as part of the design process;

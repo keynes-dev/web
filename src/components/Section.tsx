@@ -1,20 +1,17 @@
 import type { ComponentProps } from "react";
 
 import { GridMarks } from "@/components/GridMarks";
-import { cn } from "@/lib/utils";
 
-export function Section({
-  children,
-  className,
-  ...props
-}: ComponentProps<"section">) {
+type SectionProps = Omit<ComponentProps<"section">, "className">;
+
+export function Section({ children, ...props }: SectionProps) {
   return (
-    <section className={cn("border-b", className)} {...props}>
-      <div className="relative container mx-auto border-x">
+    <section className='border-b border-grid' {...props}>
+      <div className='relative container mx-auto border-x border-grid'>
         <GridMarks />
-        <div className="relative container max-w-screen-xl mx-auto border-x">
+        <div className='relative container mx-auto max-w-screen-xl border-x border-grid'>
           <GridMarks />
-          <div className="relative p-8">{children}</div>
+          <div className='relative p-5 sm:p-8'>{children}</div>
         </div>
       </div>
     </section>
