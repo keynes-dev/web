@@ -15,7 +15,7 @@ const requests = [
     tokens: 2000,
     leadScore: 40,
     result:
-      'status: "denied"\nreasons[0]: {\n  code: "policy_ceiling",\n  resource: "tokens",\n  requested: 2000, ceiling: 1000\n}',
+      'status: "denied"\nreasons[0]: {\n  code: "policy_limit",\n  resource: "tokens",\n  requested: 2000, limit: 1000\n}',
   },
   {
     title: "Deep research",
@@ -43,14 +43,8 @@ export function PolicyDecisions() {
             lead_research.sql
           </CardTitle>
           <pre className='break-words whitespace-pre-wrap font-mono text-xs leading-relaxed'>
-            <code>{`CASE WHEN context.lead_score >= 80\n  THEN 4000\n  ELSE 1000\nEND AS ceiling`}</code>
+            <code>{`CASE WHEN context.lead_score >= 80\n  THEN 4000\n  ELSE 1000\nEND AS limit`}</code>
           </pre>
-          <details className='relative mt-2 text-xs text-muted-foreground'>
-            <summary className='cursor-pointer'>Full query</summary>
-            <pre className='absolute top-6 left-0 z-10 max-h-72 w-96 max-w-full overflow-auto border bg-popover p-4 font-mono text-xs leading-relaxed whitespace-pre-wrap text-foreground'>
-              <code>{`SELECT requested.resource AS resource,\n  CASE WHEN context.lead_score >= 80\n    THEN 4000 ELSE 1000\n  END AS ceiling,\n  'research_limit' AS reason\nFROM requested_resources AS requested\nINNER JOIN available_resources AS available\n  USING (resource)\nCROSS JOIN policy_context AS context`}</code>
-            </pre>
-          </details>
         </section>
         <div className='min-w-0 border-t p-3 sm:border-t-0 sm:border-l sm:p-4'>
           <CardTitle className='mb-3'>budget.inspect()</CardTitle>
@@ -103,7 +97,7 @@ export function PolicyDecisions() {
           <div className='min-w-0 p-3 sm:p-4'>
             <h3 className='mb-2 font-mono text-sm'>Request</h3>
             <pre
-              className='break-words whitespace-pre-wrap font-mono text-xs leading-relaxed text-sky-700 dark:text-sky-300'
+              className='break-words whitespace-pre-wrap font-mono text-xs leading-relaxed text-primary-foreground'
               aria-label='Request code'
             >
               <code>{`await budget.request(\n  { tokens: ${request.tokens} },\n  { context: { leadScore: ${request.leadScore} } }\n)`}</code>

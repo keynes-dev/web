@@ -1,4 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { cn } from "@/lib/utils";
 import { ResourceBar } from "./ResourceBar";
 
 const resources = {
@@ -51,13 +52,18 @@ function BudgetNode({
         <CardTitle className='text-xs'>{name}</CardTitle>
       </CardHeader>
       <CardContent className='py-3'>
-        <dl className='grid gap-3'>
+        <dl
+          className={cn(
+            "grid gap-3",
+            allocations.length >= 3 && "grid-flow-col grid-rows-2 auto-cols-fr",
+          )}
+        >
           {allocations.map(
             ({ resource: resourceKey, total, reserved = 0, used = 0 }) => {
               const resource = resources[resourceKey];
               const available = total - reserved - used;
               return (
-                <div className='text-xs ' key={resourceKey}>
+                <div className='min-w-0 text-xs' key={resourceKey}>
                   <div className='flex items-end justify-between mb-2'>
                     <dt className='text-muted-foreground'>{resource.label}</dt>
                     <dd className='font-mono'>{budgetNumber.format(total)}</dd>
@@ -88,7 +94,7 @@ export function BudgetTree() {
       aria-label="An online furniture retailer's monthly budget branches into Merchandising and Customer support. Product listings use tokens. Room scenes use tokens and image generations. Missing deliveries use tokens and carrier API calls. Delivery updates use tokens and SMS messages. Each workflow receives part of its team's allocation."
     >
       <BudgetNode
-        name='Furniture retailer'
+        name='Organization'
         allocations={[
           {
             resource: "tokens",
@@ -124,13 +130,13 @@ export function BudgetTree() {
           <Connector />
           <div className='grid items-stretch gap-2 sm:grid-cols-2'>
             <BudgetNode
-              name='Product listings'
+              name='Listings'
               allocations={[
                 { resource: "tokens", total: 3000000, used: 1200000 },
               ]}
             />
             <BudgetNode
-              name='Room scenes'
+              name='Image gen'
               allocations={[
                 { resource: "tokens", total: 1000000, used: 250000 },
                 { resource: "images", total: 1500, used: 600 },
@@ -140,7 +146,7 @@ export function BudgetTree() {
         </div>
         <div className='grid min-w-0 sm:row-span-3 sm:grid-rows-subgrid'>
           <BudgetNode
-            name='Customer support'
+            name='Support'
             allocations={[
               {
                 resource: "tokens",
@@ -160,14 +166,14 @@ export function BudgetTree() {
           <Connector />
           <div className='grid items-stretch gap-2 sm:grid-cols-2'>
             <BudgetNode
-              name='Missing deliveries'
+              name='Refunds'
               allocations={[
                 { resource: "tokens", total: 10000000, used: 4000000 },
                 { resource: "carrier", total: 8000, used: 3200 },
               ]}
             />
             <BudgetNode
-              name='Delivery updates'
+              name='Updates'
               allocations={[
                 { resource: "tokens", total: 2000000, used: 500000 },
                 { resource: "sms", total: 4000, used: 1000 },

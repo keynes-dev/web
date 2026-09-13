@@ -4,7 +4,7 @@ import { AccessLinks } from "./AccessLinks";
 export function Hero() {
   return (
     <Section>
-      <div className='flex min-h-96 flex-col justify-center gap-6'>
+      <div className='flex min-h-72 flex-col justify-center gap-6'>
         <conveyor-belt
           className='pointer-events-none absolute inset-0 block border-grid bg-background text-muted-foreground'
           role='img'
@@ -13,7 +13,7 @@ export function Hero() {
         <div className='relative lg:max-w-1/2'>
           <header className='space-y-4'>
             <h1>Runtime economics for agents</h1>
-            <p className='max-w-3xl text-base leading-relaxed'>
+            <p className='max-w-3xl text-muted-foreground'>
               Give your agents observability into your business with
               programmable resource controls for tokens, tools, time, and more.
             </p>
