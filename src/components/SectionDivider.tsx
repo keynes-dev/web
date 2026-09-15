@@ -29,8 +29,8 @@ export function SectionDivider() {
         </defs>
         <rect width='100%' height='100%' fill='url(#section-divider-hatch)' />
       </svg>
-      <SectionFrame className='relative z-10 border-none'>
-        <SectionColumn className='border-none'>
+      <SectionFrame className='relative z-10 border-transparent'>
+        <SectionColumn className='border-transparent'>
           <SectionContent className='px-2 py-2 sm:px-2 sm:py-2' />
         </SectionColumn>
       </SectionFrame>

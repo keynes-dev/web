@@ -77,22 +77,18 @@ export function Deployments() {
                       >
                         <defs>
                           <pattern
-                            id={`deployment-grid-${mode.name}`}
-                            width='16'
-                            height='16'
+                            id={`deployment-dots-${mode.name}`}
+                            width='8'
+                            height='8'
                             patternUnits='userSpaceOnUse'
                           >
-                            <path
-                              d='M16 0H0V16'
-                              fill='none'
-                              stroke='currentColor'
-                            />
+                            <circle cx='1' cy='1' r='1' fill='currentColor' />
                           </pattern>
                         </defs>
                         <rect
                           width='100%'
                           height='100%'
-                          fill={`url(#deployment-grid-${mode.name})`}
+                          fill={`url(#deployment-dots-${mode.name})`}
                         />
                       </svg>
                       <div className='relative z-10 flex min-h-32 items-center justify-center overflow-hidden p-2 sm:p-3'>
@@ -107,45 +103,41 @@ export function Deployments() {
               </div>
             </div>
 
-            <Card className='mt-8 min-w-0 border-x-0 border-b-0 border-t-1'>
-              <CardContent className='p-0'>
-                <Table>
-                  <TableHeader className='border-b-1 border-border'>
-                    <TableRow>
-                      <TableHead className='min-w-48 pl-4 sm:pl-8'>
-                        Capability
-                      </TableHead>
-                      <TableHead>Local</TableHead>
-                      <TableHead>Hosted</TableHead>
-                      <TableHead className='pr-4 sm:pr-8'>Embedded</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {tableRows.map((row) => (
-                      <TableRow key={row.label}>
-                        <TableCell className='pl-4 font-medium sm:pl-8'>
-                          {row.label}
-                        </TableCell>
-                        {row.values.map((value, index) => (
-                          <TableCell
-                            key={`${row.label}-${modes[index].name}`}
-                            className={
-                              index === row.values.length - 1 ?
-                                "pr-4 sm:pr-8"
-                              : undefined
-                            }
-                          >
-                            {typeof value === "boolean" ?
-                              <BooleanValue value={value} />
-                            : value}
-                          </TableCell>
-                        ))}
-                      </TableRow>
+            <Table className='mt-8 border-t-1'>
+              <TableHeader className='border-b-1 border-border bg-amber-200'>
+                <TableRow>
+                  <TableHead className='min-w-48 pl-4 sm:pl-8'>
+                    Capability
+                  </TableHead>
+                  <TableHead>Local</TableHead>
+                  <TableHead>Hosted</TableHead>
+                  <TableHead className='pr-4 sm:pr-8'>Embedded</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {tableRows.map((row) => (
+                  <TableRow key={row.label}>
+                    <TableCell className='pl-4 font-medium sm:pl-8'>
+                      {row.label}
+                    </TableCell>
+                    {row.values.map((value, index) => (
+                      <TableCell
+                        key={`${row.label}-${modes[index].name}`}
+                        className={
+                          index === row.values.length - 1 ?
+                            "pr-4 sm:pr-8"
+                          : undefined
+                        }
+                      >
+                        {typeof value === "boolean" ?
+                          <BooleanValue value={value} />
+                        : value}
+                      </TableCell>
                     ))}
-                  </TableBody>
-                </Table>
-              </CardContent>
-            </Card>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
           </SectionContent>
         </SectionColumn>
       </SectionFrame>

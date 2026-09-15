@@ -58,10 +58,10 @@ export function RuntimeSection({ code }: { code: RuntimeCodeHtml }) {
                 <p className='max-w-md text-base leading-relaxed text-muted-foreground'>
                   {copy.description}
                 </p>
-                <div className='flex gap-2 pt-2'>
+                <div className='flex gap-4'>
                   <button
                     type='button'
-                    className='inline-flex size-10 items-center justify-center border border-foreground/20 transition-colors hover:bg-foreground hover:text-background disabled:cursor-not-allowed disabled:opacity-30'
+                    className='inline-flex size-10 items-center justify-center border border-foreground rounded-full transition-colors hover:bg-foreground hover:text-background disabled:cursor-not-allowed disabled:opacity-25'
                     aria-label='Previous demo'
                     disabled={selectedIndex === 0}
                     onClick={() => moveSelection(-1)}
@@ -70,7 +70,7 @@ export function RuntimeSection({ code }: { code: RuntimeCodeHtml }) {
                   </button>
                   <button
                     type='button'
-                    className='inline-flex size-10 items-center justify-center border border-foreground/20 transition-colors hover:bg-foreground hover:text-background disabled:cursor-not-allowed disabled:opacity-30'
+                    className='inline-flex size-10 items-center justify-center border border-foreground rounded-full transition-colors hover:bg-foreground hover:text-background disabled:cursor-not-allowed disabled:opacity-25'
                     aria-label='Next demo'
                     disabled={selectedIndex === runtimeTabs.length - 1}
                     onClick={() => moveSelection(1)}

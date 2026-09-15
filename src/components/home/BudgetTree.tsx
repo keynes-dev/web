@@ -22,7 +22,7 @@ const budgetNumber = new Intl.NumberFormat("en", { notation: "compact" });
 function Connector({ branches = 2 }: { branches?: 1 | 2 }) {
   if (branches === 1) {
     return (
-      <div aria-hidden='true' className='relative my-2 h-6'>
+      <div aria-hidden='true' className='relative my-1.5 h-4'>
         <i className='absolute top-0 bottom-1 left-1/2 border-l border-border'>
           <span className='absolute -bottom-0.5 -left-1 size-2 rotate-45 border-r border-b border-border' />
         </i>
@@ -31,7 +31,7 @@ function Connector({ branches = 2 }: { branches?: 1 | 2 }) {
   }
 
   return (
-    <div aria-hidden='true' className='relative my-2 h-6'>
+    <div aria-hidden='true' className='relative my-1.5 h-6'>
       <i className='absolute top-0 left-1/2 z-10 size-2 -translate-x-1/2 -translate-y-1/2 rounded-full border border-border bg-card' />
       <i className='absolute top-0 left-1/2 h-1/2 border-l border-border' />
       <i className='absolute top-1/2 right-1/4 left-1/4 border-t border-border' />
@@ -54,7 +54,7 @@ function BudgetNode({
 }) {
   return (
     <Card className='h-full min-w-0 border'>
-      <CardHeader className='bg-orange-100 border-b px-3 py-1.5'>
+      <CardHeader className='rounded-t-[calc(var(--radius-sm)-1px)] bg-orange-100 border-b px-3 py-1.5'>
         <CardTitle className='text-xs text-foreground'>{name}</CardTitle>
       </CardHeader>
       <CardContent className='py-3 bg-background'>
@@ -112,7 +112,9 @@ function StatusCard({ status, detail }: { status: Decision; detail: string }) {
 
   return (
     <Card className='border' aria-label={`${label}: ${detail}`}>
-      <CardHeader className={`${header} border-b px-3 py-1.5`}>
+      <CardHeader
+        className={`${header} rounded-t-[calc(var(--radius-sm)-1px)] border-b px-3 py-1.5`}
+      >
         <CardTitle className='text-xs flex items-center justify-between text-foreground'>
           Agent
           <span className='flex min-w-0 items-center gap-2'>
@@ -166,7 +168,7 @@ export function BudgetTree() {
       <div className='grid grid-cols-2 items-start gap-3'>
         <div className='min-w-0'>
           <BudgetNode
-            name='Growth Operations'
+            name='Growth Ops'
             allocations={[
               {
                 resource: "dataCredits",
@@ -187,7 +189,7 @@ export function BudgetTree() {
         </div>
         <div className='min-w-0'>
           <BudgetNode
-            name='Sales Development'
+            name='Sales'
             allocations={[
               {
                 resource: "aiTokens",
@@ -204,7 +206,7 @@ export function BudgetTree() {
             ]}
           />
           <Connector branches={1} />
-          <StatusCard status='denied' detail='emailSends 5K > 4K avail' />
+          <StatusCard status='denied' detail='resource_limit' />
         </div>
       </div>
     </figure>

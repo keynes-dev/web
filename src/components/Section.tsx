@@ -27,7 +27,7 @@ function SectionFrame({
       )}
       {...props}
     >
-      <GridMarks className='hidden xl:block' />
+      <GridMarks className='max-xl:hidden' />
       {children}
     </div>
   );
@@ -47,7 +47,7 @@ function SectionColumn({
       )}
       {...props}
     >
-      <GridMarks className='block' />
+      <GridMarks />
       {children}
     </div>
   );

@@ -12,7 +12,7 @@ export function Hero() {
       <SectionFrame>
         <SectionColumn>
           <svg
-            className='pointer-events-none absolute inset-0 size-full text-border/10'
+            className='pointer-events-none absolute inset-0 size-full text-border/5'
             aria-hidden='true'
           >
             <defs>

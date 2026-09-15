@@ -21,7 +21,7 @@ const { title, description } = Astro.props;
     <Font cssVariable="--font-ibm-plex-sans" preload />
     <Font cssVariable="--font-ibm-plex-mono" />
   </head>
-  <body class="min-h-screen overflow-x-clip bg-background text-foreground antialiased">
+  <body class="relative min-h-screen overflow-x-clip bg-background text-foreground antialiased">
     <slot />
   </body>
 </html>
