@@ -201,12 +201,12 @@ function PoliciesCard({ html }: { html: string }) {
                 decision
               </th>
               <td className='px-3 py-2 font-medium text-emerald-500'>
-                Approved
+                APPROVED
               </td>
             </tr>
             <tr className='border-t'>
               <th className='border-r px-3 py-2 text-left font-normal text-muted-foreground'>
-                intent score
+                intent_score
               </th>
               <td className='px-3 py-2'>84</td>
             </tr>
@@ -214,7 +214,7 @@ function PoliciesCard({ html }: { html: string }) {
               <th className='border-r px-3 py-2 text-left font-normal text-muted-foreground'>
                 resources
               </th>
-              <td className='px-3 py-2'>6 data credits</td>
+              <td className='px-3 py-2'>{`[{ data_credits: 6 }]`}</td>
             </tr>
             <tr className='border-t'>
               <th className='border-r px-3 py-2 text-left font-normal text-muted-foreground'>

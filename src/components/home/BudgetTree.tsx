@@ -24,7 +24,7 @@ function Connector({ branches = 2 }: { branches?: 1 | 2 }) {
     return (
       <div aria-hidden='true' className='relative my-1.5 h-4'>
         <i className='absolute top-0 bottom-1 left-1/2 border-l border-border'>
-          <span className='absolute -bottom-0.5 -left-1 size-2 rotate-45 border-r border-b border-border' />
+          <span className='absolute -bottom-0.5 left-[calc(-0.25rem-0.5px)] size-2 rotate-45 border-r border-b border-border' />
         </i>
       </div>
     );
@@ -32,14 +32,14 @@ function Connector({ branches = 2 }: { branches?: 1 | 2 }) {
 
   return (
     <div aria-hidden='true' className='relative my-1.5 h-6'>
-      <i className='absolute top-0 left-1/2 z-10 size-2 -translate-x-1/2 -translate-y-1/2 rounded-full border border-border bg-card' />
+      <i className='absolute top-0 left-1/2 z-10 size-2 -translate-x-[calc(50%-0.5px)] -translate-y-1/2 rounded-full border border-border bg-card' />
       <i className='absolute top-0 left-1/2 h-1/2 border-l border-border' />
       <i className='absolute top-1/2 right-1/4 left-1/4 border-t border-border' />
       <i className='absolute top-1/2 bottom-1 left-1/4 border-l border-border'>
-        <span className='absolute -bottom-0.5 -left-1 size-2 rotate-45 border-r border-b border-border' />
+        <span className='absolute -bottom-0.5 left-[calc(-0.25rem-0.5px)] size-2 rotate-45 border-r border-b border-border' />
       </i>
       <i className='absolute top-1/2 right-1/4 bottom-1 border-r border-border'>
-        <span className='absolute -right-1 -bottom-0.5 size-2 rotate-45 border-r border-b border-border' />
+        <span className='absolute right-[calc(-0.25rem-0.5px)] -bottom-0.5 size-2 rotate-45 border-r border-b border-border' />
       </i>
     </div>
   );
