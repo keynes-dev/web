@@ -10,8 +10,6 @@ import { SiteLinks, siteLinks } from "./SiteLinks";
 export function Nav() {
   const [open, setOpen] = useState(false);
   const triggerRef = useRef<HTMLInputElement>(null);
-  const closeRef = useRef<HTMLLabelElement>(null);
-  const menuRef = useRef<HTMLDivElement>(null);
 
   function closeMenu() {
     if (triggerRef.current) triggerRef.current.checked = false;
@@ -25,28 +23,10 @@ export function Nav() {
     const rootOverflow = document.documentElement.style.overflow;
     document.body.style.overflow = "hidden";
     document.documentElement.style.overflow = "hidden";
-    closeRef.current?.focus();
 
     function handleKeyDown(event: KeyboardEvent) {
       if (event.key === "Escape") {
         closeMenu();
-        return;
-      }
-
-      if (event.key !== "Tab" || !menuRef.current) return;
-
-      const controls = menuRef.current.querySelectorAll<HTMLElement>(
-        'a[href], button:not([disabled])',
-      );
-      const first = controls[0];
-      const last = controls[controls.length - 1];
-
-      if (event.shiftKey && document.activeElement === first) {
-        event.preventDefault();
-        last?.focus();
-      } else if (!event.shiftKey && document.activeElement === last) {
-        event.preventDefault();
-        first?.focus();
       }
     }
 
@@ -68,10 +48,10 @@ export function Nav() {
   }, [open]);
 
   return (
-    <header className='z-50 border-b bg-background'>
-      <div className='relative container mx-auto xl:border-x'>
+    <header className='relative z-50 bg-background'>
+      <div className='relative z-50 container mx-auto border-b bg-background xl:border-x'>
         <GridMarks className='md:hidden xl:block' />
-        <nav className='relative container mx-auto max-w-screen-lg flex items-center justify-between gap-6 md:border-x px-4 py-3 sm:px-8'>
+        <nav className='relative container mx-auto flex h-16 max-w-screen-lg items-center justify-between gap-6 px-4 md:border-x sm:px-8'>
           <GridMarks />
           <div className='flex items-center gap-8'>
             <a aria-label='Keynes home' href='/'>
@@ -88,7 +68,7 @@ export function Nav() {
                 ref={triggerRef}
                 id='mobile-navigation-toggle'
                 type='checkbox'
-                className='absolute inset-0 z-10 size-full cursor-pointer appearance-none'
+                className='peer absolute inset-0 z-10 size-full cursor-pointer appearance-none'
                 defaultChecked={false}
                 aria-controls='mobile-navigation'
                 aria-expanded={open}
@@ -96,7 +76,11 @@ export function Nav() {
                 onChange={(event) => setOpen(event.target.checked)}
               />
               <Menu
-                className='pointer-events-none size-5'
+                className='pointer-events-none absolute size-5 transition-all duration-200 peer-checked:rotate-90 peer-checked:scale-0 peer-checked:opacity-0 motion-reduce:transition-none'
+                aria-hidden='true'
+              />
+              <X
+                className='pointer-events-none absolute size-5 -rotate-90 scale-0 opacity-0 transition-all duration-200 peer-checked:rotate-0 peer-checked:scale-100 peer-checked:opacity-100 motion-reduce:transition-none'
                 aria-hidden='true'
               />
             </label>
@@ -105,43 +89,18 @@ export function Nav() {
       </div>
 
       <div
-        ref={menuRef}
         id='mobile-navigation'
-        role='dialog'
-        aria-label='Navigation'
-        aria-modal='true'
         aria-hidden={!open}
         inert={!open}
         className={cn(
-          "fixed inset-0 z-50 flex translate-x-full flex-col bg-background transition-transform duration-300 ease-out motion-reduce:transition-none md:hidden",
+          "fixed inset-x-0 top-16 bottom-0 z-40 translate-x-full bg-orange-100 transition-transform duration-300 ease-out motion-reduce:transition-none md:hidden",
           open ? "translate-x-0" : "pointer-events-none",
         )}
       >
-        <div className='flex items-center justify-between border-b px-4 py-3 sm:px-8'>
-          <a aria-label='Keynes home' href='/' onClick={closeMenu}>
-            <Logo />
-          </a>
-          <label
-            ref={closeRef}
-            htmlFor='mobile-navigation-toggle'
-            role='button'
-            tabIndex={0}
-            className='inline-flex size-8 cursor-pointer items-center justify-center'
-            aria-label='Close navigation'
-            onKeyDown={(event) => {
-              if (event.key !== "Enter" && event.key !== " ") return;
-              event.preventDefault();
-              closeMenu();
-            }}
-          >
-            <X
-              className='pointer-events-none size-5'
-              aria-hidden='true'
-            />
-          </label>
-        </div>
-
-        <nav className='flex flex-1 flex-col justify-between px-4 py-8 sm:px-8'>
+        <nav
+          className='flex h-full flex-col justify-between px-4 py-8 sm:px-8'
+          aria-label='Mobile navigation'
+        >
           <ul className='space-y-3'>
             {siteLinks.map(({ label, href }) => (
               <li key={href}>
