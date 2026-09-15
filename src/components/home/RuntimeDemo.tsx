@@ -85,15 +85,13 @@ function RuntimeCard() {
       aria-label='Runtime view'
     >
       <CardContent
-        className='relative min-h-0 flex-1 overflow-hidden p-3'
+        className='relative flex min-h-0 flex-1 items-center overflow-hidden p-3'
         id='runtime-panel-runtime'
         role='tabpanel'
         aria-labelledby='runtime-tab-runtime'
         tabIndex={0}
       >
-        <div className='absolute inset-x-3 top-1/2 -translate-y-1/2'>
-          <BudgetTree />
-        </div>
+        <BudgetTree />
       </CardContent>
       <CardFooter className='p-3'>
         <div className='flex w-full flex-wrap items-center justify-end gap-4 text-xs text-muted-foreground'>

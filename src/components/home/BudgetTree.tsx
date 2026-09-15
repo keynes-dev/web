@@ -53,11 +53,11 @@ function BudgetNode({
   allocations: readonly Allocation[];
 }) {
   return (
-    <Card className='h-full min-w-0 border'>
+    <Card className='h-full min-w-0 overflow-hidden border'>
       <CardHeader className='rounded-t-[calc(var(--radius-sm)-1px)] bg-orange-100 border-b px-3 py-1.5'>
         <CardTitle className='text-xs text-foreground'>{name}</CardTitle>
       </CardHeader>
-      <CardContent className='py-3 bg-background'>
+      <CardContent className='rounded-b-[calc(var(--radius-sm)-1px)] bg-background py-3'>
         <dl className='grid gap-2'>
           {allocations.map(({ resource, total, reserved = 0, used = 0 }) => {
             const label = resources[resource];
@@ -111,7 +111,7 @@ function StatusCard({ status, detail }: { status: Decision; detail: string }) {
   }
 
   return (
-    <Card className='border' aria-label={`${label}: ${detail}`}>
+    <Card className='overflow-hidden border' aria-label={`${label}: ${detail}`}>
       <CardHeader
         className={`${header} rounded-t-[calc(var(--radius-sm)-1px)] border-b px-3 py-1.5`}
       >
@@ -126,7 +126,7 @@ function StatusCard({ status, detail }: { status: Decision; detail: string }) {
           </span>
         </CardTitle>
       </CardHeader>
-      <CardContent className='flex items-center justify-between gap-2 py-3 bg-background'>
+      <CardContent className='flex items-center justify-between gap-2 rounded-b-[calc(var(--radius-sm)-1px)] bg-background py-3'>
         <span className='truncate font-mono text-xs text-muted-foreground'>
           {detail}
         </span>
@@ -138,6 +138,7 @@ function StatusCard({ status, detail }: { status: Decision; detail: string }) {
 export function BudgetTree() {
   return (
     <figure
+      className='w-full'
       role='img'
       aria-label="The GTM organization's data-credit, AI-token, and email-send budgets branch into Growth Operations and Sales Development budgets. Growth Operations approves a small enrichment request; Sales Development denies an email-send request that exceeds available budget."
     >
