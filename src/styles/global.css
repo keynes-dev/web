@@ -124,6 +124,20 @@
   font-family: inherit;
 }
 
+/*
+ * TanStack Charts paints axis rules and grid lines with presentation
+ * attributes, which CSS outranks without `!important`. The library defaults are
+ * far lighter than this site's rules, so the axes and grid are restated here.
+ */
+.keynes-chart .ts-chart__axes line {
+  stroke: var(--border);
+  stroke-opacity: 0.5;
+}
+
+.keynes-chart .ts-chart__grid {
+  stroke-opacity: 0.16;
+}
+
 .keynes-chart-tooltip {
   --ts-chart-tooltip-background: var(--popover);
   --ts-chart-tooltip-border: 1px solid var(--border);

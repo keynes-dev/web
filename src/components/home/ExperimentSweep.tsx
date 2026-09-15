@@ -1,13 +1,13 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { cn } from "@/lib/utils";
-
-import { FrontierChart } from "./FrontierChart";
 import {
-  experimentRuns,
-  productionExample,
-  searchLimits,
-  tokenLimits,
-} from "./experiment-data";
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+
+import { FrontierChart, FrontierChartLegend } from "./FrontierChart";
+import { dataCreditLimits, tokenLimits } from "./experiment-data";
 
 export function ExperimentSweep() {
   return (
@@ -16,76 +16,79 @@ export function ExperimentSweep() {
         <CardTitle>Experiments</CardTitle>
       </CardHeader>
       <CardContent className='p-0'>
-        <div className='border-b-2 px-2 py-4 sm:px-5'>
-          <p className='mb-1 text-right text-xs text-muted-foreground'>
-            Token limit per ticket
+        <div className='space-y-4 border-b-2 p-3'>
+          <dl className='space-y-3'>
+            <div className='space-y-1.5'>
+              <dt className='text-xs text-muted-foreground'>
+                AI tokens per lead
+              </dt>
+              <dd className='flex items-center gap-2 font-mono text-xs'>
+                <span
+                  aria-hidden='true'
+                  className='text-lg text-muted-foreground'
+                >
+                  [
+                </span>
+                <ul className='grid flex-1 grid-cols-4 gap-1'>
+                  {tokenLimits.map((limit) => (
+                    <li
+                      key={limit}
+                      className='border border-sky-700/30 bg-sky-100 py-1 text-center text-sky-900'
+                    >
+                      {limit.toLocaleString()}
+                    </li>
+                  ))}
+                </ul>
+                <span
+                  aria-hidden='true'
+                  className='text-lg text-muted-foreground'
+                >
+                  ]
+                </span>
+              </dd>
+            </div>
+            <div className='space-y-1.5'>
+              <dt className='text-xs text-muted-foreground'>
+                Data credits per lead
+              </dt>
+              <dd className='flex items-center gap-2 font-mono text-xs'>
+                <span
+                  aria-hidden='true'
+                  className='text-lg text-muted-foreground'
+                >
+                  [
+                </span>
+                <ul className='grid flex-1 grid-cols-3 gap-1'>
+                  {dataCreditLimits.map((limit) => (
+                    <li
+                      key={limit}
+                      className='border border-emerald-700/30 bg-emerald-50 py-1 text-center text-emerald-900'
+                    >
+                      {limit}
+                    </li>
+                  ))}
+                </ul>
+                <span
+                  aria-hidden='true'
+                  className='text-lg text-muted-foreground'
+                >
+                  ]
+                </span>
+              </dd>
+            </div>
+          </dl>
+          <p className='flex flex-wrap items-baseline justify-between gap-2 text-xs'>
+            <span className='text-muted-foreground'>Total test runs</span>
+            <span className='font-mono'>12</span>
           </p>
-          <table
-            className='w-full table-fixed border-separate border-spacing-1 font-mono text-xs'
-            aria-label='Percentage of tickets resolved by token and search limits'
-          >
-            <thead>
-              <tr>
-                <th className='w-24 text-left text-xs font-normal text-muted-foreground'>
-                  Search limit
-                </th>
-                {tokenLimits.map((limit) => (
-                  <th
-                    className='text-xs font-normal text-muted-foreground'
-                    key={limit}
-                  >
-                    {limit.toLocaleString()}
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {searchLimits.map((searches) => (
-                <tr key={searches}>
-                  <th
-                    className='text-left text-xs font-normal text-muted-foreground'
-                    scope='row'
-                  >
-                    {searches}
-                  </th>
-                  {tokenLimits.map((limit) => {
-                    const run = experimentRuns.find(
-                      (candidate) =>
-                        candidate.limit === limit &&
-                        candidate.searches === searches,
-                    );
-                    if (!run) return null;
-
-                    return (
-                      <td
-                        className={cn(
-                          "border border-sky-700/40 py-1.5 text-center",
-                          run === productionExample &&
-                            "border-amber-700 text-amber-700",
-                        )}
-                        key={limit}
-                        style={{
-                          backgroundColor: `color-mix(in oklab, var(--chart-accent) ${15 + (run.resolved - 55)}%, transparent)`,
-                        }}
-                      >
-                        {run === productionExample ?
-                          <span aria-label='Example production setting'>
-                            ★{" "}
-                          </span>
-                        : null}
-                        {run.resolved}%
-                      </td>
-                    );
-                  })}
-                </tr>
-              ))}
-            </tbody>
-          </table>
         </div>
-        <div className='px-2 py-3 sm:px-4'>
+        <div className='p-3'>
           <FrontierChart />
         </div>
       </CardContent>
+      <CardFooter>
+        <FrontierChartLegend />
+      </CardFooter>
     </Card>
   );
 }

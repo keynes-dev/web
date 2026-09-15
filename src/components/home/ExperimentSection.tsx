@@ -17,9 +17,9 @@ export function ExperimentSection() {
                 <h2>Find the right budget.</h2>
                 <div className='max-w-3xl text-base leading-relaxed text-muted-foreground'>
                   <p className='max-w-md text-foreground'>
-                    Run the same support tickets with different token budgets
-                    and search limits. Compare how many tickets get resolved to
-                    see where extra spending helps.
+                    Enrich the same leads with different data-credit and AI-token
+                    budgets. Find where more data and deeper analysis stop
+                    improving results.
                   </p>
                 </div>
               </header>

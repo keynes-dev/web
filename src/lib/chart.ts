@@ -24,3 +24,6 @@ export const chartTheme = {
 } satisfies ChartTheme;
 
 export const CHART_TOOLTIP_CLASS = "keynes-chart-tooltip";
+
+/** Scopes the axis and grid weights in `global.css` to Keynes charts. */
+export const CHART_CLASS = "keynes-chart";
