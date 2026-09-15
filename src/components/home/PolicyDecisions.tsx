@@ -46,7 +46,7 @@ export function PolicyDecisions() {
             <code>{`CASE WHEN context.lead_score >= 80\n  THEN 4000\n  ELSE 1000\nEND AS limit`}</code>
           </pre>
         </section>
-        <div className='min-w-0 border-t p-3 sm:border-t-0 sm:border-l sm:p-4'>
+        <div className='min-w-0 p-3 sm:border-t-0 sm:border-l-2 sm:p-4'>
           <CardTitle className='mb-3'>budget.inspect()</CardTitle>
           <p className='mb-2 flex justify-between gap-2 text-xs text-muted-foreground'>
             Model tokens{" "}
@@ -78,12 +78,12 @@ export function PolicyDecisions() {
       </CardHeader>
       <CardContent className='p-0'>
         <div
-          className='flex gap-3 border-y px-3 sm:px-4'
+          className='flex gap-3 border-b-2 px-3 sm:px-4'
           aria-label='Request examples'
         >
           {requests.map((example) => (
             <button
-              className='cursor-pointer border-b-2 border-transparent py-2 text-xs text-muted-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring aria-pressed:border-sky-700 aria-pressed:text-foreground dark:aria-pressed:border-sky-300'
+              className='cursor-pointer border-transparent py-2 text-xs text-muted-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring aria-pressed:border-primary aria-pressed:text-foreground dark:aria-pressed:border-primary'
               type='button'
               key={example.title}
               aria-pressed={example === request}
@@ -103,7 +103,7 @@ export function PolicyDecisions() {
               <code>{`await budget.request(\n  { tokens: ${request.tokens} },\n  { context: { leadScore: ${request.leadScore} } }\n)`}</code>
             </pre>
           </div>
-          <div className='min-h-36 min-w-0 border-t p-3 sm:border-t-0 sm:border-l sm:p-4'>
+          <div className='min-h-36 min-w-0 border-t-2 p-3 sm:border-t-0 sm:border-l-2 sm:p-4'>
             <h3 className='mb-2 font-mono text-sm'>Result</h3>
             <pre
               className='break-words whitespace-pre-wrap font-mono text-xs leading-relaxed'

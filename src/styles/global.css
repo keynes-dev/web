@@ -1,26 +1,22 @@
 @import "tailwindcss";
-@import "@fontsource-variable/ibm-plex-sans";
-@import "@fontsource/ibm-plex-serif";
-@import "@fontsource/ibm-plex-serif/300.css";
-@import "@fontsource/ibm-plex-mono";
 @import "shadcn/tailwind.css";
 
 :root {
   color-scheme: light;
-  --background: var(--color-zinc-50);
-  --foreground: var(--color-zinc-950);
-  --card: var(--color-zinc-100);
-  --card-foreground: var(--color-zinc-950);
-  --popover: var(--color-zinc-50);
-  --popover-foreground: var(--color-zinc-950);
-  --primary: var(--color-blue-700);
-  --primary-foreground: var(--color-zinc-50);
+  --background: var(--color-orange-50);
+  --foreground: var(--color-taupe-800);
+  --card: var(--color-white);
+  --card-foreground: var(--color-taupe-800);
+  --popover: var(--color-taupe-50);
+  --popover-foreground: var(--color-taupe-950);
+  --primary: var(--color-orange-300);
+  --primary-foreground: var(--color-taupe-900);
   --secondary: var(--color-blue-100);
-  --secondary-foreground: var(--color-zinc-950);
-  --muted: var(--color-zinc-100);
-  --muted-foreground: var(--color-zinc-700);
+  --secondary-foreground: var(--color-taupe-800);
+  --muted: var(--color-taupe-100);
+  --muted-foreground: var(--color-taupe-700);
   --destructive: var(--color-red-700);
-  --border: var(--color-zinc-300);
+  --border: var(--color-taupe-800);
   --input: var(--color-blue-700);
   --ring: var(--color-blue-700);
   --chart-1: var(--color-blue-950);
@@ -33,25 +29,25 @@
   --chart-recommended: var(--color-amber-700);
   --diagram-blue: var(--color-blue-700);
   --diagram-plum: var(--color-fuchsia-700);
-  --grid: var(--color-zinc-200);
+  --grid: var(--color-taupe-200);
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
     color-scheme: dark;
-    --background: var(--color-zinc-950);
-    --foreground: var(--color-zinc-50);
-    --card: var(--color-zinc-900);
-    --card-foreground: var(--color-zinc-50e);
-    --popover: var(--color-zinc-950);
+    --background: var(--color-taupe-950);
+    --foreground: var(--color-taupe-50);
+    --card: var(--color-taupe-900);
+    --card-foreground: var(--color-taupe-50e);
+    --popover: var(--color-taupe-950);
     --primary: var(--color-blue-700);
-    --primary-foreground: var(--color-zinc-50);
-    --secondary: var(--color-zinc-900);
-    --secondary-foreground: var(--color-zinc-50);
-    --muted: var(--color-zinc-900);
-    --muted-foreground: var(--color-zinc-400);
+    --primary-foreground: var(--color-taupe-50);
+    --secondary: var(--color-taupe-900);
+    --secondary-foreground: var(--color-taupe-50);
+    --muted: var(--color-taupe-900);
+    --muted-foreground: var(--color-taupe-400);
     --destructive: var(--color-red-400);
-    --border: var(--color-zinc-700);
+    --border: var(--color-taupe-700);
     --input: var(--color-blue-500);
     --ring: var(--color-blue-200);
     --chart-1: var(--color-white);
@@ -64,14 +60,14 @@
     --chart-recommended: var(--color-yellow-400);
     --diagram-blue: var(--color-lime-300);
     --diagram-plum: var(--color-fuchsia-300);
-    --grid: var(--color-zinc-900);
+    --grid: var(--color-taupe-900);
   }
 }
 
 @theme inline {
-  --font-heading: "IBM Plex Serif", serif;
-  --font-mono: "IBM Plex Mono", monospace;
-  --font-sans: "IBM Plex Sans Variable", sans-serif;
+  --font-heading: var(--font-ibm-plex-sans);
+  --font-mono: var(--font-ibm-plex-mono);
+  --font-sans: var(--font-ibm-plex-sans);
   --color-ring: var(--ring);
   --color-input: var(--input);
   --color-border: var(--border);
@@ -101,11 +97,15 @@
   }
 
   h1 {
-    @apply font-heading font-normal text-3xl tracking-tight;
+    @apply font-heading font-medium text-4xl tracking-tight;
   }
 
   h2 {
-    @apply font-heading font-normal text-2xl tracking-tight;
+    @apply font-heading font-medium text-2xl tracking-tight;
+  }
+
+  h3 {
+    @apply font-heading font-medium text-lg tracking-tight;
   }
 }
 

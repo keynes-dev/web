@@ -1,19 +1,63 @@
 import type { ComponentProps } from "react";
 
 import { GridMarks } from "@/components/GridMarks";
+import { cn } from "@/lib/utils";
 
-type SectionProps = Omit<ComponentProps<"section">, "className">;
-
-export function Section({ children, ...props }: SectionProps) {
+function Section({ className, ...props }: ComponentProps<"section">) {
   return (
-    <section className='border-b' {...props}>
-      <div className='relative container mx-auto xl:border-x'>
-        <GridMarks className='md:hidden xl:block' />
-        <div className='relative container mx-auto max-w-screen-lg md:border-x'>
-          <GridMarks />
-          <div className='relative p-4 sm:p-8'>{children}</div>
-        </div>
-      </div>
-    </section>
+    <section
+      data-slot='section'
+      className={cn("border-b", className)}
+      {...props}
+    />
   );
 }
+
+function SectionFrame({
+  className,
+  children,
+  ...props
+}: ComponentProps<"div">) {
+  return (
+    <div
+      data-slot='section-frame'
+      className={cn("relative container mx-auto xl:border-x", className)}
+      {...props}
+    >
+      <GridMarks className='md:hidden xl:block' />
+      {children}
+    </div>
+  );
+}
+
+function SectionColumn({
+  className,
+  children,
+  ...props
+}: ComponentProps<"div">) {
+  return (
+    <div
+      data-slot='section-column'
+      className={cn(
+        "relative container mx-auto max-w-screen-lg md:border-x",
+        className,
+      )}
+      {...props}
+    >
+      <GridMarks />
+      {children}
+    </div>
+  );
+}
+
+function SectionContent({ className, ...props }: ComponentProps<"div">) {
+  return (
+    <div
+      data-slot='section-content'
+      className={cn(className, "relative p-4 sm:p-8")}
+      {...props}
+    />
+  );
+}
+
+export { Section, SectionFrame, SectionColumn, SectionContent };

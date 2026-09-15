@@ -48,7 +48,7 @@ function BudgetNode({
 }) {
   return (
     <Card className='h-full min-w-0'>
-      <CardHeader className='border-b px-3 py-2'>
+      <CardHeader className='px-3 py-2'>
         <CardTitle className='text-xs'>{name}</CardTitle>
       </CardHeader>
       <CardContent className='py-3'>

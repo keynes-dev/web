@@ -1,30 +1,41 @@
-import { Section } from "@/components/Section";
+import {
+  Section,
+  SectionColumn,
+  SectionContent,
+  SectionFrame,
+} from "@/components/Section";
 import { ExperimentSweep } from "./ExperimentSweep";
 
 export function ExperimentSection() {
   return (
-    <Section id="how-experiments" aria-label="Experiments">
-      <article className="grid min-w-0 items-center gap-10 lg:grid-cols-2 lg:gap-16">
-        <header className="relative space-y-4">
-          <p className="font-mono text-xs leading-normal tracking-wider uppercase text-muted-foreground">
-            03 / Experiments
-          </p>
-          <h2>Find the right budget.</h2>
-          <div className="max-w-3xl text-base leading-relaxed text-muted-foreground">
-            <p className="max-w-md text-foreground">
-              Run the same support tickets with different token budgets and
-              search limits. Compare how many tickets get resolved to see where
-              extra spending helps.
-            </p>
-            <p className="mt-6 max-w-md">
-              Use what you learn to set the limits for your next run.
-            </p>
-          </div>
-        </header>
-        <div className="min-w-0 py-5">
-          <ExperimentSweep />
-        </div>
-      </article>
+    <Section id='how-experiments' aria-label='Experiments'>
+      <SectionFrame>
+        <SectionColumn>
+          <SectionContent>
+            <article className='grid min-w-0 items-center gap-10 lg:grid-cols-2 lg:gap-16'>
+              <header className='relative space-y-4'>
+                <p className='font-mono text-xs leading-normal tracking-wider uppercase text-muted-foreground'>
+                  03 / Experiments
+                </p>
+                <h2>Find the right budget.</h2>
+                <div className='max-w-3xl text-base leading-relaxed text-muted-foreground'>
+                  <p className='max-w-md text-foreground'>
+                    Run the same support tickets with different token budgets
+                    and search limits. Compare how many tickets get resolved to
+                    see where extra spending helps.
+                  </p>
+                  <p className='mt-6 max-w-md'>
+                    Use what you learn to set the limits for your next run.
+                  </p>
+                </div>
+              </header>
+              <div className='min-w-0 py-5'>
+                <ExperimentSweep />
+              </div>
+            </article>
+          </SectionContent>
+        </SectionColumn>
+      </SectionFrame>
     </Section>
   );
 }

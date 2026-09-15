@@ -12,26 +12,26 @@ import {
 export function ExperimentSweep() {
   return (
     <Card>
-      <CardHeader className="border-b">
+      <CardHeader>
         <CardTitle>Support ticket experiments</CardTitle>
       </CardHeader>
-      <CardContent className="p-0">
-        <div className="border-b px-2 py-4 sm:px-5">
-          <p className="mb-1 text-right text-xs text-muted-foreground">
+      <CardContent className='p-0'>
+        <div className='border-b-2 px-2 py-4 sm:px-5'>
+          <p className='mb-1 text-right text-xs text-muted-foreground'>
             Token limit per ticket
           </p>
           <table
-            className="w-full table-fixed border-separate border-spacing-1 font-mono text-xs"
-            aria-label="Percentage of tickets resolved by token and search limits"
+            className='w-full table-fixed border-separate border-spacing-1 font-mono text-xs'
+            aria-label='Percentage of tickets resolved by token and search limits'
           >
             <thead>
               <tr>
-                <th className="w-24 text-left text-xs font-normal text-muted-foreground">
+                <th className='w-24 text-left text-xs font-normal text-muted-foreground'>
                   Search limit
                 </th>
                 {tokenLimits.map((limit) => (
                   <th
-                    className="text-xs font-normal text-muted-foreground"
+                    className='text-xs font-normal text-muted-foreground'
                     key={limit}
                   >
                     {limit.toLocaleString()}
@@ -43,8 +43,8 @@ export function ExperimentSweep() {
               {searchLimits.map((searches) => (
                 <tr key={searches}>
                   <th
-                    className="text-left text-xs font-normal text-muted-foreground"
-                    scope="row"
+                    className='text-left text-xs font-normal text-muted-foreground'
+                    scope='row'
                   >
                     {searches}
                   </th>
@@ -68,11 +68,11 @@ export function ExperimentSweep() {
                           backgroundColor: `color-mix(in oklab, var(--chart-accent) ${15 + (run.resolved - 55)}%, transparent)`,
                         }}
                       >
-                        {run === productionExample ? (
-                          <span aria-label="Example production setting">
+                        {run === productionExample ?
+                          <span aria-label='Example production setting'>
                             ★{" "}
                           </span>
-                        ) : null}
+                        : null}
                         {run.resolved}%
                       </td>
                     );
@@ -81,12 +81,12 @@ export function ExperimentSweep() {
               ))}
             </tbody>
           </table>
-          <p className="mt-2 text-xs text-muted-foreground">
+          <p className='mt-2 text-xs text-muted-foreground'>
             12 configurations. Each cell shows tickets resolved out of the same
             100.
           </p>
         </div>
-        <div className="px-2 py-3 sm:px-4">
+        <div className='px-2 py-3 sm:px-4'>
           <FrontierChart />
         </div>
       </CardContent>

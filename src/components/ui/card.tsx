@@ -7,7 +7,7 @@ function Card({ className, ...props }: React.ComponentProps<"div">) {
     <div
       data-slot='card'
       className={cn(
-        "flex flex-col overflow-hidden border bg-card text-sm text-card-foreground",
+        "flex flex-col overflow-hidden border-2 bg-card text-sm text-card-foreground",
         className,
       )}
       {...props}
@@ -19,7 +19,7 @@ function CardHeader({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
       data-slot='card-header'
-      className={cn("px-3 py-3", className)}
+      className={cn("px-3 py-3 border-b-2 border-border", className)}
       {...props}
     />
   );
@@ -49,7 +49,7 @@ function CardFooter({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
       data-slot='card-footer'
-      className={cn("px-3 py-3", className)}
+      className={cn("px-3 py-3 border-t-2 border-border", className)}
       {...props}
     />
   );

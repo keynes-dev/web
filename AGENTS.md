@@ -4,11 +4,15 @@ put page-specific React components in a shallow feature folder such as
 shared site components at the root of `src/components/`.
 
 Define global fonts, type scales, and element typography in `src/styles/global.css`.
-Use `Section` for every page section. It owns the rails, crossing marks, inner
-width, responsive padding, and border rhythm. Compose headings, eyebrows, and
+Use `Section`, `SectionFrame`, `SectionColumn`, and `SectionContent` for every
+page section. `Section` is the full-bleed root; `SectionFrame` and
+`SectionColumn` own the stepped rails and crossing marks; `SectionContent` owns
+responsive padding. Style any layer with `className`. Place backgrounds or
+full-bleed media on `Section`, `SectionFrame`, or `SectionColumn` when they
+must sit outside the padded content. Compose headings, eyebrows, and
 descriptions directly in each section so their semantics, layout, and Tailwind
 classes remain visible and independently customizable. Section implementations
-must not recreate or override the shared frame.
+must not recreate the shared frame with raw containers.
 Use `AccessLinks` for the shared homepage calls to action and `SiteLinks` for
 site navigation.
 
