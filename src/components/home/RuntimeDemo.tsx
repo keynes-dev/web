@@ -69,9 +69,9 @@ function BudgetsCard({ html }: { html: string }) {
       aria-labelledby='runtime-tab-budgets'
       tabIndex={0}
     >
-      <CardHeader className='flex flex-row items-center justify-between gap-3 py-2'>
+      <CardHeader className='flex flex-row items-center justify-between gap-3 py-2 bg-taupe-700'>
         <CardTitle className='text-xs'>budgets.ts</CardTitle>
-        <span className='flex items-center gap-1.5 font-mono text-xs text-muted-foreground'>
+        <span className='flex items-center gap-1.5 font-mono text-xs text-background'>
           <Braces className='size-3.5' aria-hidden='true' />
           TypeScript
         </span>
@@ -97,10 +97,10 @@ function PoliciesCard({ html }: { html: string }) {
       aria-labelledby='runtime-tab-policies'
       tabIndex={0}
     >
-      <div className='flex items-center justify-between gap-3 border-b-2 px-3 py-2 font-mono text-xs'>
+      <div className='flex items-center justify-between gap-3 border-b-2 px-3 py-2 font-mono text-xs text-background bg-taupe-700'>
         <div className='flex items-center gap-2'>
           <span
-            className='flex size-4 items-center justify-center border-1 text-xs'
+            className='flex size-4 items-center justify-center border border-background text-xs'
             aria-hidden='true'
           >
             <Play className='size-2' />
@@ -108,7 +108,7 @@ function PoliciesCard({ html }: { html: string }) {
           <span>lead_enrichment_limit.sql</span>
         </div>
         <span
-          className='flex items-center gap-1.5 text-muted-foreground'
+          className='flex items-center gap-1.5 text-background'
           aria-label='Data source: policy views'
         >
           <Database className='size-3.5' aria-hidden='true' />
@@ -144,7 +144,7 @@ function PoliciesCard({ html }: { html: string }) {
               <th className='w-1/3 border-r px-3 py-2 text-left font-normal text-muted-foreground'>
                 decision
               </th>
-              <td className='px-3 py-2 font-medium text-emerald-700 dark:text-emerald-400'>
+              <td className='px-3 py-2 font-medium text-emerald-500'>
                 Approved
               </td>
             </tr>
@@ -183,9 +183,9 @@ function WorkflowCard({ html }: { html: string }) {
       aria-labelledby='runtime-tab-workflow'
       tabIndex={0}
     >
-      <div className='flex items-center justify-between gap-3 border-b-2 px-3 py-2 font-mono text-xs'>
+      <div className='flex items-center justify-between gap-3 border-b-2 px-3 py-2 font-mono text-xs text-background bg-taupe-700'>
         <span>lead-enrichment.ts</span>
-        <span className='flex items-center gap-1.5 text-muted-foreground'>
+        <span className='flex items-center gap-1.5 text-background'>
           <Braces className='size-3.5' aria-hidden='true' />
           TypeScript
         </span>
@@ -210,7 +210,6 @@ export function RuntimeDemo({
   selected: RuntimeTab;
   onSelectedChange: (tab: RuntimeTab) => void;
 }) {
-
   function selectFromKeyboard(event: KeyboardEvent<HTMLButtonElement>) {
     if (!["ArrowLeft", "ArrowRight", "Home", "End"].includes(event.key)) {
       return;
@@ -221,9 +220,7 @@ export function RuntimeDemo({
     const next =
       event.key === "Home" ? 0
       : event.key === "End" ? runtimeTabs.length - 1
-      : (current +
-          (event.key === "ArrowRight" ? 1 : -1) +
-          runtimeTabs.length) %
+      : (current + (event.key === "ArrowRight" ? 1 : -1) + runtimeTabs.length) %
         runtimeTabs.length;
     const nextTab = runtimeTabs[next];
     onSelectedChange(nextTab);
@@ -249,7 +246,7 @@ export function RuntimeDemo({
                 "shrink-0 border-r-2 border-t-2 bg-sky-100 px-3 py-2 font-mono text-xs text-muted-foreground transition-colors hover:bg-muted hover:text-foreground",
                 index === 0 && "border-l-2",
                 active &&
-                  "bg-foreground text-background underline hover:bg-foreground hover:text-background",
+                  "bg-taupe-700 text-background underline hover:bg-foreground hover:text-background",
               )}
               id={`runtime-tab-${id}`}
               key={tab}

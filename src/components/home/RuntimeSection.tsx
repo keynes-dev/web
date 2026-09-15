@@ -52,7 +52,7 @@ export function RuntimeSection({ code }: { code: RuntimeCodeHtml }) {
       <SectionFrame>
         <SectionColumn>
           <SectionContent>
-            <article className='grid items-center gap-8 py-8 lg:grid-cols-2'>
+            <article className='grid items-center gap-8 lg:grid-cols-2'>
               <header className='space-y-4'>
                 <h2>{copy.title}</h2>
                 <p className='max-w-md text-base leading-relaxed text-muted-foreground'>

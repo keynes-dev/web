@@ -88,6 +88,16 @@
   }
 }
 
+html:has(#mobile-navigation-toggle:checked),
+body:has(#mobile-navigation-toggle:checked) {
+  overflow: hidden;
+}
+
+body:has(#mobile-navigation-toggle:checked) #mobile-navigation {
+  pointer-events: auto;
+  translate: 0;
+}
+
 .ascii .c-grey,
 .ascii .c-muted {
   color: var(--muted-foreground);

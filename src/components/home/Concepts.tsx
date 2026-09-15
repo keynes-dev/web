@@ -21,7 +21,7 @@ const concepts = [
   },
   {
     title: "Experiments",
-    caption: "Find the optimal resource allocation per workflow.",
+    caption: "Optimize resource allocation per workflow.",
     icon: ChartSpline,
   },
 ] as const;
@@ -42,7 +42,7 @@ export function Concepts() {
                   )}
                   key={concept.title}
                 >
-                  <SectionContent className='flex h-full flex-col gap-4'>
+                  <SectionContent className='flex h-full flex-col gap-4 p-4 sm:p-4 '>
                     <header className='space-y-2'>
                       <span className='flex items-center gap-3'>
                         <Icon className='size-4' strokeWidth={1.5} />

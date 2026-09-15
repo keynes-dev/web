@@ -1,6 +1,6 @@
 import { cn } from "@/lib/utils";
 
-const links = [
+export const siteLinks = [
   { label: "Thesis", href: "/thesis" },
   { label: "Product", href: "/product" },
   { label: "Docs", href: "/docs" },
@@ -12,7 +12,7 @@ export function SiteLinks({ className }: { className?: string }) {
     <ul
       className={cn("flex flex-wrap items-center gap-x-6 gap-y-2", className)}
     >
-      {links.map(({ label, href }) => (
+      {siteLinks.map(({ label, href }) => (
         <li key={href}>
           <a
             className="text-sm text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-2 focus-visible:outline-ring"

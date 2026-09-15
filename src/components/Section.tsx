@@ -54,7 +54,7 @@ function SectionContent({ className, ...props }: ComponentProps<"div">) {
   return (
     <div
       data-slot='section-content'
-      className={cn(className, "relative px-4 py-8 sm:p-8")}
+      className={cn("relative px-4 py-8 sm:px-8 sm:py-12", className)}
       {...props}
     />
   );
