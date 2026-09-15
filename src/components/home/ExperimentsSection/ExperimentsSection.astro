@@ -1,0 +1,96 @@
+---
+import Section from "@/components/section/Section.astro";
+import Card from "@/components/ui/Card.astro";
+import CardHeader from "@/components/ui/CardHeader.astro";
+import CardTitle from "@/components/ui/CardTitle.astro";
+import CardContent from "@/components/ui/CardContent.astro";
+import CardFooter from "@/components/ui/CardFooter.astro";
+import FrontierChart from "./FrontierChart.astro";
+import { dataCreditLimits, tokenLimits } from "./data";
+---
+
+<Section id="how-experiments" aria-label="Experiments">
+  <article class="grid min-w-0 items-center gap-10 lg:grid-cols-2 lg:gap-16">
+    <header class="flex flex-col gap-4">
+      <h2>Find the right budget.</h2>
+      <div class="max-w-3xl text-base leading-relaxed text-muted-foreground">
+        <p class="max-w-md text-foreground">
+          Enrich the same leads with different data-credit and AI-token budgets.
+          Find where more data and deeper analysis stop improving results.
+        </p>
+      </div>
+    </header>
+    <Card class="mx-auto w-full max-w-sm">
+      <CardHeader>
+        <CardTitle class="font-medium tracking-tight">Experiments</CardTitle>
+      </CardHeader>
+      <CardContent class="border-b-2">
+        <dl class="space-y-3">
+          <div class="space-y-1.5">
+            <dt class="text-xs text-muted-foreground">AI tokens per lead</dt>
+            <dd class="flex items-center gap-2 font-mono text-xs">
+              <span aria-hidden="true" class="text-lg text-muted-foreground">
+                [
+              </span>
+              <ul class="grid flex-1 grid-cols-4 gap-1">
+                {tokenLimits.map((limit) => (
+                  <li class="border border-sky-700/30 bg-sky-100 py-1 text-center text-sky-900">
+                    {limit.toLocaleString("en-US")}
+                  </li>
+                ))}
+              </ul>
+              <span aria-hidden="true" class="text-lg text-muted-foreground">
+                ]
+              </span>
+            </dd>
+          </div>
+          <div class="space-y-1.5">
+            <dt class="text-xs text-muted-foreground">Data credits per lead</dt>
+            <dd class="flex items-center gap-2 font-mono text-xs">
+              <span aria-hidden="true" class="text-lg text-muted-foreground">
+                [
+              </span>
+              <ul class="grid flex-1 grid-cols-3 gap-1">
+                {dataCreditLimits.map((limit) => (
+                  <li class="border border-emerald-700/30 bg-emerald-50 py-1 text-center text-emerald-900">
+                    {limit}
+                  </li>
+                ))}
+              </ul>
+              <span aria-hidden="true" class="text-lg text-muted-foreground">
+                ]
+              </span>
+            </dd>
+          </div>
+        </dl>
+        <p class="mt-4 flex flex-wrap items-baseline justify-between gap-2 text-xs">
+          <span class="text-muted-foreground">Total test runs</span>
+          <span class="font-mono">12</span>
+        </p>
+      </CardContent>
+      <CardContent>
+        <FrontierChart />
+      </CardContent>
+      <CardFooter>
+        <ul class="flex w-full flex-wrap items-center justify-center gap-x-4 gap-y-1.5 font-mono text-xs text-muted-foreground">
+          <li class="flex items-center gap-1.5">
+            <i
+              aria-hidden="true"
+              class="size-2 shrink-0 rounded-full bg-[var(--chart-4)]"
+            ></i>
+            Test run
+          </li>
+          <li class="flex items-center gap-1.5">
+            <i
+              aria-hidden="true"
+              class="shrink-0 text-sm leading-none not-italic text-[var(--chart-recommended)]"
+            >
+              ★
+            </i>
+            Optimal config
+          </li>
+        </ul>
+      </CardFooter>
+    </Card>
+  </article>
+</Section>

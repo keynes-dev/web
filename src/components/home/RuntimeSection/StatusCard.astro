@@ -1,0 +1,38 @@
+---
+import Card from "@/components/ui/Card.astro";
+import CardHeader from "@/components/ui/CardHeader.astro";
+import CardTitle from "@/components/ui/CardTitle.astro";
+import CardContent from "@/components/ui/CardContent.astro";
+interface Props {
+  status: "approved" | "denied";
+  detail: string;
+}
+const { status, detail } = Astro.props;
+const styles =
+  status === "approved"
+    ? { label: "Approved", swatch: "bg-emerald-500", header: "bg-emerald-100" }
+    : { label: "Denied", swatch: "bg-red-500", header: "bg-red-100" };
+---
+
+<Card class="overflow-hidden border" aria-label={`${styles.label}: ${detail}`}>
+  <CardHeader
+    class={[
+      styles.header,
+      "flex items-center justify-between rounded-t-[calc(var(--radius-sm)-1px)] border-b py-1.5 text-xs text-foreground",
+    ].join(" ")}
+  >
+    <CardTitle class="font-sans text-xs text-foreground">Agent</CardTitle>
+    <span class="flex min-w-0 items-center gap-2">
+      <span
+        aria-hidden="true"
+        class:list={[styles.swatch, "size-2 shrink-0 rounded-full"]}
+      ></span>
+      <span class="font-mono text-xs">{styles.label}</span>
+    </span>
+  </CardHeader>
+  <CardContent class="flex items-center justify-between gap-2 bg-background last:rounded-b-[calc(var(--radius-sm)-1px)]">
+    <span class="truncate font-mono text-xs text-muted-foreground">
+      {detail}
+    </span>
+  </CardContent>
+</Card>

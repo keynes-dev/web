@@ -1,0 +1,41 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import { cn } from "@/lib/utils";
+
+type Props = (
+  | (HTMLAttributes<"a"> & { href: string })
+  | (HTMLAttributes<"button"> & { href?: never })
+) & {
+  variant?: "default" | "outline" | "link";
+  size?: "default" | "sm" | "lg";
+};
+
+const {
+  variant = "default",
+  size = "default",
+  class: className,
+  ...attrs
+} = Astro.props;
+const classes = cn(
+  "inline-flex shrink-0 items-center justify-center gap-2 rounded-sm text-sm font-medium whitespace-nowrap transition-colors select-none focus-visible:outline-2 focus-visible:outline-ring disabled:pointer-events-none disabled:opacity-50",
+  {
+    default:
+      "border-2 bg-primary text-primary-foreground inset-shadow-[0_-4px_0_0] inset-shadow-border/10 hover:bg-primary/80",
+    outline:
+      "border-2 bg-background inset-shadow-[0_-4px_0_0] inset-shadow-border/10 hover:bg-muted hover:text-foreground",
+    link: "text-foreground underline-offset-4 hover:underline",
+  }[variant],
+  { default: "h-9 px-3", sm: "h-8 px-3", lg: "h-10 px-4" }[size],
+  className,
+);
+---
+
+{attrs.href !== undefined ? (
+  <a class={classes} {...attrs}>
+    <slot />
+  </a>
+) : (
+  <button type="button" class={classes} {...attrs}>
+    <slot />
+  </button>
+)}

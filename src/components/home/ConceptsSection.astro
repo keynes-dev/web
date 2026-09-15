@@ -1,0 +1,48 @@
+---
+import { Icon } from "astro-icon/components";
+
+import Section from "@/components/section/Section.astro";
+
+const concepts = [
+  {
+    title: "Budgets",
+    caption: "Define resource limits for teams and agents.",
+    icon: "hugeicons:piggy-bank",
+  },
+  {
+    title: "Policies",
+    caption: "Enforce resource limits with business logic.",
+    icon: "hugeicons:policy",
+  },
+  {
+    title: "Experiments",
+    caption: "Optimize resource allocation per workflow.",
+    icon: "hugeicons:covariate",
+  },
+] as const;
+---
+
+<Section aria-label="Budgets, policies, and experiments" padded={false}>
+  <div class="grid lg:grid-cols-3">
+    {concepts.map((concept) => (
+      <article class="relative border-b last:border-b-0 lg:border-b-0 lg:border-r lg:last:border-r-0">
+        <div class="flex h-full flex-col gap-4 p-4">
+          <header class="space-y-2">
+            <span class="flex items-center gap-3">
+              <Icon
+                name={concept.icon}
+                class="size-4"
+                stroke-width="1.5"
+                aria-hidden="true"
+              />
+              <h3>{concept.title}</h3>
+            </span>
+            <p class="max-w-sm text-sm text-muted-foreground">
+              {concept.caption}
+            </p>
+          </header>
+        </div>
+      </article>
+    ))}
+  </div>
+</Section>

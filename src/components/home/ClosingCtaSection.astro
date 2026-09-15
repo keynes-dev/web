@@ -1,0 +1,33 @@
+---
+import { Icon } from "astro-icon/components";
+
+import Section from "@/components/section/Section.astro";
+import Button from "@/components/ui/Button.astro";
+import { accessLinks } from "./access-links";
+---
+
+<Section rails="dashed">
+  <div class="flex flex-col items-center gap-8">
+    <header class="relative max-w-3xl space-y-4 text-center">
+      <h2>Put your agents on a Budget</h2>
+      <p class="text-base leading-relaxed text-muted-foreground">
+        Apache-2.0 open core. One TypeScript SDK. Start locally with zero setup
+        — no account, no keys, no network.
+      </p>
+    </header>
+    <div class="flex flex-wrap justify-center gap-3">
+      {accessLinks.map((link) => (
+        <Button href={link.href} size="lg" variant={link.variant}>
+          {link.label}
+          {link.href === "/access" && (
+            <Icon
+              name="hugeicons:arrow-right-01"
+              class="size-4"
+              aria-hidden="true"
+            />
+          )}
+        </Button>
+      ))}
+    </div>
+  </div>
+</Section>

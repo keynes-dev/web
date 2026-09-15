@@ -1,0 +1,44 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import GridMarks from "./GridMarks.astro";
+import { cn } from "@/lib/utils";
+
+interface Props extends HTMLAttributes<"section"> {
+  padded?: boolean;
+  rails?: "solid" | "dashed";
+}
+const {
+  class: className,
+  padded = true,
+  rails = "solid",
+  ...attrs
+} = Astro.props;
+---
+
+<section class={cn("border-b", className)} {...attrs}>
+  <div
+    class:list={[
+      "relative container mx-auto h-full px-4 md:px-0 xl:border-x",
+      { "border-dashed": rails === "dashed" },
+    ]}
+  >
+    <GridMarks class="max-xl:hidden" />
+    <div
+      class:list={[
+        "relative mx-auto h-full max-w-screen-lg border-x",
+        { "border-dashed": rails === "dashed" },
+      ]}
+    >
+      <GridMarks />
+      {padded ? (
+        <div class="relative z-10 h-full px-4 py-8 sm:px-8 sm:py-12">
+          <slot />
+        </div>
+      ) : (
+        <slot />
+      )}
+      <slot name="full-bleed" />
+      <slot name="decoration" />
+    </div>
+  </div>
+</section>

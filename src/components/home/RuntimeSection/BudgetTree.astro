@@ -1,0 +1,75 @@
+---
+import BudgetNode from "./BudgetNode.astro";
+import Connector from "./Connector.astro";
+import StatusCard from "./StatusCard.astro";
+---
+
+<figure
+  class="w-full"
+  role="img"
+  aria-label="The GTM organization's data-credit, AI-token, and email-send budgets branch into Growth Operations and Sales Development budgets. Growth Operations approves a small enrichment request; Sales Development denies an email-send request that exceeds available budget."
+>
+  <BudgetNode
+    name="GTM"
+    allocations={[
+      {
+        resource: "dataCredits",
+        total: 100_000,
+        reserved: 55_000,
+        used: 25_000,
+      },
+      {
+        resource: "aiTokens",
+        total: 30_000_000,
+        reserved: 15_000_000,
+        used: 6_000_000,
+      },
+      { resource: "emailSends", total: 25_000, reserved: 15_000, used: 5_000 },
+    ]}
+  />
+  <Connector />
+  <div class="grid grid-cols-2 items-start gap-3">
+    <div class="min-w-0">
+      <BudgetNode
+        name="Growth Ops"
+        allocations={[
+          {
+            resource: "dataCredits",
+            total: 60_000,
+            reserved: 30_000,
+            used: 15_000,
+          },
+          {
+            resource: "aiTokens",
+            total: 18_000_000,
+            reserved: 9_000_000,
+            used: 4_000_000,
+          },
+        ]}
+      />
+      <Connector branches={1} />
+      <StatusCard status="approved" detail="Running..." />
+    </div>
+    <div class="min-w-0">
+      <BudgetNode
+        name="Sales"
+        allocations={[
+          {
+            resource: "aiTokens",
+            total: 10_000_000,
+            reserved: 5_000_000,
+            used: 2_000_000,
+          },
+          {
+            resource: "emailSends",
+            total: 20_000,
+            reserved: 12_000,
+            used: 4_000,
+          },
+        ]}
+      />
+      <Connector branches={1} />
+      <StatusCard status="denied" detail="resource_limit" />
+    </div>
+  </div>
+</figure>

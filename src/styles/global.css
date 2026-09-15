@@ -1,5 +1,4 @@
 @import "tailwindcss";
-@import "shadcn/tailwind.css";
 
 :root {
   color-scheme: light;
@@ -7,44 +6,16 @@
   --foreground: var(--color-taupe-800);
   --card: var(--color-white);
   --card-foreground: var(--color-taupe-800);
-  --popover: var(--color-taupe-50);
-  --popover-foreground: var(--color-taupe-950);
   --primary: var(--color-orange-300);
   --primary-foreground: var(--color-taupe-900);
-  --secondary: var(--color-blue-100);
-  --secondary-foreground: var(--color-taupe-800);
   --muted: var(--color-taupe-100);
   --muted-foreground: var(--color-taupe-700);
-  --destructive: var(--color-red-700);
   --border: var(--color-taupe-800);
-  --input: var(--color-blue-700);
   --ring: var(--color-blue-700);
-  --chart-1: var(--color-blue-950);
-  --chart-2: var(--color-blue-800);
   --chart-3: var(--color-sky-800);
   --chart-4: var(--color-blue-700);
-  --chart-5: var(--color-cyan-800);
   --chart-accent: var(--color-sky-700);
-  --chart-denied: var(--color-red-700);
   --chart-recommended: var(--color-amber-700);
-  --diagram-blue: var(--color-blue-700);
-  --diagram-plum: var(--color-fuchsia-700);
-  --grid: var(--color-taupe-200);
-  --shiki-foreground: var(--foreground);
-  --shiki-background: transparent;
-  --shiki-token-constant: var(--diagram-blue);
-  --shiki-token-string: var(--diagram-plum);
-  --shiki-token-comment: color-mix(
-    in oklab,
-    var(--foreground) 70%,
-    var(--card)
-  );
-  --shiki-token-keyword: var(--color-red-700);
-  --shiki-token-parameter: var(--color-amber-700);
-  --shiki-token-function: var(--diagram-blue);
-  --shiki-token-string-expression: var(--color-amber-700);
-  --shiki-token-punctuation: var(--muted-foreground);
-  --shiki-token-link: var(--diagram-blue);
 }
 
 @theme inline {
@@ -52,22 +23,15 @@
   --font-mono: var(--font-ibm-plex-mono);
   --font-sans: var(--font-ibm-plex-sans);
   --color-ring: var(--ring);
-  --color-input: var(--input);
   --color-border: var(--border);
-  --color-destructive: var(--destructive);
   --color-muted-foreground: var(--muted-foreground);
   --color-muted: var(--muted);
-  --color-secondary-foreground: var(--secondary-foreground);
-  --color-secondary: var(--secondary);
-  --color-popover: var(--popover);
-  --color-popover-foreground: var(--popover-foreground);
   --color-primary-foreground: var(--primary-foreground);
   --color-primary: var(--primary);
   --color-card-foreground: var(--card-foreground);
   --color-card: var(--card);
   --color-foreground: var(--foreground);
   --color-background: var(--background);
-  --color-grid: var(--grid);
 }
 
 @layer base {
@@ -90,71 +54,4 @@
   h3 {
     @apply font-heading font-medium text-lg tracking-tight;
   }
-}
-
-.ascii .c-grey,
-.ascii .c-muted {
-  color: var(--muted-foreground);
-}
-
-.ascii .c-dark {
-  color: var(--foreground);
-}
-
-.ascii .c-blue {
-  color: var(--diagram-blue);
-}
-
-.ascii .c-plum {
-  color: var(--diagram-plum);
-}
-
-.runtime-code pre {
-  margin: 0;
-  overflow: visible;
-  background: transparent !important;
-  font-family: var(--font-mono);
-  font-size: var(--text-xs);
-  line-height: var(--leading-snug);
-  white-space: pre-wrap;
-  word-break: break-word;
-}
-
-.runtime-code code {
-  font-family: inherit;
-}
-
-/*
- * TanStack Charts paints axis rules and grid lines with presentation
- * attributes, which CSS outranks without `!important`. The library defaults are
- * far lighter than this site's rules, so the axes and grid are restated here.
- */
-.keynes-chart .ts-chart__axes line {
-  stroke: var(--border);
-  stroke-opacity: 0.5;
-}
-
-.keynes-chart .ts-chart__grid {
-  stroke-opacity: 0.16;
-}
-
-.keynes-chart-tooltip {
-  --ts-chart-tooltip-background: var(--popover);
-  --ts-chart-tooltip-border: 1px solid var(--border);
-  --ts-chart-tooltip-border-radius: var(--radius-lg);
-  --ts-chart-tooltip-color: var(--foreground);
-  --ts-chart-tooltip-padding: calc(var(--spacing) * 1.5)
-    calc(var(--spacing) * 2.5);
-  --ts-chart-tooltip-shadow: none;
-  --ts-chart-tooltip-font: var(--font-weight-medium) var(--text-xs) /
-    var(--text-xs--line-height) var(--font-mono);
-}
-
-.keynes-chart-tooltip .ts-chart-tooltip__row > :nth-child(2) {
-  color: var(--muted-foreground);
-}
-
-.keynes-chart-tooltip .ts-chart-tooltip__row > :last-child {
-  font-family: var(--font-mono);
-  font-weight: 500;
 }

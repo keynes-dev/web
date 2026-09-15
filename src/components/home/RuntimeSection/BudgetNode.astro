@@ -1,0 +1,57 @@
+---
+import Card from "@/components/ui/Card.astro";
+import CardHeader from "@/components/ui/CardHeader.astro";
+import CardTitle from "@/components/ui/CardTitle.astro";
+import CardContent from "@/components/ui/CardContent.astro";
+import ResourceBar from "./ResourceBar.astro";
+
+type Resource = "dataCredits" | "aiTokens" | "emailSends";
+interface Allocation {
+  resource: Resource;
+  total: number;
+  reserved?: number;
+  used?: number;
+}
+interface Props {
+  name: string;
+  allocations: readonly Allocation[];
+}
+
+const { name, allocations } = Astro.props;
+const labels: Record<Resource, string> = {
+  dataCredits: "Data credits",
+  aiTokens: "AI tokens",
+  emailSends: "Email sends",
+};
+const format = new Intl.NumberFormat("en", { notation: "compact" });
+---
+
+<Card class="h-full min-w-0 overflow-hidden border">
+  <CardHeader class="rounded-t-[calc(var(--radius-sm)-1px)] border-b bg-orange-100 py-1.5">
+    <CardTitle class="font-sans text-xs text-foreground">{name}</CardTitle>
+  </CardHeader>
+  <CardContent class="bg-background last:rounded-b-[calc(var(--radius-sm)-1px)]">
+    <dl class="grid gap-2">
+      {allocations.map(({ resource, total, reserved = 0, used = 0 }) => {
+        const label = labels[resource];
+        const available = total - reserved - used;
+        return (
+          <div class="min-w-0 text-xs">
+            <div class="flex items-end justify-between gap-2">
+              <dt class="truncate text-muted-foreground">{label}</dt>
+              <dd class="shrink-0 font-mono">{format.format(total)}</dd>
+            </div>
+            <dd class="mt-1">
+              <ResourceBar
+                available={available}
+                reserved={reserved}
+                used={used}
+                label={`${label}: ${available.toLocaleString()} available, ${reserved.toLocaleString()} reserved, ${used.toLocaleString()} used`}
+              />
+            </dd>
+          </div>
+        );
+      })}
+    </dl>
+  </CardContent>
+</Card>

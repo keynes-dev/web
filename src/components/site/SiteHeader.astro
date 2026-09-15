@@ -1,0 +1,155 @@
+---
+import { Icon } from "astro-icon/components";
+import GridMarks from "@/components/section/GridMarks.astro";
+import Section from "@/components/section/Section.astro";
+import Button from "@/components/ui/Button.astro";
+import Logo from "./Logo.astro";
+import { navigation } from "./navigation";
+---
+
+<header class="sticky top-0 z-60 border-y bg-background">
+  <div class="relative container mx-auto px-4 md:px-0 xl:border-x">
+    <GridMarks position="top" class="max-xl:hidden" />
+    <GridMarks class="max-xl:hidden" />
+    <div class="relative mx-auto flex h-16 max-w-screen-lg items-center justify-between gap-6 border-x px-4 sm:px-8">
+      <GridMarks position="top" />
+      <GridMarks />
+      <div class="flex items-center gap-8">
+        <a aria-label="Keynes home" href="/">
+          <Logo />
+        </a>
+        <nav aria-label="Main navigation" class="hidden md:block">
+          <ul class="flex items-center gap-6">
+            {navigation.map(({ label, href }) => (
+              <li>
+                <a
+                  class="text-sm text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-2 focus-visible:outline-ring"
+                  href={href}
+                >
+                  {label}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      </div>
+      <div class="flex items-center">
+        <Button href="/access" variant="link" size="sm">
+          Get access
+        </Button>
+        <button
+          id="open-navigation"
+          type="button"
+          class="hidden size-8 items-center justify-center focus-visible:outline-2 focus-visible:outline-ring md:hidden"
+          aria-label="Open navigation"
+          aria-controls="mobile-navigation"
+          aria-expanded="false"
+        >
+          <Icon name="hugeicons:menu-01" class="size-5" aria-hidden="true" />
+        </button>
+      </div>
+    </div>
+  </div>
+  <noscript>
+    <nav aria-label="Mobile navigation" class="border-t px-8 py-3 md:hidden">
+      <ul class="flex flex-wrap gap-4 text-sm">
+        {navigation.map(({ label, href }) => (
+          <li>
+            <a href={href} class="underline underline-offset-4">
+              {label}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+  </noscript>
+</header>
+
+<dialog
+  id="mobile-navigation"
+  aria-labelledby="navigation-title"
+  class="fixed inset-0 m-0 h-dvh max-h-dvh w-full max-w-none flex-col overflow-visible border-0 bg-background p-0 text-foreground backdrop:bg-background open:flex"
+>
+  <div class="relative shrink-0 border-y bg-background">
+    <div class="relative container mx-auto px-4 md:px-0 xl:border-x">
+      <GridMarks position="top" class="max-xl:hidden" />
+      <GridMarks class="max-xl:hidden" />
+      <div class="relative mx-auto flex h-16 max-w-screen-lg items-center justify-between gap-6 border-x px-4 sm:px-8">
+        <GridMarks position="top" />
+        <GridMarks />
+        <div class="flex items-center gap-8">
+          <a aria-label="Keynes home" href="/">
+            <Logo />
+          </a>
+          <h2 id="navigation-title" class="sr-only">
+            Site navigation
+          </h2>
+        </div>
+        <div class="flex items-center">
+          <Button href="/access" variant="link" size="sm">
+            Get access
+          </Button>
+          <form method="dialog">
+            <button
+              type="submit"
+              autofocus
+              class="flex size-8 items-center justify-center outline-none"
+              aria-label="Close navigation"
+            >
+              <Icon name="hugeicons:cancel-01" class="size-5" aria-hidden="true" />
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  <Section class="flex min-h-0 flex-1 flex-col">
+    <nav
+      aria-label="Mobile navigation"
+      class="flex h-full min-h-0 flex-col justify-between gap-8"
+    >
+      <ul class="space-y-3">
+        {navigation.map(({ label, href }) => (
+          <li>
+            <a
+              class="block py-2 text-3xl font-medium tracking-tight focus-visible:outline-2 focus-visible:outline-ring"
+              href={href}
+            >
+              {label}
+            </a>
+          </li>
+        ))}
+      </ul>
+      <Button href="/access" size="lg">
+        Get access
+      </Button>
+    </nav>
+  </Section>
+</dialog>
+
+<script>
+  const trigger = document.querySelector<HTMLButtonElement>("#open-navigation");
+  const dialog =
+    document.querySelector<HTMLDialogElement>("#mobile-navigation");
+  if (trigger && dialog) {
+    trigger.classList.replace("hidden", "flex");
+    trigger.addEventListener("click", () => {
+      dialog.showModal();
+      trigger.setAttribute("aria-expanded", "true");
+      document.documentElement.classList.add("overflow-hidden");
+    });
+    dialog.addEventListener("close", () => {
+      trigger.setAttribute("aria-expanded", "false");
+      document.documentElement.classList.remove("overflow-hidden");
+      if (trigger.getClientRects().length) trigger.focus();
+    });
+    dialog
+      .querySelectorAll("a")
+      .forEach((link) => link.addEventListener("click", () => dialog.close()));
+    window
+      .matchMedia("(min-width: 48rem)")
+      .addEventListener("change", (event) => {
+        if (event.matches && dialog.open) dialog.close();
+      });
+  }
+</script>

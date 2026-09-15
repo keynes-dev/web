@@ -1,0 +1,26 @@
+---
+interface Props {
+  branches?: 1 | 2;
+}
+const { branches = 2 } = Astro.props;
+---
+
+{branches === 1 ? (
+  <div aria-hidden="true" class="relative my-1.5 h-4">
+    <i class="absolute top-0 bottom-1 left-1/2 border-l border-border">
+      <span class="absolute -bottom-0.5 left-[calc(-0.25rem-0.5px)] size-2 rotate-45 border-r border-b border-border"></span>
+    </i>
+  </div>
+) : (
+  <div aria-hidden="true" class="relative my-1.5 h-6">
+    <i class="absolute top-0 left-1/2 z-10 size-2 -translate-x-[calc(50%-0.5px)] -translate-y-1/2 rounded-full border border-border bg-card"></i>
+    <i class="absolute top-0 left-1/2 h-1/2 border-l border-border"></i>
+    <i class="absolute top-1/2 right-1/4 left-1/4 border-t border-border"></i>
+    <i class="absolute top-1/2 bottom-1 left-1/4 border-l border-border">
+      <span class="absolute -bottom-0.5 left-[calc(-0.25rem-0.5px)] size-2 rotate-45 border-r border-b border-border"></span>
+    </i>
+    <i class="absolute top-1/2 right-1/4 bottom-1 border-r border-border">
+      <span class="absolute right-[calc(-0.25rem-0.5px)] -bottom-0.5 size-2 rotate-45 border-r border-b border-border"></span>
+    </i>
+  </div>
+)}

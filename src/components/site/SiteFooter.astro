@@ -1,0 +1,38 @@
+---
+import GridMarks from "@/components/section/GridMarks.astro";
+import Logo from "./Logo.astro";
+import { navigation } from "./navigation";
+---
+
+<footer class="border-b">
+  <div class="relative container mx-auto px-4 md:px-0 xl:border-x">
+    <GridMarks class="max-xl:hidden" />
+    <div class="relative mx-auto max-w-screen-lg border-x px-4 py-8 sm:px-8">
+      <GridMarks />
+      <div class="flex flex-col items-start justify-between gap-4 md:flex-row md:items-center">
+        <div class="flex items-center gap-4">
+          <a aria-label="Keynes home" href="/">
+            <Logo />
+          </a>
+          <span class="text-sm text-muted-foreground">
+            © 2026 Keynes · Apache-2.0
+          </span>
+        </div>
+        <nav aria-label="Footer navigation">
+          <ul class="flex flex-wrap items-center gap-x-6 gap-y-2">
+            {navigation.map(({ label, href }) => (
+              <li>
+                <a
+                  class="text-sm text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-2 focus-visible:outline-ring"
+                  href={href}
+                >
+                  {label}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      </div>
+    </div>
+  </div>
+</footer>

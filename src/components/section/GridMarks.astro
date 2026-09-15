@@ -1,0 +1,29 @@
+---
+interface Props {
+  class?: string;
+  position?: "top" | "bottom";
+}
+const { class: className, position = "bottom" } = Astro.props;
+// Center each diamond on the border, including the half-pixel stroke offset.
+const edge =
+  position === "top"
+    ? "top-[calc(-0.5px-0.25rem)]"
+    : "bottom-[calc(-0.5px-0.25rem)]";
+---
+
+<span
+  aria-hidden="true"
+  class:list={[
+    "pointer-events-none absolute left-[calc(-0.5px-0.25rem)] z-10 size-2 rotate-45 border bg-background",
+    edge,
+    className,
+  ]}
+/>
+<span
+  aria-hidden="true"
+  class:list={[
+    "pointer-events-none absolute right-[calc(-0.5px-0.25rem)] z-10 size-2 rotate-45 border bg-background",
+    edge,
+    className,
+  ]}
+/>

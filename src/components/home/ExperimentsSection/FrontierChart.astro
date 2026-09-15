@@ -1,0 +1,170 @@
+---
+import { experimentRuns, productionExample } from "./data";
+import {
+  chartDomain,
+  lowerCurve,
+  pathFor,
+  upperCurve,
+  xTicks,
+  yTicks,
+} from "./frontier";
+
+const width = 334;
+const height = 198;
+const plot = { left: 30, top: 6, width: 292, height: 158 };
+const x = (value: number) =>
+  plot.left +
+  ((value - chartDomain.spend[0]) /
+    (chartDomain.spend[1] - chartDomain.spend[0])) *
+    plot.width;
+const y = (value: number) =>
+  plot.top +
+  (1 -
+    (value - chartDomain.resolved[0]) /
+      (chartDomain.resolved[1] - chartDomain.resolved[0])) *
+    plot.height;
+const upperPath = pathFor(upperCurve, x, y);
+const lowerPath = pathFor(lowerCurve, x, y);
+const measuredRuns = experimentRuns.filter((run) => run !== productionExample);
+const dollarFormatter = new Intl.NumberFormat("en-US", {
+  minimumFractionDigits: 2,
+  maximumFractionDigits: 2,
+});
+const dollars = (value: number) => dollarFormatter.format(value);
+const clipPathId = "frontier-chart-plot";
+---
+
+<div class="flex gap-1.5 font-mono text-xs">
+  <p class="flex items-center justify-end text-xs font-semibold text-foreground/75 [writing-mode:vertical-rl] rotate-180">
+    Success rate
+  </p>
+  <div class="min-w-0 flex-1">
+    <svg
+      aria-labelledby="frontier-chart-title frontier-chart-description"
+      class="h-auto w-full"
+      role="img"
+      viewBox={`0 0 ${width} ${height}`}
+    >
+      <title id="frontier-chart-title">Lead enrichment budget frontier</title>
+      <desc id="frontier-chart-description">
+        Compare spend per lead in US dollars with the percentage of leads
+        enriched. The recommended configuration spends $
+        {dollars(productionExample.spend)} per lead and enriches{" "}
+        {productionExample.resolved} percent of leads.
+      </desc>
+      <defs>
+        <clipPath id={clipPathId}>
+          <rect
+            height={plot.height}
+            width={plot.width}
+            x={plot.left}
+            y={plot.top}
+          />
+        </clipPath>
+      </defs>
+      <g aria-hidden="true">
+        {yTicks.map((tick) => (
+          <g>
+            <line
+              stroke="var(--border)"
+              stroke-opacity="0.16"
+              x1={plot.left}
+              x2={plot.left + plot.width}
+              y1={y(tick)}
+              y2={y(tick)}
+            />
+            <text
+              fill="var(--muted-foreground)"
+              font-size="11"
+              text-anchor="end"
+              x={plot.left - 5}
+              y={y(tick) + 4}
+            >
+              {tick}%
+            </text>
+          </g>
+        ))}
+        <line
+          stroke="var(--border)"
+          stroke-opacity="0.5"
+          x1={plot.left}
+          x2={plot.left}
+          y1={plot.top}
+          y2={plot.top + plot.height}
+        />
+        <line
+          stroke="var(--border)"
+          stroke-opacity="0.5"
+          x1={plot.left}
+          x2={plot.left + plot.width}
+          y1={plot.top + plot.height}
+          y2={plot.top + plot.height}
+        />
+        <g clip-path={`url(#${clipPathId})`}>
+          <path
+            d={upperPath ?? undefined}
+            fill="none"
+            stroke="var(--chart-accent)"
+            stroke-width="1.5"
+          />
+          <path
+            d={lowerPath ?? undefined}
+            fill="none"
+            stroke="var(--chart-3)"
+            stroke-dasharray="4 4"
+            stroke-width="1.5"
+          />
+          {measuredRuns.map((run) => (
+            <circle
+              cx={x(run.spend)}
+              cy={y(run.resolved)}
+              fill="var(--chart-4)"
+              r="3.5"
+            />
+          ))}
+          <line
+            stroke="var(--chart-recommended)"
+            stroke-dasharray="4 4"
+            x1={x(productionExample.spend)}
+            x2={x(productionExample.spend)}
+            y1={plot.top}
+            y2={plot.top + plot.height}
+          />
+          <text
+            fill="var(--chart-recommended)"
+            font-size="15"
+            text-anchor="middle"
+            x={x(productionExample.spend)}
+            y={y(productionExample.resolved) + 5}
+          >
+            ★
+          </text>
+        </g>
+        {xTicks.map((tick) => (
+          <g>
+            <line
+              stroke="var(--border)"
+              stroke-opacity="0.5"
+              x1={x(tick)}
+              x2={x(tick)}
+              y1={plot.top + plot.height}
+              y2={plot.top + plot.height + 4}
+            />
+            <text
+              fill="var(--muted-foreground)"
+              font-size="11"
+              text-anchor="middle"
+              x={x(tick)}
+              y={plot.top + plot.height + 17}
+            >
+              {dollars(tick)}
+            </text>
+          </g>
+        ))}
+      </g>
+    </svg>
+    <p class="flex items-center justify-end text-xs font-semibold text-foreground/75">
+      Spend per lead
+    </p>
+  </div>
+</div>

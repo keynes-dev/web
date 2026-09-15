@@ -1,0 +1,17 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import { cn } from "@/lib/utils";
+
+type Props = HTMLAttributes<"footer">;
+const { class: className, ...attrs } = Astro.props;
+---
+
+<footer
+  class={cn(
+    "border-t-2 p-3",
+    className,
+  )}
+  {...attrs}
+>
+  <slot />
+</footer>

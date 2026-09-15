@@ -1,25 +1,15 @@
 // @ts-check
 import { fileURLToPath } from "node:url";
 
-import react from "@astrojs/react";
+import icon from "astro-icon";
 import tailwindcss from "@tailwindcss/vite";
 import { defineConfig, fontProviders } from "astro/config";
 
-function ssrSourceReload() {
-  return {
-    name: "ssr-source-reload",
-    enforce: "post",
-    /** @param {{ file: string; server: { ws: { send: (payload: { type: string }) => void } } }} param0 */
-    handleHotUpdate({ file, server }) {
-      if (!/\.tsx?$/.test(file)) return;
-      server.ws.send({ type: "full-reload" });
-      return [];
-    },
-  };
-}
+import cloudflare from "@astrojs/cloudflare";
 
 export default defineConfig({
-  integrations: [react()],
+  integrations: [icon({ iconDir: "src/assets" })],
+
   fonts: [
     {
       provider: fontProviders.fontsource(),
@@ -39,12 +29,15 @@ export default defineConfig({
       fallbacks: ["monospace"],
     },
   ],
+
   vite: {
-    plugins: [tailwindcss(), ssrSourceReload()],
+    plugins: [tailwindcss()],
     resolve: {
       alias: {
         "@": fileURLToPath(new URL("./src", import.meta.url)),
       },
     },
   },
+
+  adapter: cloudflare(),
 });

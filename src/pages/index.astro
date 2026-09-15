@@ -1,48 +1,40 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
-import { Footer } from "../components/Footer";
-import { Nav } from "../components/Nav";
-import { ClosingCta } from "@/components/home/ClosingCta";
-import { Concepts } from "@/components/home/Concepts";
-import { Deployments } from "@/components/home/Deployments";
-import { ExperimentSection } from "@/components/home/ExperimentSection";
-import { Hero } from "@/components/home/Hero";
-import { RuntimeSection } from "@/components/home/RuntimeSection";
-import { Technology } from "@/components/home/Technology";
-import { Thesis } from "@/components/home/Thesis";
-import { highlightRuntimeCode } from "@/lib/runtime-code";
-import { SectionDivider } from "@/components/SectionDivider";
-
-const runtimeCode = await highlightRuntimeCode();
+import SiteFooter from "@/components/site/SiteFooter.astro";
+import SiteHeader from "@/components/site/SiteHeader.astro";
+import ClosingCtaSection from "@/components/home/ClosingCtaSection.astro";
+import ConceptsSection from "@/components/home/ConceptsSection.astro";
+import DeploymentsSection from "@/components/home/DeploymentsSection/DeploymentsSection.astro";
+import ExperimentsSection from "@/components/home/ExperimentsSection/ExperimentsSection.astro";
+import HeroSection from "@/components/home/HeroSection/HeroSection.astro";
+import RuntimeSection from "@/components/home/RuntimeSection/RuntimeSection.astro";
+import TechnologySection from "@/components/home/TechnologySection.astro";
+import ThesisSection from "@/components/home/ThesisSection.astro";
+import SectionDivider from "@/components/section/SectionDivider.astro";
 ---
 
 <BaseLayout
   title="Keynes — Runtime economics for agents"
   description="Give your agents observability into your business with programmable resource controls for tokens, tools, time, and more."
 >
-  <Nav client:load />
+  <SiteHeader />
   <main>
-    <Hero />
+    <HeroSection />
     <SectionDivider />
-    <Concepts />
+    <ConceptsSection />
     <SectionDivider />
-    <RuntimeSection client:load code={runtimeCode} />
+    <RuntimeSection />
     <SectionDivider />
-    <Technology />
+    <TechnologySection />
     <SectionDivider />
-    <ExperimentSection client:load />
+    <ExperimentsSection />
     <SectionDivider />
-    <Thesis />
+    <ThesisSection />
     <SectionDivider />
-    <Deployments />
+    <DeploymentsSection />
     <SectionDivider />
-    <ClosingCta />
+    <ClosingCtaSection />
     <SectionDivider />
   </main>
-  <Footer />
+  <SiteFooter />
 </BaseLayout>
-
-<!-- Register the server-rendered hero drawing in the browser. -->
-<script>
-  import "@/lib/conveyor/element.js";
-</script>

@@ -1,0 +1,58 @@
+---
+import { Icon } from "astro-icon/components";
+import Section from "@/components/section/Section.astro";
+import RuntimeDemo from "./RuntimeDemo.astro";
+import { runtimeTabs } from "./tabs";
+---
+
+<Section
+  id="runtime-demo"
+  aria-label="Keynes runtime demonstration"
+  class="bg-sky-200"
+>
+  <article class="grid items-center gap-8 lg:grid-cols-2" data-runtime-section>
+    <header class="space-y-4">
+      <h2 data-runtime-title>{runtimeTabs[0].title}</h2>
+      <p
+        class="max-w-md text-base leading-relaxed text-muted-foreground"
+        data-runtime-description
+      >
+        {runtimeTabs[0].description}
+      </p>
+      <div hidden class="flex gap-4" data-runtime-controls>
+        <button
+          type="button"
+          class="inline-flex size-10 items-center justify-center rounded-full border border-foreground transition-colors hover:bg-foreground hover:text-background disabled:cursor-not-allowed disabled:opacity-25"
+          aria-label="Previous demo"
+          data-runtime-previous
+          disabled
+        >
+          <Icon
+            name="hugeicons:arrow-left-01"
+            class="size-4"
+            aria-hidden="true"
+          />
+        </button>
+        <button
+          type="button"
+          class="inline-flex size-10 items-center justify-center rounded-full border border-foreground transition-colors hover:bg-foreground hover:text-background disabled:cursor-not-allowed disabled:opacity-25"
+          aria-label="Next demo"
+          data-runtime-next
+        >
+          <Icon
+            name="hugeicons:arrow-right-01"
+            class="size-4"
+            aria-hidden="true"
+          />
+        </button>
+      </div>
+    </header>
+    <div class="min-w-0">
+      <RuntimeDemo />
+    </div>
+  </article>
+</Section>
+
+<script>
+  import "./runtime";
+</script>

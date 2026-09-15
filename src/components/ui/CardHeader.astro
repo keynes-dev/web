@@ -1,0 +1,17 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import { cn } from "@/lib/utils";
+
+type Props = HTMLAttributes<"header">;
+const { class: className, ...attrs } = Astro.props;
+---
+
+<header
+  class={cn(
+    "border-b-2 bg-foreground p-3",
+    className,
+  )}
+  {...attrs}
+>
+  <slot />
+</header>

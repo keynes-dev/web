@@ -1,51 +1,42 @@
 Astro owns the document shell and routing. Keep routes under `src/pages/` and
-put page-specific React components in a shallow feature folder such as
-`src/components/home/`. Keep reusable primitives in `src/components/ui/` and
-shared site components at the root of `src/components/`.
+page components under `src/components/home/`. Name component folders after their
+main component, such as `RuntimeSection/RuntimeSection.astro`. Components use
+PascalCase; supporting modules use lowercase or kebab-case. Keep data, styles,
+and scripts beside their component. Leave only site-wide helpers in `src/lib/`.
 
-Define global fonts, type scales, and element typography in `src/styles/global.css`.
-Use `Section`, `SectionFrame`, `SectionColumn`, and `SectionContent` for every
-page section. `Section` is the full-bleed root; `SectionFrame` and
-`SectionColumn` own the stepped rails and crossing marks; `SectionContent` owns
-responsive padding. Style any layer with `className`. Place backgrounds or
-full-bleed media on `Section`, `SectionFrame`, or `SectionColumn` when they
-must sit outside the padded content. Compose headings, eyebrows, and
-descriptions directly in each section so their semantics, layout, and Tailwind
-classes remain visible and independently customizable. Section implementations
-must not recreate the shared frame with raw containers.
-Use `AccessLinks` for the shared homepage calls to action and `SiteLinks` for
-site navigation.
+Define global fonts, theme colors, and element typography in `src/styles/global.css`.
+Prefer standard Tailwind utilities over arbitrary values. Keep numeric values
+where they describe SVG geometry, dynamic proportions, or precise rail alignment.
+Use one `Section.astro` for page rails and responsive padding. Its default slot
+holds padded content; `full-bleed` holds edge-to-edge content below it; `decoration`
+holds positioned artwork. Header and footer use native semantic elements with
+matching rail classes and shared `GridMarks.astro`.
 
-Use the app-local shadcn components under `src/components/ui/`. Prefer the
-shared `Section` and Card primitives over new page-specific wrappers. Keep the
-full-bleed section border and the stepped Tailwind container layout.
+Compose `Card.astro`, `CardHeader.astro`, `CardTitle.astro`, `CardContent.astro`,
+and `CardFooter.astro` for standardized cards. Each part accepts native HTML
+attributes and merges Tailwind `class` overrides with its defaults. Do not add
+single-use card wrappers. Render shared navigation and access-link data
+at their call sites so each caller controls styling.
 
-Marketing charts use TanStack Charts through the shared chart helpers. Import
-only the required chart and D3 modules. Keep the Budget and Policy figures
-independent of the chart library. Do not reintroduce Recharts or ASCII chart
-rendering.
+Render charts as build-time SVG. Keep chart data and D3 curve generation beside
+the experiment section. Preserve visible axes, card-owned padding, footer legends,
+and accessible descriptions and values. Do not hydrate charts.
 
-Keep the `@/*` TypeScript and Vite aliases aligned. Hydrate interactive islands
-with `client:load`; `client:visible` does not run when its wrapper has zero
-layout size. Sections with no interactivity take no client directive at all.
-Preserve the TypeScript source reload plugin in `astro.config.mjs`.
+Render code as plain text at build time. GPU Lexer enhances it in the browser
+when WebGPU is available; preserve readable plain code when it is not. Keep
+source strings, highlighting, and tab behavior beside RuntimeSection. Use small
+Astro-processed scripts for interactions, with readable no-JavaScript content.
+The mobile navigation uses a native modal dialog with Escape dismissal, focus
+restoration, scroll locking, and breakpoint handling. Keep aliases aligned.
 
-The conveyor drawing is the `<conveyor-belt>` custom element, defined by
-`src/lib/conveyor/element.js` and registered by a `<script>` in the page that
-uses it, so the section holding the tag needs no hydrating. Register it from
-`BaseLayout` instead if a second page ever wants it. Declare custom elements in
-`src/custom-elements.d.ts` for the TSX that uses them. Only one conveyor can be
-drawn at a time — it keeps one camera and one set of materials — and
-`createConveyor` throws on a second.
+The conveyor is the `<conveyor-belt>` custom element in
+`src/components/home/HeroSection/conveyor/element.js`, registered by HeroSection.
+Only one conveyor can be drawn at a time because it shares a camera and materials.
+Keep its dynamic import and disconnect cleanup. The drawing takes its colors from
+the element's computed style: text is ink, background is ground with a card-color
+fallback, and border is the grid rule. Write Tailwind utilities literally so they
+are included in the build. The site is light-only.
 
-The drawing takes its three colours from the element's own computed style, so
-give them to it as utilities: `text-*` is the ink, `bg-*` the ground (falling
-back to `--card`), `border-*` the grid's rule. The site is light-only for now;
-do not wire `prefers-color-scheme` or `dark:` variants. Tailwind only emits
-classes it finds in scanned source, so the utility has to be written literally
-on the element rather than composed at runtime.
-
-Run the web typecheck, production build, and desktop and mobile browser checks
-for website changes. Treat browser inspection as part of the design process;
-do not add automated tests for the website. Use a repository-supported Node.js
-version.
+Run the web typecheck, production build, and desktop and mobile browser checks.
+Check keyboard interaction and content without JavaScript. Do not add a website
+unit-test suite. Use a repository-supported Node.js version.
