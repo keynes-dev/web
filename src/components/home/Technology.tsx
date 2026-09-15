@@ -9,7 +9,7 @@ export function Technology() {
   return (
     <Section aria-label='Technology'>
       <SectionFrame>
-        <SectionColumn className='overflow-hidden'>
+        <SectionColumn>
           <SectionContent>
             <article className='relative z-10 flex flex-col gap-4 lg:flex-row lg:gap-16'>
               <h2 className='shrink-0'>It's just PostgreSQL</h2>

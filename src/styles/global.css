@@ -34,7 +34,11 @@
   --shiki-background: transparent;
   --shiki-token-constant: var(--diagram-blue);
   --shiki-token-string: var(--diagram-plum);
-  --shiki-token-comment: var(--muted-foreground);
+  --shiki-token-comment: color-mix(
+    in oklab,
+    var(--foreground) 70%,
+    var(--card)
+  );
   --shiki-token-keyword: var(--color-red-700);
   --shiki-token-parameter: var(--color-amber-700);
   --shiki-token-function: var(--diagram-blue);

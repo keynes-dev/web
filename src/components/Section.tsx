@@ -21,10 +21,13 @@ function SectionFrame({
   return (
     <div
       data-slot='section-frame'
-      className={cn("relative container mx-auto xl:border-x", className)}
+      className={cn(
+        "relative container mx-auto px-4 md:px-0 xl:border-x",
+        className,
+      )}
       {...props}
     >
-      <GridMarks className='md:hidden xl:block' />
+      <GridMarks className='hidden xl:block' />
       {children}
     </div>
   );
@@ -39,12 +42,12 @@ function SectionColumn({
     <div
       data-slot='section-column'
       className={cn(
-        "relative container mx-auto max-w-screen-lg md:border-x",
+        "relative container mx-auto max-w-screen-lg border-x",
         className,
       )}
       {...props}
     >
-      <GridMarks />
+      <GridMarks className='block' />
       {children}
     </div>
   );

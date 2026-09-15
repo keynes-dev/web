@@ -48,11 +48,13 @@ export function Nav() {
   }, [open]);
 
   return (
-    <header className='relative z-50 bg-background'>
-      <div className='relative z-50 container mx-auto border-b bg-background xl:border-x'>
-        <GridMarks className='md:hidden xl:block' />
-        <nav className='relative container mx-auto flex h-16 max-w-screen-lg items-center justify-between gap-6 px-4 md:border-x sm:px-8'>
-          <GridMarks />
+    <header className='sticky top-0 z-50 border-y bg-background'>
+      <div className='relative z-50 container mx-auto bg-background px-4 md:px-0 xl:border-x'>
+        <GridMarks position='top' className='hidden xl:block' />
+        <GridMarks className='hidden xl:block' />
+        <nav className='relative container mx-auto flex h-16 max-w-screen-lg items-center justify-between gap-6 border-x px-4 sm:px-8'>
+          <GridMarks position='top' className='block' />
+          <GridMarks className='block' />
           <div className='flex items-center gap-8'>
             <a aria-label='Keynes home' href='/'>
               <Logo />

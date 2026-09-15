@@ -16,12 +16,12 @@ const tickerCopy: Record<RuntimeTab, { title: string; description: string }> = {
     description:
       "See shared resources flow from the GTM budget into Growth Operations and Sales Development, with approvals and denials visible at each branch.",
   },
-  Budgets: {
+  Budget: {
     title: "Give every team a clear allocation.",
     description:
       "Create the GTM budget once, then allocate data credits, AI tokens, and email sends to the teams that use them.",
   },
-  Policies: {
+  Policy: {
     title: "Turn business context into limits.",
     description:
       "Evaluate each request against live availability and lead intent, returning an explicit limit, decision, and reason.",
