@@ -53,8 +53,8 @@ export function Deployments() {
     <Section className='bg-amber-100'>
       <SectionFrame>
         <SectionColumn>
-          <SectionContent>
-            <div className='flex flex-col gap-8'>
+          <SectionContent className='px-0 pb-0 pt-8 sm:px-0 sm:pb-0 sm:pt-12'>
+            <div className='flex flex-col gap-8 px-4 sm:px-8'>
               <header className='relative max-w-3xl space-y-4'>
                 <h2>Deploy everywhere</h2>
                 <p className='text-base leading-relaxed text-muted-foreground'>
@@ -70,8 +70,32 @@ export function Deployments() {
                     <CardHeader>
                       <CardTitle>{mode.name}</CardTitle>
                     </CardHeader>
-                    <CardContent className='p-0'>
-                      <div className='flex min-h-32 items-center justify-center overflow-hidden p-2 sm:p-3 bg-violet-50'>
+                    <CardContent className='relative overflow-hidden bg-violet-50 p-0'>
+                      <svg
+                        className='pointer-events-none absolute inset-0 size-full text-border/10'
+                        aria-hidden='true'
+                      >
+                        <defs>
+                          <pattern
+                            id={`deployment-grid-${mode.name}`}
+                            width='16'
+                            height='16'
+                            patternUnits='userSpaceOnUse'
+                          >
+                            <path
+                              d='M16 0H0V16'
+                              fill='none'
+                              stroke='currentColor'
+                            />
+                          </pattern>
+                        </defs>
+                        <rect
+                          width='100%'
+                          height='100%'
+                          fill={`url(#deployment-grid-${mode.name})`}
+                        />
+                      </svg>
+                      <div className='relative z-10 flex min-h-32 items-center justify-center overflow-hidden p-2 sm:p-3'>
                         <pre
                           className='ascii m-0 max-w-full overflow-hidden font-mono text-xs leading-relaxed font-medium whitespace-pre'
                           dangerouslySetInnerHTML={{ __html: mode.glyph }}
@@ -81,46 +105,47 @@ export function Deployments() {
                   </Card>
                 ))}
               </div>
-
-              <Card className='min-w-0'>
-                <CardContent className='p-0'>
-                  <Table>
-                    <TableHeader className='border-b-2 border-border bg-foreground'>
-                      <TableRow>
-                        <TableHead className='min-w-56 text-background'>
-                          Capability
-                        </TableHead>
-                        <TableHead className='text-background'>Local</TableHead>
-                        <TableHead className='text-background'>
-                          Hosted
-                        </TableHead>
-                        <TableHead className='text-background'>
-                          Embedded
-                        </TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody className='bg-violet-50'>
-                      {tableRows.map((row) => (
-                        <TableRow key={row.label}>
-                          <TableCell className='font-medium'>
-                            {row.label}
-                          </TableCell>
-                          {row.values.map((value, index) => (
-                            <TableCell
-                              key={`${row.label}-${modes[index].name}`}
-                            >
-                              {typeof value === "boolean" ?
-                                <BooleanValue value={value} />
-                              : value}
-                            </TableCell>
-                          ))}
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </CardContent>
-              </Card>
             </div>
+
+            <Card className='mt-8 min-w-0 border-x-0 border-b-0 border-t-1'>
+              <CardContent className='p-0'>
+                <Table>
+                  <TableHeader className='border-b-1 border-border'>
+                    <TableRow>
+                      <TableHead className='min-w-48 pl-4 sm:pl-8'>
+                        Capability
+                      </TableHead>
+                      <TableHead>Local</TableHead>
+                      <TableHead>Hosted</TableHead>
+                      <TableHead className='pr-4 sm:pr-8'>Embedded</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {tableRows.map((row) => (
+                      <TableRow key={row.label}>
+                        <TableCell className='pl-4 font-medium sm:pl-8'>
+                          {row.label}
+                        </TableCell>
+                        {row.values.map((value, index) => (
+                          <TableCell
+                            key={`${row.label}-${modes[index].name}`}
+                            className={
+                              index === row.values.length - 1 ?
+                                "pr-4 sm:pr-8"
+                              : undefined
+                            }
+                          >
+                            {typeof value === "boolean" ?
+                              <BooleanValue value={value} />
+                            : value}
+                          </TableCell>
+                        ))}
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </CardContent>
+            </Card>
           </SectionContent>
         </SectionColumn>
       </SectionFrame>

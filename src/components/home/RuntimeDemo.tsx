@@ -13,12 +13,7 @@ import { BudgetTree } from "./BudgetTree";
 import { ResourceSwatch } from "./ResourceBar";
 import { Braces, ChevronDown, Database, Play } from "lucide-react";
 
-export const runtimeTabs = [
-  "Runtime",
-  "Budget",
-  "Policy",
-  "Workflow",
-] as const;
+export const runtimeTabs = ["Runtime", "Budget", "Policy", "Workflow"] as const;
 
 export type RuntimeTab = (typeof runtimeTabs)[number];
 
@@ -64,9 +59,9 @@ function BudgetsCard({ html }: { html: string }) {
     <Card
       className='min-h-0 flex-1 overflow-hidden'
       aria-label='Budgets view'
-      id='runtime-panel-budget'
+      id='runtime-panel-budgets'
       role='tabpanel'
-      aria-labelledby='runtime-tab-budget'
+      aria-labelledby='runtime-tab-budgets'
       tabIndex={0}
     >
       <CardHeader className='flex flex-row items-center justify-between gap-3 py-2 bg-taupe-700'>
@@ -87,14 +82,14 @@ function BudgetsCard({ html }: { html: string }) {
   );
 }
 
-function PoliciesCard({ html, lineCount }: { html: string; lineCount: number }) {
+function PoliciesCard({ html }: { html: string }) {
   return (
     <div
       className='flex min-h-0 flex-1 flex-col overflow-hidden border-2 bg-card'
       aria-label='Policies view'
-      id='runtime-panel-policy'
+      id='runtime-panel-policies'
       role='tabpanel'
-      aria-labelledby='runtime-tab-policy'
+      aria-labelledby='runtime-tab-policies'
       tabIndex={0}
     >
       <div className='flex items-center justify-between gap-3 border-b-2 px-3 py-2 font-mono text-xs text-background bg-taupe-700'>
@@ -118,16 +113,16 @@ function PoliciesCard({ html, lineCount }: { html: string; lineCount: number }) 
         </span>
       </div>
 
-      <div className='min-h-0 flex-1 overflow-hidden'>
-        <div className='flex min-w-0 px-3 py-2'>
+      <div className='min-h-0 flex-1 overflow-auto'>
+        <div className='flex min-w-max p-3'>
           <pre
-            className='mr-3 shrink-0 pr-3 text-right font-mono text-xs leading-3 text-muted-foreground'
+            className='mr-3 border-r pr-3 text-right font-mono text-xs leading-snug text-muted-foreground'
             aria-hidden='true'
           >
-            {Array.from({ length: lineCount }, (_, index) => index + 1).join("\n")}
+            {Array.from({ length: 17 }, (_, index) => index + 1).join("\n")}
           </pre>
           <div
-            className='runtime-code min-w-0 flex-1 pr-3 [&_pre]:!leading-3'
+            className='runtime-code pr-3 [&_pre]:break-normal [&_pre]:whitespace-pre'
             aria-label='Policy SQL query'
             dangerouslySetInnerHTML={{ __html: html }}
           />
@@ -268,7 +263,7 @@ export function RuntimeDemo({
       : selected === "Budget" ?
         <BudgetsCard html={code.budgets} />
       : selected === "Policy" ?
-        <PoliciesCard html={code.policies} lineCount={code.policyLineCount} />
+        <PoliciesCard html={code.policies} />
       : <WorkflowCard html={code.workflow} />}
     </div>
   );

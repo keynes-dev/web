@@ -9,8 +9,8 @@ import { Button } from "@/components/ui/button";
 export function Thesis() {
   return (
     <Section>
-      <SectionFrame>
-        <SectionColumn>
+      <SectionFrame className='border-dashed'>
+        <SectionColumn className='border-dashed'>
           <SectionContent>
             <div className='flex flex-col items-center gap-8'>
               <header className='relative max-w-3xl space-y-4 text-center'>

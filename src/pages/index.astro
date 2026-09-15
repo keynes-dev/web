@@ -11,6 +11,7 @@ import { RuntimeSection } from "@/components/home/RuntimeSection";
 import { Technology } from "@/components/home/Technology";
 import { Thesis } from "@/components/home/Thesis";
 import { highlightRuntimeCode } from "@/lib/runtime-code";
+import { SectionDivider } from "@/components/SectionDivider";
 
 const runtimeCode = await highlightRuntimeCode();
 ---
@@ -22,13 +23,21 @@ const runtimeCode = await highlightRuntimeCode();
   <Nav client:load />
   <main>
     <Hero />
+    <SectionDivider />
     <Concepts />
+    <SectionDivider />
     <RuntimeSection client:load code={runtimeCode} />
+    <SectionDivider />
     <Thesis />
+    <SectionDivider />
     <ExperimentSection client:load />
+    <SectionDivider />
     <Technology />
+    <SectionDivider />
     <Deployments />
+    <SectionDivider />
     <ClosingCta />
+    <SectionDivider />
   </main>
   <Footer />
 </BaseLayout>

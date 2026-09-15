@@ -13,10 +13,7 @@ export function ExperimentSection() {
         <SectionColumn>
           <SectionContent>
             <article className='grid min-w-0 items-center gap-10 lg:grid-cols-2 lg:gap-16'>
-              <header className='relative space-y-4'>
-                <p className='font-mono text-xs leading-normal tracking-wider uppercase text-muted-foreground'>
-                  Experiments
-                </p>
+              <header className='flex flex-col gap-4'>
                 <h2>Find the right budget.</h2>
                 <div className='max-w-3xl text-base leading-relaxed text-muted-foreground'>
                   <p className='max-w-md text-foreground'>
@@ -24,12 +21,9 @@ export function ExperimentSection() {
                     and search limits. Compare how many tickets get resolved to
                     see where extra spending helps.
                   </p>
-                  <p className='mt-6 max-w-md'>
-                    Use what you learn to set the limits for your next run.
-                  </p>
                 </div>
               </header>
-              <div className='min-w-0 py-5'>
+              <div>
                 <ExperimentSweep />
               </div>
             </article>
