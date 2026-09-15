@@ -12,10 +12,10 @@
     "generate-types": "wrangler types"
   },
   "dependencies": {
-    "@astrojs/cloudflare": "^14.3.1",
+    "@astrojs/cloudflare": "14.3.1",
     "@iconify-json/hugeicons": "1.2.34",
     "@tailwindcss/vite": "^4.3.3",
-    "astro": "7.2.9",
+    "astro": "7.3.2",
     "astro-icon": "1.2.0",
     "cn": "^0.3.0",
     "d3-shape": "^3.2.0",
