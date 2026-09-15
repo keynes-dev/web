@@ -5,7 +5,7 @@ const nameRule = (words: string[], cls = "c-dark"): Rule => ({
   cls,
 });
 
-const GLYPH_WIDTH = 44;
+const GLYPH_WIDTH = 36;
 
 function glyphBox(title: string, body: string[]): string[] {
   const inner = GLYPH_WIDTH - 2;
@@ -23,7 +23,7 @@ const glyphRules: Rule[] = [
   { re: /network/, cls: "c-muted" },
   nameRule([
     "node process",
-    "your postgresql 18.6",
+    "your postgresql",
     "one transaction",
     "your app",
     "keynes",
@@ -36,11 +36,12 @@ export const localGlyph = paintAscii(
 );
 
 const transactionBox = (() => {
-  const inner = 38 - 2;
+  const width = 30;
+  const inner = width - 2;
   const title = "one transaction";
   return [
-    "+-- " + title + " " + "-".repeat(38 - 6 - title.length) + "+",
-    "|" + "  [ your row ]      [ keynes.* ]".padEnd(inner) + "|",
+    "+-- " + title + " " + "-".repeat(width - 6 - title.length) + "+",
+    "|" + " [ your row ] [ keynes.* ]".padEnd(inner) + "|",
     "+" + "-".repeat(inner) + "+",
   ];
 })();
@@ -48,7 +49,7 @@ const transactionBox = (() => {
 export const embeddedGlyph = paintAscii(
   [
     ...glyphBox(
-      "your postgresql 18.6",
+      "your postgresql",
       transactionBox.map((line) => "  " + line),
     ),
   ],
@@ -56,12 +57,10 @@ export const embeddedGlyph = paintAscii(
 );
 
 export const hostedGlyph = paintAscii(
-  [
-    "+-- your app ------+  network  +-- keynes -+",
-    "|                  |     :     |  service  |",
-    "|   remote sdk     |-----:---->|  postgres |",
-    "|                  |     :     |           |",
-    "+------------------+     :     +-----------+",
-  ],
+  glyphBox("hosted service", [
+    "    [ your app ]",
+    "      | network",
+    "      +--> [ keynes + postgres ]",
+  ]),
   glyphRules,
 );

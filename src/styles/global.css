@@ -30,38 +30,17 @@
   --diagram-blue: var(--color-blue-700);
   --diagram-plum: var(--color-fuchsia-700);
   --grid: var(--color-taupe-200);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    color-scheme: dark;
-    --background: var(--color-taupe-950);
-    --foreground: var(--color-taupe-50);
-    --card: var(--color-taupe-900);
-    --card-foreground: var(--color-taupe-50e);
-    --popover: var(--color-taupe-950);
-    --primary: var(--color-blue-700);
-    --primary-foreground: var(--color-taupe-50);
-    --secondary: var(--color-taupe-900);
-    --secondary-foreground: var(--color-taupe-50);
-    --muted: var(--color-taupe-900);
-    --muted-foreground: var(--color-taupe-400);
-    --destructive: var(--color-red-400);
-    --border: var(--color-taupe-700);
-    --input: var(--color-blue-500);
-    --ring: var(--color-blue-200);
-    --chart-1: var(--color-white);
-    --chart-2: var(--color-blue-200);
-    --chart-3: var(--color-sky-300);
-    --chart-4: var(--color-blue-300);
-    --chart-5: var(--color-cyan-200);
-    --chart-accent: var(--color-sky-300);
-    --chart-denied: var(--color-red-400);
-    --chart-recommended: var(--color-yellow-400);
-    --diagram-blue: var(--color-lime-300);
-    --diagram-plum: var(--color-fuchsia-300);
-    --grid: var(--color-taupe-900);
-  }
+  --shiki-foreground: var(--foreground);
+  --shiki-background: transparent;
+  --shiki-token-constant: var(--diagram-blue);
+  --shiki-token-string: var(--diagram-plum);
+  --shiki-token-comment: var(--muted-foreground);
+  --shiki-token-keyword: var(--color-red-700);
+  --shiki-token-parameter: var(--color-amber-700);
+  --shiki-token-function: var(--diagram-blue);
+  --shiki-token-string-expression: var(--color-amber-700);
+  --shiki-token-punctuation: var(--muted-foreground);
+  --shiki-token-link: var(--diagram-blue);
 }
 
 @theme inline {
@@ -124,6 +103,21 @@
 
 .ascii .c-plum {
   color: var(--diagram-plum);
+}
+
+.runtime-code pre {
+  margin: 0;
+  overflow: visible;
+  background: transparent !important;
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  line-height: var(--leading-snug);
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.runtime-code code {
+  font-family: inherit;
 }
 
 .keynes-chart-tooltip {

@@ -184,14 +184,14 @@ export function FrontierChart() {
         <span className="flex items-center gap-1.5">
           <i
             aria-hidden="true"
-            className="size-2 shrink-0 rounded-full bg-mauve-700 dark:bg-mauve-300"
+            className="size-2 shrink-0 rounded-full bg-mauve-700"
           />
           {chartConfig.measured.label}
         </span>
         <span className="flex items-center gap-1.5">
           <i
             aria-hidden="true"
-            className="text-amber-700 not-italic dark:text-yellow-400"
+            className="text-amber-700 not-italic"
           >
             ★
           </i>

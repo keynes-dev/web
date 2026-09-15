@@ -40,9 +40,10 @@ drawn at a time — it keeps one camera and one set of materials — and
 
 The drawing takes its three colours from the element's own computed style, so
 give them to it as utilities: `text-*` is the ink, `bg-*` the ground (falling
-back to `--card`), `border-*` the grid's rule. System theme changes are followed.
-Tailwind only emits classes it finds in scanned source, so the utility has to be
-written literally on the element rather than composed at runtime.
+back to `--card`), `border-*` the grid's rule. The site is light-only for now;
+do not wire `prefers-color-scheme` or `dark:` variants. Tailwind only emits
+classes it finds in scanned source, so the utility has to be written literally
+on the element rather than composed at runtime.
 
 Run the web typecheck, production build, and desktop and mobile browser checks
 for website changes. Treat browser inspection as part of the design process;

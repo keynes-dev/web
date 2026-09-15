@@ -11,18 +11,17 @@ import { cn } from "@/lib/utils";
 const concepts = [
   {
     title: "Budgets",
-    caption: "Define resource limits for teams, workflows, and agents.",
+    caption: "Define resource limits for teams and agents.",
     icon: PiggyBank,
   },
   {
     title: "Policies",
-    caption: "Set policies to enforce resource limits based on business rules.",
+    caption: "Enforce resource limits with business logic.",
     icon: Scale,
   },
   {
     title: "Experiments",
-    caption:
-      "Find the optimal resource allocation for a workflow by testing it.",
+    caption: "Find the optimal resource allocation per workflow.",
     icon: ChartSpline,
   },
 ] as const;

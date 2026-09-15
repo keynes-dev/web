@@ -30,12 +30,8 @@ export function createMaterials() {
   // Widths are in CSS pixels. LineSegments2 writes the CSS viewport into
   // `resolution` before each draw, so a linewidth of 1 is a 1px stroke — the
   // same as a CSS border. Multiplying that by the device ratio would double
-  // it on a retina display.
-  //
-  // `weigh` is whether a stroke follows the drawing's scale: machine ink does,
-  // so a zoomed-out frame keeps its proportions. The ground grid does not — it
-  // is the same 1px rule as the page's own borders, which do not thicken when
-  // the machine shrinks.
+  // it on a retina display. Strokes follow the drawing's scale so a zoomed-out
+  // frame keeps its proportions.
   const widths = new Map();
   function lineMaterial(width, weigh = true) {
     const material = new LineMaterial({ color: CONFIG.ink, linewidth: width });
@@ -75,9 +71,6 @@ export function createMaterials() {
         ...offset,
       }),
   );
-  // The ground grid. A 1px CSS stroke, same as the page's own rules.
-  const gridMat = lineMaterial(1, false);
-  gridMat.color.setHex(CONFIG.rule);
   const lineMat = lineMaterial(CONFIG.lineWidth);
   // Hairline weight for mechanism detail. At 512px a bolt head is only a few
   // pixels across, so the structural line weight fills it in solid.
@@ -89,10 +82,9 @@ export function createMaterials() {
   // Repaint the drawing in the page's own two colours. Called with resolved sRGB
   // numbers, since a CSS custom property here is `oklch(...)` and three's colour
   // parser does not read it — the host resolves it through a canvas first.
-  function setTheme(ground, ink, rule) {
+  function setTheme(ground, ink) {
     for (const material of grounds) material.color.setHex(ground);
     for (const material of inks) material.color.setHex(ink);
-    gridMat.color.setHex(rule);
   }
 
   /*
@@ -117,7 +109,6 @@ export function createMaterials() {
     glass,
     lampMat,
     shapeMats,
-    gridMat,
     lineMat,
     fineMat,
     setTheme,
@@ -132,7 +123,6 @@ export const {
   glass,
   lampMat,
   shapeMats,
-  gridMat,
   lineMat,
   fineMat,
   setTheme,

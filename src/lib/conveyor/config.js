@@ -34,9 +34,6 @@ export const CONFIG = {
   // with the site's theme rather than sitting as a lit panel in a dark page.
   ground: 0xffffff,
   ink: 0x111111,
-  // The ground grid, which is neither: a rule faint enough to sit under the
-  // drawing without competing with it.
-  rule: 0xe0e0e0,
   // The dispensed shapes are solids like any other, told apart by their
   // outlines. Nothing in the scene carries colour except the lamp.
   shapeColors: [0xffffff, 0xffffff, 0xffffff],
@@ -64,7 +61,7 @@ export const CONFIG = {
   // machine when the frame is wide, under it when the frame is tall. Which of
   // the two applies is `choosePlace` below.
   aside: { x: 0.46, y: 0, zoom: 1 },
-  below: { x: 0.107, y: -0.429, zoom: 2.5 },
+  below: { x: 0.12, y: 0, zoom: 1 },
   skyMargin: 1.15,
   // Raised until the furthest tube's top rim clears the frame. The rim decides,
   // not the axis: checking the centre line alone lets the far lip clip.

@@ -15,7 +15,7 @@ export function ExperimentSection() {
             <article className='grid min-w-0 items-center gap-10 lg:grid-cols-2 lg:gap-16'>
               <header className='relative space-y-4'>
                 <p className='font-mono text-xs leading-normal tracking-wider uppercase text-muted-foreground'>
-                  03 / Experiments
+                  Experiments
                 </p>
                 <h2>Find the right budget.</h2>
                 <div className='max-w-3xl text-base leading-relaxed text-muted-foreground'>

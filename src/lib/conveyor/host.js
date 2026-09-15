@@ -90,7 +90,7 @@ export function host(
   // most of the way to not honouring it.
   const motionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
   let reducedMotion = motionQuery.matches;
-  const renderer = new THREE.WebGLRenderer({ antialias: true });
+  const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
   // The buffer is sized in device pixels below and the element is left to fill
   // whatever it was dropped into. Without this the canvas lays out at its own
   // buffer size, which on a dense display is twice the box it is sitting in.
@@ -106,9 +106,8 @@ export function host(
     anything else on the page does and can be told them the same way — a utility
     class, a style, a variant — rather than through a vocabulary of its own:
 
-      ground  the element's `background-color`, falling back to `--card`
+      ground  the nearest painted background, falling back to `--card`
       ink     its `color`, which it inherits like any text
-      rule    its `border-color`, which this app's base layer sets to `--border`
 
     Ink inheriting is the useful part and the reason it is `color` rather than a
     property of our own: the drawing comes out in the ink of whatever it was put
@@ -119,15 +118,21 @@ export function host(
   let ground = CONFIG.ground;
   function repaint() {
     const style = getComputedStyle(container);
+    let backdrop = container.parentElement;
+    let backdropColour = null;
+    while (backdrop && backdropColour === null) {
+      backdropColour = paint(getComputedStyle(backdrop).backgroundColor);
+      backdrop = backdrop.parentElement;
+    }
     ground =
       paint(style.backgroundColor) ??
+      backdropColour ??
       paint(style.getPropertyValue("--card")) ??
       CONFIG.ground;
     const ink = paint(style.color, ground) ?? CONFIG.ink;
-    const rule = paint(style.borderTopColor, ground) ?? CONFIG.rule;
-    styling.setTheme(ground, ink, rule);
-    renderer.setClearColor(ground, 1);
-    scene.background = new THREE.Color(ground);
+    styling.setTheme(ground, ink);
+    renderer.setClearColor(ground, 0);
+    scene.background = null;
   }
   repaint();
 
@@ -190,13 +195,6 @@ export function host(
   sizing.observe(container);
   resize();
 
-  const themeQuery = window.matchMedia("(prefers-color-scheme: dark)");
-  const followTheme = () => {
-    repaint();
-    if (!running) render();
-  };
-  themeQuery.addEventListener("change", followTheme);
-
   // Only run while it is on screen — and only watch for that while motion is
   // wanted at all, since with it turned off there is never anything to pause.
   let watching = null;
@@ -248,7 +246,6 @@ export function host(
   function destroy() {
     stop();
     sizing.disconnect();
-    themeQuery.removeEventListener("change", followTheme);
     motionQuery.removeEventListener("change", followMotion);
     unwatch();
     renderer.domElement.remove();

@@ -27,9 +27,8 @@ export function createView({
   machine where the caller wants it inside that frame.
 
   The vertical half-extent is `frustum` times `zoom` whatever the shape, so the
-  extra room a wide frame brings is extra ground rather than a bigger drawing —
-  which is what lets the grid run the width of a section with the machine at one
-  end — and `zoom` is what keeps a tall frame from meaning a tall machine.
+  extra room a wide frame brings is extra ground rather than a bigger drawing,
+  and `zoom` is what keeps a tall frame from meaning a tall machine.
 
   `x` and `y` are where the machine lands, in fractions of a half-frame from the
   centre: 0 is centred, 1 would be hard against the edge, positive is right and

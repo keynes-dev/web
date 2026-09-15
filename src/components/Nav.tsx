@@ -5,7 +5,7 @@ import { SiteLinks } from "./SiteLinks";
 
 export function Nav() {
   return (
-    <header className='sticky top-0 z-50 border-b bg-background'>
+    <header className='z-50 border-b bg-background'>
       <div className='relative container mx-auto xl:border-x'>
         <GridMarks className='md:hidden xl:block' />
         <nav className='relative container mx-auto max-w-screen-lg flex items-center justify-between gap-6 md:border-x px-4 py-3 sm:px-8'>

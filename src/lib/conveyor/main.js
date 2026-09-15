@@ -20,8 +20,6 @@ import * as THREE from "three";
 
 import { choosePlace, CONFIG } from "./config.js";
 import { host } from "./host.js";
-import { grid } from "./draft.js";
-import { gridMat } from "./materials.js";
 import { createArm } from "./parts/arm.js";
 import { createBelt } from "./parts/belt.js";
 import { createBoxes } from "./parts/boxes.js";
@@ -58,7 +56,6 @@ export function createConveyor(container, { place = choosePlace } = {}) {
   }
 
   const scene = new THREE.Scene();
-  scene.add(grid(40, 80, gridMat));
 
   const parts = [
     createBelt(scene),

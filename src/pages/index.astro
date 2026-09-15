@@ -2,14 +2,17 @@
 import BaseLayout from "../layouts/BaseLayout.astro";
 import { Footer } from "../components/Footer";
 import { Nav } from "../components/Nav";
-import { BudgetSection } from "@/components/home/BudgetSection";
 import { ClosingCta } from "@/components/home/ClosingCta";
 import { Concepts } from "@/components/home/Concepts";
 import { Deployments } from "@/components/home/Deployments";
 import { ExperimentSection } from "@/components/home/ExperimentSection";
 import { Hero } from "@/components/home/Hero";
-import { PolicySection } from "@/components/home/PolicySection";
+import { RuntimeSection } from "@/components/home/RuntimeSection";
+import { Technology } from "@/components/home/Technology";
 import { Thesis } from "@/components/home/Thesis";
+import { highlightRuntimeCode } from "@/lib/runtime-code";
+
+const runtimeCode = await highlightRuntimeCode();
 ---
 
 <BaseLayout
@@ -20,10 +23,10 @@ import { Thesis } from "@/components/home/Thesis";
   <main>
     <Hero />
     <Concepts />
-    <BudgetSection />
-    <PolicySection client:load />
-    <ExperimentSection client:load />
+    <RuntimeSection client:load code={runtimeCode} />
     <Thesis />
+    <ExperimentSection client:load />
+    <Technology />
     <Deployments />
     <ClosingCta />
   </main>

@@ -1,18 +1,17 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { cn } from "@/lib/utils";
 import { ResourceBar } from "./ResourceBar";
 
 const resources = {
-  tokens: { label: "Tokens" },
-  images: { label: "Images" },
-  carrier: { label: "Carrier calls" },
-  sms: { label: "SMS" },
-};
+  dataCredits: "Data credits",
+  aiTokens: "AI tokens",
+  emailSends: "Email sends",
+} as const;
 
-type ResourceKey = keyof typeof resources;
+type Resource = keyof typeof resources;
+type Decision = "approved" | "denied";
 
 interface Allocation {
-  resource: ResourceKey;
+  resource: Resource;
   total: number;
   reserved?: number;
   used?: number;
@@ -20,20 +19,27 @@ interface Allocation {
 
 const budgetNumber = new Intl.NumberFormat("en", { notation: "compact" });
 
-function Connector() {
+function Connector({ branches = 2 }: { branches?: 1 | 2 }) {
+  if (branches === 1) {
+    return (
+      <div aria-hidden='true' className='relative my-2 h-6'>
+        <i className='absolute top-0 bottom-1 left-1/2 border-l border-border'>
+          <span className='absolute -bottom-0.5 -left-1 size-2 rotate-45 border-r border-b border-border' />
+        </i>
+      </div>
+    );
+  }
+
   return (
-    <div aria-hidden='true' className='relative my-4 h-7'>
-      <i className='absolute top-0 left-1/2 z-10 size-2 -translate-x-1/2 -translate-y-1/2 rounded-full border border-border bg-background' />
+    <div aria-hidden='true' className='relative my-2 h-6'>
+      <i className='absolute top-0 left-1/2 z-10 size-2 -translate-x-1/2 -translate-y-1/2 rounded-full border border-border bg-card' />
       <i className='absolute top-0 left-1/2 h-1/2 border-l border-border' />
-      <i className='absolute top-1/2 right-1/4 left-1/4 hidden border-t border-border sm:block' />
-      <i className='absolute top-1/2 bottom-1 left-1/4 hidden border-l border-border sm:block'>
+      <i className='absolute top-1/2 right-1/4 left-1/4 border-t border-border' />
+      <i className='absolute top-1/2 bottom-1 left-1/4 border-l border-border'>
         <span className='absolute -bottom-0.5 -left-1 size-2 rotate-45 border-r border-b border-border' />
       </i>
-      <i className='absolute top-1/2 right-1/4 bottom-1 hidden border-r border-border sm:block'>
+      <i className='absolute top-1/2 right-1/4 bottom-1 border-r border-border'>
         <span className='absolute -right-1 -bottom-0.5 size-2 rotate-45 border-r border-b border-border' />
-      </i>
-      <i className='absolute top-1/2 bottom-1 left-1/2 border-l border-border sm:hidden'>
-        <span className='absolute -bottom-0.5 -left-1 size-2 rotate-45 border-r border-b border-border' />
       </i>
     </div>
   );
@@ -47,40 +53,81 @@ function BudgetNode({
   allocations: readonly Allocation[];
 }) {
   return (
-    <Card className='h-full min-w-0'>
-      <CardHeader className='px-3 py-2'>
-        <CardTitle className='text-xs'>{name}</CardTitle>
+    <Card className='h-full min-w-0 border'>
+      <CardHeader className='bg-orange-100 border-b px-3 py-1.5'>
+        <CardTitle className='text-xs text-foreground'>{name}</CardTitle>
       </CardHeader>
-      <CardContent className='py-3'>
-        <dl
-          className={cn(
-            "grid gap-3",
-            allocations.length >= 3 && "grid-flow-col grid-rows-2 auto-cols-fr",
-          )}
-        >
-          {allocations.map(
-            ({ resource: resourceKey, total, reserved = 0, used = 0 }) => {
-              const resource = resources[resourceKey];
-              const available = total - reserved - used;
-              return (
-                <div className='min-w-0 text-xs' key={resourceKey}>
-                  <div className='flex items-end justify-between mb-2'>
-                    <dt className='text-muted-foreground'>{resource.label}</dt>
-                    <dd className='font-mono'>{budgetNumber.format(total)}</dd>
-                  </div>
-                  <dd className='mt-1'>
-                    <ResourceBar
-                      available={available}
-                      reserved={reserved}
-                      used={used}
-                      label={`${resource.label}: ${available.toLocaleString()} available, ${reserved.toLocaleString()} reserved, ${used.toLocaleString()} used`}
-                    />
+      <CardContent className='py-3 bg-background'>
+        <dl className='grid gap-2'>
+          {allocations.map(({ resource, total, reserved = 0, used = 0 }) => {
+            const label = resources[resource];
+            const available = total - reserved - used;
+
+            return (
+              <div className='min-w-0 text-xs' key={resource}>
+                <div className='flex items-end justify-between gap-2'>
+                  <dt className='truncate text-muted-foreground'>{label}</dt>
+                  <dd className='shrink-0 font-mono'>
+                    {budgetNumber.format(total)}
                   </dd>
                 </div>
-              );
-            },
-          )}
+                <dd className='mt-1'>
+                  <ResourceBar
+                    available={available}
+                    reserved={reserved}
+                    used={used}
+                    label={`${label}: ${available.toLocaleString()} available, ${reserved.toLocaleString()} reserved, ${used.toLocaleString()} used`}
+                  />
+                </dd>
+              </div>
+            );
+          })}
         </dl>
+      </CardContent>
+    </Card>
+  );
+}
+
+function StatusCard({ status, detail }: { status: Decision; detail: string }) {
+  let label: string;
+  let swatch: string;
+  let header: string;
+
+  switch (status) {
+    case "approved":
+      label = "Approved";
+      swatch = "bg-emerald-500";
+      header = "bg-emerald-100";
+      break;
+    case "denied":
+      label = "Denied";
+      swatch = "bg-red-500";
+      header = "bg-red-100";
+      break;
+    default: {
+      const _exhaustive: never = status;
+      throw new Error(`Unhandled status: ${_exhaustive}`);
+    }
+  }
+
+  return (
+    <Card className='border' aria-label={`${label}: ${detail}`}>
+      <CardHeader className={`${header} border-b px-3 py-1.5`}>
+        <CardTitle className='text-xs flex items-center justify-between text-foreground'>
+          Agent
+          <span className='flex min-w-0 items-center gap-2'>
+            <span
+              aria-hidden='true'
+              className={`size-2 shrink-0 rounded-full ${swatch}`}
+            />
+            <span className='font-mono text-xs'>{label}</span>
+          </span>
+        </CardTitle>
+      </CardHeader>
+      <CardContent className='flex items-center justify-between gap-2 py-3 bg-background'>
+        <span className='truncate font-mono text-xs text-muted-foreground'>
+          {detail}
+        </span>
       </CardContent>
     </Card>
   );
@@ -89,113 +136,77 @@ function BudgetNode({
 export function BudgetTree() {
   return (
     <figure
-      className='space-y-0'
       role='img'
-      aria-label="An online furniture retailer's monthly budget branches into Merchandising and Customer support. Product listings use tokens. Room scenes use tokens and image generations. Missing deliveries use tokens and carrier API calls. Delivery updates use tokens and SMS messages. Each workflow receives part of its team's allocation."
+      aria-label="The GTM organization's data-credit, AI-token, and email-send budgets branch into Growth Operations and Sales Development budgets. Growth Operations approves a small enrichment request; Sales Development denies an email-send request that exceeds available budget."
     >
       <BudgetNode
-        name='Organization'
+        name='GTM'
         allocations={[
           {
-            resource: "tokens",
-            total: 24000000,
-            reserved: 14050000,
-            used: 5950000,
+            resource: "dataCredits",
+            total: 100_000,
+            reserved: 55_000,
+            used: 25_000,
           },
-          { resource: "images", total: 2500, reserved: 1400, used: 600 },
           {
-            resource: "carrier",
-            total: 12000,
-            reserved: 6800,
-            used: 3200,
+            resource: "aiTokens",
+            total: 30_000_000,
+            reserved: 15_000_000,
+            used: 6_000_000,
           },
-          { resource: "sms", total: 6000, reserved: 4000, used: 1000 },
+          {
+            resource: "emailSends",
+            total: 25_000,
+            reserved: 15_000,
+            used: 5_000,
+          },
         ]}
       />
       <Connector />
-      <div className='grid gap-x-3 sm:grid-cols-2'>
-        <div className='grid min-w-0 sm:row-span-3 sm:grid-rows-subgrid'>
+      <div className='grid grid-cols-2 items-start gap-3'>
+        <div className='min-w-0'>
           <BudgetNode
-            name='Merchandising'
+            name='Growth Operations'
             allocations={[
               {
-                resource: "tokens",
-                total: 5000000,
-                reserved: 2550000,
-                used: 1450000,
+                resource: "dataCredits",
+                total: 60_000,
+                reserved: 30_000,
+                used: 15_000,
               },
-              { resource: "images", total: 2000, reserved: 900, used: 600 },
+              {
+                resource: "aiTokens",
+                total: 18_000_000,
+                reserved: 9_000_000,
+                used: 4_000_000,
+              },
             ]}
           />
-          <Connector />
-          <div className='grid items-stretch gap-2 sm:grid-cols-2'>
-            <BudgetNode
-              name='Listings'
-              allocations={[
-                { resource: "tokens", total: 3000000, used: 1200000 },
-              ]}
-            />
-            <BudgetNode
-              name='Image gen'
-              allocations={[
-                { resource: "tokens", total: 1000000, used: 250000 },
-                { resource: "images", total: 1500, used: 600 },
-              ]}
-            />
-          </div>
+          <Connector branches={1} />
+          <StatusCard status='approved' detail='Running...' />
         </div>
-        <div className='grid min-w-0 sm:row-span-3 sm:grid-rows-subgrid'>
+        <div className='min-w-0'>
           <BudgetNode
-            name='Support'
+            name='Sales Development'
             allocations={[
               {
-                resource: "tokens",
-                total: 15000000,
-                reserved: 7500000,
-                used: 4500000,
+                resource: "aiTokens",
+                total: 10_000_000,
+                reserved: 5_000_000,
+                used: 2_000_000,
               },
               {
-                resource: "carrier",
-                total: 10000,
-                reserved: 4800,
-                used: 3200,
+                resource: "emailSends",
+                total: 20_000,
+                reserved: 12_000,
+                used: 4_000,
               },
-              { resource: "sms", total: 5000, reserved: 3000, used: 1000 },
             ]}
           />
-          <Connector />
-          <div className='grid items-stretch gap-2 sm:grid-cols-2'>
-            <BudgetNode
-              name='Refunds'
-              allocations={[
-                { resource: "tokens", total: 10000000, used: 4000000 },
-                { resource: "carrier", total: 8000, used: 3200 },
-              ]}
-            />
-            <BudgetNode
-              name='Updates'
-              allocations={[
-                { resource: "tokens", total: 2000000, used: 500000 },
-                { resource: "sms", total: 4000, used: 1000 },
-              ]}
-            />
-          </div>
+          <Connector branches={1} />
+          <StatusCard status='denied' detail='emailSends 5K > 4K avail' />
         </div>
       </div>
-      <figcaption className='mt-4 flex flex-wrap items-center justify-center gap-4 text-xs text-muted-foreground'>
-        <span className='flex items-center gap-1.5'>
-          <i className='font-mono text-foreground not-italic'>▓▓</i>
-          Available
-        </span>
-        <span className='flex items-center gap-1.5'>
-          <i className='font-mono text-foreground/55 not-italic'>▒▒</i>
-          Reserved
-        </span>
-        <span className='flex items-center gap-1.5'>
-          <i className='font-mono text-foreground/25 not-italic'>░░</i>
-          Used
-        </span>
-      </figcaption>
     </figure>
   );
 }

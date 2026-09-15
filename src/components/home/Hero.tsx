@@ -8,16 +8,31 @@ import { AccessLinks } from "./AccessLinks";
 
 export function Hero() {
   return (
-    <Section>
+    <Section className='bg-orange-100'>
       <SectionFrame>
         <SectionColumn>
-          <conveyor-belt
-            className='pointer-events-none absolute inset-0 block border-border/10 bg-background text-foreground'
-            role='img'
-            aria-label='A machine sorting shapes into boxes on a conveyor belt: each box receives the shape that fits the hole in its lid, and one that arrives the wrong way up is turned over by a mechanical arm.'
-          />
-          <SectionContent>
-            <div className='flex min-h-72 flex-col justify-center gap-6'>
+          <svg
+            className='pointer-events-none absolute inset-0 size-full text-border/10'
+            aria-hidden='true'
+          >
+            <defs>
+              <pattern
+                id='hero-grid'
+                width='32'
+                height='16'
+                patternUnits='userSpaceOnUse'
+              >
+                <path
+                  d='M0 8 16 0 32 8 16 16Z'
+                  fill='none'
+                  stroke='currentColor'
+                />
+              </pattern>
+            </defs>
+            <rect width='100%' height='100%' fill='url(#hero-grid)' />
+          </svg>
+          <SectionContent className='z-10'>
+            <div className='flex flex-col gap-6 lg:min-h-80 lg:justify-center'>
               <div className='relative lg:max-w-1/2'>
                 <header className='space-y-4'>
                   <h1>Runtime economics for agents</h1>
@@ -31,6 +46,11 @@ export function Hero() {
               </div>
             </div>
           </SectionContent>
+          <conveyor-belt
+            className='pointer-events-none relative block h-56 border-border/10 text-foreground sm:h-64 lg:absolute lg:inset-0 lg:h-auto'
+            role='img'
+            aria-label='A machine sorting shapes into boxes on a conveyor belt: each box receives the shape that fits the hole in its lid, and one that arrives the wrong way up is turned over by a mechanical arm.'
+          />
         </SectionColumn>
       </SectionFrame>
     </Section>

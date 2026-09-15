@@ -11,9 +11,9 @@ import {
 
 export function ExperimentSweep() {
   return (
-    <Card>
+    <Card className='mx-auto w-full max-w-sm'>
       <CardHeader>
-        <CardTitle>Support ticket experiments</CardTitle>
+        <CardTitle>Experiments</CardTitle>
       </CardHeader>
       <CardContent className='p-0'>
         <div className='border-b-2 px-2 py-4 sm:px-5'>
@@ -59,9 +59,9 @@ export function ExperimentSweep() {
                     return (
                       <td
                         className={cn(
-                          "border border-sky-700/40 py-1.5 text-center dark:border-sky-300/40",
+                          "border border-sky-700/40 py-1.5 text-center",
                           run === productionExample &&
-                            "border-amber-700 text-amber-700 dark:border-yellow-400 dark:text-yellow-400",
+                            "border-amber-700 text-amber-700",
                         )}
                         key={limit}
                         style={{
@@ -81,10 +81,6 @@ export function ExperimentSweep() {
               ))}
             </tbody>
           </table>
-          <p className='mt-2 text-xs text-muted-foreground'>
-            12 configurations. Each cell shows tickets resolved out of the same
-            100.
-          </p>
         </div>
         <div className='px-2 py-3 sm:px-4'>
           <FrontierChart />

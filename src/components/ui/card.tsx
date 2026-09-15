@@ -19,7 +19,10 @@ function CardHeader({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
       data-slot='card-header'
-      className={cn("px-3 py-3 border-b-2 border-border", className)}
+      className={cn(
+        "px-3 py-2 border-b-2 border-border bg-foreground",
+        className,
+      )}
       {...props}
     />
   );
@@ -29,7 +32,7 @@ function CardTitle({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
       data-slot='card-title'
-      className={cn("font-mono leading-normal", className)}
+      className={cn("font-mono leading-normal text-background", className)}
       {...props}
     />
   );

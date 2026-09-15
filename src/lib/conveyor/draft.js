@@ -37,17 +37,6 @@ export function createDraft({
     const geometry = new LineSegmentsGeometry().setPositions(positions);
     return new LineSegments2(geometry, material);
   }
-  // A floor of rules on the XZ plane, the same construction GridHelper uses,
-  // drawn as fat segments so a 1px stroke is a CSS pixel and not a hairline.
-  function grid(size, divisions, material = lineMat) {
-    const half = size / 2;
-    const step = size / divisions;
-    const pts = [];
-    for (let i = 0, k = -half; i <= divisions; i++, k += step) {
-      pts.push(-half, 0, k, half, 0, k, k, 0, -half, k, 0, half);
-    }
-    return segments(pts, material);
-  }
   // Redraw an object's outlines at hairline weight.
   function thin(object) {
     object.traverse((o) => {
@@ -338,7 +327,6 @@ export function createDraft({
 
   return {
     segments,
-    grid,
     thin,
     edgeLines,
     solid,
@@ -359,7 +347,6 @@ export function createDraft({
 
 export const {
   segments,
-  grid,
   thin,
   edgeLines,
   solid,
