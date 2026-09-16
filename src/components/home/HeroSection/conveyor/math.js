@@ -1,7 +1,6 @@
 /*
-  Scalar helpers. Pure functions of their arguments, with no Three.js and no
-  scene state, so the curves the whole animation is built from can be checked
-  in isolation.
+  Scalar helpers. Pure functions with no scene state, so the curves the whole
+  animation is built from can be checked in isolation.
 */
 import { CONFIG } from "./config.js";
 

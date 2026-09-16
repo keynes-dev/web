@@ -49,5 +49,5 @@ const server = await createServer({
 });
 await server.listen();
 console.log(
-  `Conveyor comparison: http://127.0.0.1:${port}/tools/conveyor/index.html`,
+  `Conveyor placeholder tools: http://127.0.0.1:${port}/tools/conveyor/placeholder.html`,
 );

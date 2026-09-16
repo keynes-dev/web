@@ -1,7 +1,7 @@
 import { polygonPath, subtractTriangle } from "./projection.js";
 
 // Clip the full stroke at moving intersections. Clipping only its centre line
-// leaves a round end where WebGL's depth test produces a tapered edge.
+// leaves a round end where depth clipping produces a tapered edge.
 export function clippedStroke(a, b, width, occluders) {
   const dx = b[0] - a[0],
     dy = b[1] - a[1],

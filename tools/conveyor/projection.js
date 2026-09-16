@@ -387,7 +387,7 @@ export function fallingQuaternion(shape, state) {
     angle = ((4.6 + 1.4 * (n % 4)) * state.t) / 2;
   let q = [...axis.map((v) => (v / length) * Math.sin(angle)), Math.cos(angle)];
   if (state.square > 0) {
-    // Three.js slerps along the shortest quaternion arc toward identity.
+    // Interpolate along the shortest quaternion arc toward identity.
     const sign = q[3] < 0 ? -1 : 1,
       cos = Math.abs(q[3]);
     if (cos >= 1) return q;

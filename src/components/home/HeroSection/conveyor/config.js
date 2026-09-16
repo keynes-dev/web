@@ -1,8 +1,7 @@
 /*
   Every dimension and duration in the scene, and the values derived directly
-  from them. No Three.js here on purpose: this module and the timeline built on
-  it are plain arithmetic, so both can be exercised under vitest without a
-  renderer. Anything that needs a geometry or a material belongs further out.
+  from them. This module and the timeline built on it use plain arithmetic, so
+  both can be exercised in isolation from the renderer.
 */
 
 export const CONFIG = {

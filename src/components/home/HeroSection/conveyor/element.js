@@ -8,9 +8,7 @@ export class ConveyorBelt extends HTMLElement {
     if (this.#conveyor || this.#connection) return;
     const connection = {};
     this.#connection = connection;
-    const renderer = import.meta.env.DEV
-      ? import("./svg-preview.js")
-      : import("./main.js");
+    const renderer = import("./main.js");
     void renderer.then(async ({ createConveyor, prepareConveyor }) => {
       const poster = this.querySelector("[data-conveyor-placeholder] img");
       await Promise.all([
