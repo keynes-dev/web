@@ -18,110 +18,125 @@ const tableRows = [
   { label: "Data persistence", values: [false, true, true] },
   { label: "Database transactions", values: [false, false, true] },
   { label: "Network required?", values: [false, true, true] },
-  { label: "Database operator", values: ["In-Process", "Keynes Cloud", "Your PostgreSQL DB"] },
+  {
+    label: "Database operator",
+    values: ["In-Process", "Keynes Cloud", "Your PostgreSQL DB"],
+  },
 ] as const;
 ---
 
-<Section class="bg-amber-100" padded={false}>
-  <div class="flex flex-col gap-8 px-4 pt-8 sm:px-8 sm:pt-12">
-    <header class="relative max-w-3xl space-y-4">
-      <h2>Deploy everywhere</h2>
-      <p class="text-base leading-relaxed text-muted-foreground">
+<Section class='bg-amber-100' padded={false}>
+  <div class='flex flex-col gap-8 px-4 py-8 sm:px-8 sm:pt-12'>
+    <header class='relative flex max-w-3xl flex-col gap-4'>
+      <h2>Deploy Keynes anywhere</h2>
+      <p class='text-base leading-relaxed text-muted-foreground'>
         The same Budget workflow, whether it lives in your process, inside your
         database, or behind the service. What changes is durability,
         transactions, and who operates it.
       </p>
     </header>
 
-    <div class="grid gap-6 lg:grid-cols-3">
-      {modes.map((mode) => (
-        <Card class="min-w-0">
-          <CardHeader>
-            <CardTitle>{mode.name}</CardTitle>
-          </CardHeader>
-          <CardContent class="relative overflow-hidden p-0 last:rounded-b-[calc(var(--radius-sm)-1px)]">
-            <svg
-              class="pointer-events-none absolute inset-0 size-full text-border/5"
-              aria-hidden="true"
-            >
-              <defs>
-                <pattern
-                  id={`deployment-dots-${mode.name}`}
-                  width="8"
-                  height="8"
-                  patternUnits="userSpaceOnUse"
-                >
-                  <circle cx="1" cy="1" r="1" fill="currentColor" />
-                </pattern>
-              </defs>
-              <rect
-                width="100%"
-                height="100%"
-                fill={`url(#deployment-dots-${mode.name})`}
-              />
-            </svg>
-            <div class="relative z-10 flex min-h-32 items-center justify-center overflow-hidden p-2 sm:p-3">
-              <pre
-                class="ascii m-0 max-w-full overflow-hidden whitespace-pre font-mono text-xs font-medium leading-relaxed"
-                set:html={mode.glyph}
-              ></pre>
-            </div>
-          </CardContent>
-        </Card>
-      ))}
+    <div class='grid gap-6 lg:grid-cols-3'>
+      {
+        modes.map((mode) => (
+          <Card class='min-w-0'>
+            <CardHeader>
+              <CardTitle>{mode.name}</CardTitle>
+            </CardHeader>
+            <CardContent class='relative overflow-hidden p-0 last:rounded-b-[calc(var(--radius-sm)-1px)]'>
+              <svg
+                class='pointer-events-none absolute inset-0 size-full text-border/5'
+                aria-hidden='true'
+              >
+                <defs>
+                  <pattern
+                    id={`deployment-dots-${mode.name}`}
+                    width='8'
+                    height='8'
+                    patternUnits='userSpaceOnUse'
+                  >
+                    <circle cx='1' cy='1' r='1' fill='currentColor' />
+                  </pattern>
+                </defs>
+                <rect
+                  width='100%'
+                  height='100%'
+                  fill={`url(#deployment-dots-${mode.name})`}
+                />
+              </svg>
+              <div class='relative z-10 flex min-h-32 items-center justify-center overflow-hidden p-2 sm:p-3'>
+                <pre
+                  class='ascii m-0 max-w-full overflow-hidden whitespace-pre font-mono text-xs font-medium leading-relaxed'
+                  set:html={mode.glyph}
+                />
+              </div>
+            </CardContent>
+          </Card>
+        ))
+      }
     </div>
   </div>
 
-  <div slot="full-bleed" class="mt-8 w-full overflow-x-auto border-t">
-    <table class="w-full caption-bottom text-sm">
-      <thead class="border-b border-border bg-amber-200">
+  <div slot='full-bleed' class='w-full overflow-x-auto border-t'>
+    <table class='w-full caption-bottom text-sm'>
+      <thead class='border-b border-border bg-amber-200'>
         <tr>
-          <th class="h-10 min-w-48 px-2 pl-4 text-left align-middle font-medium whitespace-nowrap text-foreground sm:pl-8">
+          <th
+            class='h-10 min-w-48 px-2 pl-4 text-left align-middle font-medium whitespace-nowrap text-foreground sm:pl-8'
+          >
             Capability
           </th>
-          <th class="h-10 px-2 text-left align-middle font-medium whitespace-nowrap text-foreground">
+          <th
+            class='h-10 px-2 text-left align-middle font-medium whitespace-nowrap text-foreground'
+          >
             Local
           </th>
-          <th class="h-10 px-2 text-left align-middle font-medium whitespace-nowrap text-foreground">
+          <th
+            class='h-10 px-2 text-left align-middle font-medium whitespace-nowrap text-foreground'
+          >
             Hosted
           </th>
-          <th class="h-10 px-2 pr-4 text-left align-middle font-medium whitespace-nowrap text-foreground sm:pr-8">
+          <th
+            class='h-10 px-2 pr-4 text-left align-middle font-medium whitespace-nowrap text-foreground sm:pr-8'
+          >
             Embedded
           </th>
         </tr>
       </thead>
       <tbody>
-        {tableRows.map((row) => (
-          <tr class="border-b transition-colors last:border-b-0 hover:bg-muted/50">
-            <td class="p-2 pl-4 align-middle font-medium whitespace-nowrap sm:pl-8">
-              {row.label}
-            </td>
-            {row.values.map((value, index) => (
-              <td
-                class:list={[
-                  "p-2 align-middle whitespace-nowrap",
-                  { "pr-4 sm:pr-8": index === row.values.length - 1 },
-                ]}
-              >
-                {typeof value === "boolean" ? (
-                  <>
-                    <span class="sr-only">{value ? "Yes" : "No"}</span>
-                    <Icon
-                      name={value ? "hugeicons:tick-02" : "hugeicons:cancel-01"}
-                      class:list={[
-                        "size-4",
-                        value ? "text-emerald-600" : "text-rose-600",
-                      ]}
-                      aria-hidden="true"
-                    />
-                  </>
-                ) : (
-                  value
-                )}
+        {
+          tableRows.map((row) => (
+            <tr class='border-b transition-colors last:border-b-0 hover:bg-muted/50'>
+              <td class='p-2 pl-4 align-middle font-medium whitespace-nowrap sm:pl-8'>
+                {row.label}
               </td>
-            ))}
-          </tr>
-        ))}
+              {row.values.map((value, index) => (
+                <td
+                  class:list={[
+                    "p-2 align-middle whitespace-nowrap",
+                    { "pr-4 sm:pr-8": index === row.values.length - 1 },
+                  ]}
+                >
+                  {typeof value === "boolean" ?
+                    <>
+                      <span class='sr-only'>{value ? "Yes" : "No"}</span>
+                      <Icon
+                        name={
+                          value ? "hugeicons:tick-02" : "hugeicons:cancel-01"
+                        }
+                        class:list={[
+                          "size-4",
+                          value ? "text-emerald-600" : "text-rose-600",
+                        ]}
+                        aria-hidden='true'
+                      />
+                    </>
+                  : value}
+                </td>
+              ))}
+            </tr>
+          ))
+        }
       </tbody>
     </table>
   </div>

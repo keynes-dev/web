@@ -7,6 +7,9 @@ and scripts beside their component. Leave only site-wide helpers in `src/lib/`.
 Define global fonts, theme colors, and element typography in `src/styles/global.css`.
 Prefer standard Tailwind utilities over arbitrary values. Keep numeric values
 where they describe SVG geometry, dynamic proportions, or precise rail alignment.
+Space content with flex or grid containers and `gap-*`. Do not space siblings with
+margin utilities or `space-*`; padding, rail alignment, and negative offsets for
+decorations remain fine.
 Use one `Section.astro` for page rails and responsive padding. Its default slot
 holds padded content; `full-bleed` holds edge-to-edge content below it; `decoration`
 holds positioned artwork. Header and footer use native semantic elements with

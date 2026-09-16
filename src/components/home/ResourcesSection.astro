@@ -1,0 +1,130 @@
+---
+import { Icon } from "astro-icon/components";
+import Section from "@/components/section/Section.astro";
+
+const groups = [
+  {
+    title: "Reusable",
+    icon: "hugeicons:arrow-reload-horizontal",
+    resources: [
+      {
+        title: "Human reviewers",
+        icon: "hugeicons:user-check-01",
+      },
+      {
+        title: "Browser sessions",
+        icon: "hugeicons:browser",
+      },
+      {
+        title: "Agent runs",
+        icon: "hugeicons:calendar-03",
+      },
+      {
+        title: "Software seats",
+        icon: "hugeicons:tools",
+      },
+      {
+        title: "Sandbox slots",
+        icon: "hugeicons:computer-cloud",
+      },
+      {
+        title: "GPU slots",
+        icon: "hugeicons:gpu",
+      },
+    ],
+  },
+  {
+    title: "Consumable",
+    icon: "hugeicons:coins-01",
+    resources: [
+      {
+        title: "Inference tokens",
+        icon: "hugeicons:ai-brain-01",
+      },
+      {
+        title: "Usage credits",
+        icon: "hugeicons:coins-01",
+      },
+      {
+        title: "Tool calls",
+        icon: "hugeicons:tools",
+      },
+      {
+        title: "Runtime minutes",
+        icon: "hugeicons:clock-01",
+      },
+      {
+        title: "SMS messages",
+        icon: "hugeicons:message-01",
+      },
+      {
+        title: "Refund dollars",
+        icon: "hugeicons:money-bag-02",
+      },
+    ],
+  },
+] as const;
+---
+
+<Section aria-label='Resource examples' padded={false}>
+  <header class='relative z-10 flex flex-col gap-4 px-4 py-8 sm:px-8 sm:py-10'>
+    <h2>Model every resource</h2>
+    <p class='max-w-2xl text-base leading-relaxed text-muted-foreground'>
+      When resource limits are scattered across prompts and application code,
+      they become impossible to manage. Keynes makes those limits explicit and
+      enforceable.
+    </p>
+  </header>
+
+  <div slot='full-bleed' class='grid grid-cols-1 border-t md:grid-cols-2'>
+    {
+      groups.map((group, index) => (
+        <section
+          class:list={[
+            "min-w-0",
+            index > 0 && "border-t md:border-t-0 md:border-l",
+          ]}
+        >
+          <header class='border-b px-4 py-2'>
+            <h2 class='text-sm font-medium tracking-tight text-foreground'>
+              <span class='flex items-center gap-2'>
+                <Icon
+                  name={group.icon}
+                  class='size-4 text-foreground'
+                  stroke-width='1.5'
+                  aria-hidden='true'
+                />
+                {group.title}
+              </span>
+            </h2>
+          </header>
+          <div class='grid grid-cols-2'>
+            {group.resources.map((resource, resourceIndex) => {
+              const isLastRow = resourceIndex >= group.resources.length - 2;
+
+              return (
+                <article
+                  class:list={[
+                    "flex min-w-0 flex items-center gap-3 border-b p-4 text-muted-foreground transition-colors hover:bg-card hover:text-foreground",
+                    resourceIndex % 2 === 0 && "border-r",
+                    isLastRow && "border-b-0",
+                  ]}
+                >
+                  <Icon
+                    name={resource.icon}
+                    class='size-4'
+                    stroke-width='1.5'
+                    aria-hidden='true'
+                  />
+                  <div class='min-w-0'>
+                    <p class='text-sm '>{resource.title}</p>
+                  </div>
+                </article>
+              );
+            })}
+          </div>
+        </section>
+      ))
+    }
+  </div>
+</Section>

@@ -32,8 +32,8 @@ const gridHeight = gridWidth / Math.sqrt(3);
   </svg>
   <div>
     <div class='flex flex-col gap-6 lg:min-h-80 lg:justify-center'>
-      <div class='relative lg:max-w-1/2'>
-        <header class='space-y-4'>
+      <div class='relative flex flex-col gap-4 lg:max-w-1/2'>
+        <header class='flex flex-col gap-4'>
           <h1>Runtime economics for agents</h1>
           <p class='max-w-3xl text-muted-foreground'>
             Turn business policies into resource decisions your agents can act
@@ -41,7 +41,7 @@ const gridHeight = gridWidth / Math.sqrt(3);
             needs and your business allows.
           </p>
         </header>
-        <div class='mt-4 flex flex-wrap gap-3'>
+        <div class='flex flex-wrap gap-3'>
           {
             accessLinks.map((link) => (
               <Button href={link.href} size='lg' variant={link.variant}>

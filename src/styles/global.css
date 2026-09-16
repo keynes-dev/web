@@ -13,9 +13,9 @@
   --border: var(--color-taupe-800);
   --ring: var(--color-blue-700);
   --chart-3: var(--color-sky-800);
-  --chart-4: var(--color-blue-700);
+  --chart-4: var(--color-amber-400);
   --chart-accent: var(--color-sky-700);
-  --chart-recommended: var(--color-amber-700);
+  --chart-recommended: var(--color-violet-700);
 }
 
 @theme inline {

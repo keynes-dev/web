@@ -24,12 +24,14 @@ for (const section of document.querySelectorAll<HTMLElement>(
 
   if (!demo || !controls || !tablist || !previous || !next) continue;
 
-  demo.classList.add("flex", "h-132", "flex-col");
+  // The tab bar attaches directly to the active panel once it is interactive,
+  // so the stacked-panel gap of the no-JavaScript fallback is dropped.
+  demo.classList.add("h-132");
+  demo.classList.remove("gap-4");
   tablist.hidden = false;
   tablist.classList.add("flex");
   controls.hidden = false;
   panels.forEach((panel) => {
-    panel.classList.remove("mt-4");
     panel.classList.add("min-h-0", "flex-1");
   });
 

@@ -36,12 +36,12 @@ const format = new Intl.NumberFormat("en", { notation: "compact" });
         const label = labels[resource];
         const available = total - reserved - used;
         return (
-          <div class="min-w-0 text-xs">
+          <div class="flex min-w-0 flex-col gap-1 text-xs">
             <div class="flex items-end justify-between gap-2">
               <dt class="truncate text-muted-foreground">{label}</dt>
               <dd class="shrink-0 font-mono">{format.format(total)}</dd>
             </div>
-            <dd class="mt-1">
+            <dd>
               <ResourceBar
                 available={available}
                 reserved={reserved}

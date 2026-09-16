@@ -7,6 +7,7 @@ import ConceptsSection from "@/components/home/ConceptsSection.astro";
 import DeploymentsSection from "@/components/home/DeploymentsSection/DeploymentsSection.astro";
 import ExperimentsSection from "@/components/home/ExperimentsSection/ExperimentsSection.astro";
 import HeroSection from "@/components/home/HeroSection/HeroSection.astro";
+import ResourcesSection from "@/components/home/ResourcesSection.astro";
 import RuntimeSection from "@/components/home/RuntimeSection/RuntimeSection.astro";
 import TechnologySection from "@/components/home/TechnologySection.astro";
 import ThesisSection from "@/components/home/ThesisSection.astro";
@@ -15,14 +16,16 @@ import SectionDivider from "@/components/section/SectionDivider.astro";
 ---
 
 <BaseLayout
-  title="Keynes | Runtime economics for AI agents"
-  description="Set budgets and enforce resource policies for AI agents. Define resource policies for tokens, tool calls, and more."
+  title='Keynes | Runtime economics for AI agents'
+  description='Set budgets and enforce resource policies for AI agents. Define resource policies for tokens, tool calls, and more.'
 >
   <SiteHeader />
   <main>
     <HeroSection />
     <SectionDivider />
     <ConceptsSection />
+    <SectionDivider />
+    <ResourcesSection />
     <SectionDivider />
     <ValueSection />
     <SectionDivider />

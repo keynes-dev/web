@@ -5,7 +5,7 @@ import StatusCard from "./StatusCard.astro";
 ---
 
 <figure
-  class="w-full"
+  class="flex w-full flex-col gap-1.5"
   role="img"
   aria-label="The GTM organization's data-credit, AI-token, and email-send budgets branch into Growth Operations and Sales Development budgets. Growth Operations approves a small enrichment request; Sales Development denies an email-send request that exceeds available budget."
 >
@@ -29,7 +29,7 @@ import StatusCard from "./StatusCard.astro";
   />
   <Connector />
   <div class="grid grid-cols-2 items-start gap-3">
-    <div class="min-w-0">
+    <div class="flex min-w-0 flex-col gap-1.5">
       <BudgetNode
         name="Growth Ops"
         allocations={[
@@ -50,7 +50,7 @@ import StatusCard from "./StatusCard.astro";
       <Connector branches={1} />
       <StatusCard status="approved" detail="Running..." />
     </div>
-    <div class="min-w-0">
+    <div class="flex min-w-0 flex-col gap-1.5">
       <BudgetNode
         name="Sales"
         allocations={[

@@ -13,7 +13,7 @@ import { runtimeTabs } from "./tabs";
 ---
 
 <div
-  class='mx-auto w-full max-w-sm'
+  class='mx-auto flex w-full max-w-sm flex-col gap-4'
   aria-label='Keynes runtime example'
   data-runtime-demo
 >
@@ -47,7 +47,7 @@ import { runtimeTabs } from "./tabs";
   </div>
 
   <Card
-    class='mt-4 rounded-tl-none'
+    class='rounded-tl-none'
     aria-label='Runtime view'
     id='runtime-panel-runtime'
     role='tabpanel'
@@ -82,7 +82,7 @@ import { runtimeTabs } from "./tabs";
   </Card>
 
   <Card
-    class='mt-4 rounded-tl-none'
+    class='rounded-tl-none'
     aria-label='Budgets view'
     id='runtime-panel-budget'
     role='tabpanel'
@@ -105,7 +105,7 @@ import { runtimeTabs } from "./tabs";
   </Card>
 
   <Card
-    class='mt-4 overflow-hidden rounded-tl-none'
+    class='overflow-hidden rounded-tl-none'
     aria-label='Policies view'
     id='runtime-panel-policy'
     role='tabpanel'
@@ -116,12 +116,8 @@ import { runtimeTabs } from "./tabs";
     <CardHeader
       class='flex items-center justify-between gap-3 rounded-tl-none bg-taupe-700 font-mono text-xs text-background'
     >
-      <CardTitle class='text-xs'>
-        <Icon
-          name='hugeicons:play'
-          class='mr-2 inline size-4'
-          aria-hidden='true'
-        />
+      <CardTitle class='flex items-center gap-2 text-xs'>
+        <Icon name='hugeicons:play' class='size-4' aria-hidden='true' />
         lead_enrichment_policy.sql
       </CardTitle>
       <span
@@ -143,9 +139,9 @@ import { runtimeTabs } from "./tabs";
     </CardHeader>
     <CardContent class='flex min-h-0 flex-1 flex-col p-0'>
       <CodeScrollArea label='Policy SQL query'>
-        <div class='flex min-w-max p-3'>
+        <div class='flex min-w-max gap-3 p-3'>
           <pre
-            class='mr-3 border-r border-taupe-400 pr-3 text-right font-mono text-xs leading-snug text-taupe-300'
+            class='border-r border-taupe-400 pr-3 text-right font-mono text-xs leading-snug text-taupe-300'
             aria-hidden='true'>{Array.from({ length: policyLineCount }, (_, index) => index + 1).join("\n")}</pre>
           <pre
             class='m-0 whitespace-pre font-mono text-xs leading-snug'><code data-code>{runtimeCode.policies}</code></pre>
@@ -198,7 +194,7 @@ import { runtimeTabs } from "./tabs";
   </Card>
 
   <Card
-    class='mt-4 overflow-hidden rounded-tl-none'
+    class='overflow-hidden rounded-tl-none'
     aria-label='Workflow view'
     id='runtime-panel-workflow'
     role='tabpanel'

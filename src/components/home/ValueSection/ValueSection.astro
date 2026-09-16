@@ -10,8 +10,6 @@ import { policyExamples } from "./policies";
 const percent = (value: number, total: number) =>
   `${((100 * value) / total).toFixed(2)}%`;
 
-// Each bar spans the request against a scale of the available budget. Whatever
-// reaches past the policy limit is the part the policy refuses.
 const panels = policyExamples.map((example) => ({
   ...example,
   bars: example.conditions.map(({ name, limit }) => ({
@@ -28,18 +26,18 @@ const panels = policyExamples.map((example) => ({
 <Section id='policy-value' aria-label='Team policy value comparison'>
   <article class='grid min-w-0 items-center gap-10 lg:grid-cols-2 lg:gap-16'>
     <header class='flex flex-col gap-4'>
-      <h2>Fund what matters</h2>
+      <h2>Context-aware business policy</h2>
       <p class='max-w-md text-base leading-relaxed text-muted-foreground'>
-        Connect workflow spend to team outcomes. Keynes gives your business a
-        consistent way to direct efficient investment toward revenue, retention,
-        and reliability as usage scales.
+        How much is enough? The right amount to budget depends on the current
+        context. Keynes lets you build dynamic context-aware resource policies
+        that adapt to your business.
       </p>
     </header>
 
     <div class='mx-auto flex w-full max-w-sm flex-col gap-4' data-value-section>
       <div
         hidden
-        class='flex gap-6 border-b border-taupe-300'
+        class='flex gap-6'
         role='tablist'
         aria-label='Illustrative team policies'
         data-value-tablist
@@ -47,7 +45,7 @@ const panels = policyExamples.map((example) => ({
         {
           panels.map((panel, index) => (
             <button
-              class='-mb-px border-b-2 border-transparent pb-1.5 font-mono text-xs text-muted-foreground transition-colors hover:text-foreground aria-selected:border-foreground aria-selected:font-medium aria-selected:text-foreground'
+              class='-mb-px border-b-2 border-transparent pb-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground aria-selected:border-foreground aria-selected:font-medium aria-selected:text-foreground'
               id={`value-tab-${panel.id}`}
               role='tab'
               type='button'
@@ -90,7 +88,7 @@ const panels = policyExamples.map((example) => ({
                       <span
                         class:list={[
                           "font-mono text-xs",
-                          bar.approved ? "text-emerald-700" : "text-rose-700",
+                          bar.approved ? "text-emerald-600" : "text-red-600",
                         ]}
                       >
                         {bar.approved ? "APPROVED" : "DENIED"}
@@ -98,12 +96,12 @@ const panels = policyExamples.map((example) => ({
                     </p>
                     <div class='relative h-3 border-b' aria-hidden='true'>
                       <span
-                        class='absolute bottom-0 left-0 h-1.5 bg-foreground'
+                        class='absolute bottom-0 left-0 h-1.5 bg-emerald-600'
                         style={{ width: bar.allowed }}
                       />
                       {!bar.approved && (
                         <span
-                          class='absolute bottom-0 h-1.5 bg-rose-200'
+                          class='absolute bottom-0 h-1.5 bg-red-300'
                           style={{
                             left: bar.allowed,
                             width: bar.refused,

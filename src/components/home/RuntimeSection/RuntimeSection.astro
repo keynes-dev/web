@@ -11,9 +11,9 @@ import { runtimeTabs } from "./tabs";
   class="bg-sky-200"
 >
   <article class="grid items-center gap-8 lg:grid-cols-2" data-runtime-section>
-    <header class="space-y-4">
+    <header class="flex flex-col gap-4">
       {runtimeTabs.map((tab) => (
-        <div class="space-y-4" data-runtime-copy={tab.id}>
+        <div class="flex flex-col gap-4" data-runtime-copy={tab.id}>
           <h2>{tab.title}</h2>
           <p class="max-w-md text-base leading-relaxed text-muted-foreground">
             {tab.description}

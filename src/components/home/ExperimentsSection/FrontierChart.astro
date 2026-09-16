@@ -1,4 +1,5 @@
 ---
+import faSolid from "@iconify-json/fa-solid/icons.json";
 import { experimentRuns, productionExample } from "./data";
 import {
   chartDomain,
@@ -32,6 +33,19 @@ const dollarFormatter = new Intl.NumberFormat("en-US", {
 });
 const dollars = (value: number) => dollarFormatter.format(value);
 const clipPathId = "frontier-chart-plot";
+const starIcon = faSolid.icons.star;
+const starViewBoxWidth = starIcon.width ?? faSolid.width ?? 576;
+const starViewBoxHeight = faSolid.height ?? 512;
+const starSize = 12;
+const starScale = starSize / starViewBoxHeight;
+const starX =
+  x(productionExample.spend) - (starViewBoxWidth * starScale) / 2;
+const starY =
+  y(productionExample.resolved) - (starViewBoxHeight * starScale) / 2;
+const starPath = starIcon.body.match(/d="([^"]+)"/)?.[1];
+if (!starPath) {
+  throw new Error("fa-solid:star path data missing");
+}
 ---
 
 <div class="flex gap-1.5 font-mono text-xs">
@@ -130,15 +144,12 @@ const clipPathId = "frontier-chart-plot";
             y1={plot.top}
             y2={plot.top + plot.height}
           />
-          <text
+          <g
             fill="var(--chart-recommended)"
-            font-size="15"
-            text-anchor="middle"
-            x={x(productionExample.spend)}
-            y={y(productionExample.resolved) + 5}
+            transform={`translate(${starX} ${starY}) scale(${starScale})`}
           >
-            ★
-          </text>
+            <path d={starPath} />
+          </g>
         </g>
         {xTicks.map((tick) => (
           <g>
