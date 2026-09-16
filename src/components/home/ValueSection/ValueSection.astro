@@ -1,0 +1,187 @@
+---
+import Section from "@/components/section/Section.astro";
+import CodeScrollArea from "@/components/home/RuntimeSection/CodeScrollArea.astro";
+import Card from "@/components/ui/Card.astro";
+import CardContent from "@/components/ui/CardContent.astro";
+import CardHeader from "@/components/ui/CardHeader.astro";
+import CardTitle from "@/components/ui/CardTitle.astro";
+import { policyExamples } from "./policies";
+
+const percent = (value: number, total: number) =>
+  `${((100 * value) / total).toFixed(2)}%`;
+
+// Each bar spans the request against a scale of the available budget. Whatever
+// reaches past the policy limit is the part the policy refuses.
+const panels = policyExamples.map((example) => ({
+  ...example,
+  bars: example.conditions.map(({ name, limit }) => ({
+    name,
+    limit,
+    approved: example.requested <= limit,
+    allowed: percent(Math.min(example.requested, limit), example.available),
+    refused: percent(Math.max(example.requested - limit, 0), example.available),
+    mark: percent(limit, example.available),
+  })),
+}));
+---
+
+<Section id='policy-value' aria-label='Team policy value comparison'>
+  <article class='grid min-w-0 items-center gap-10 lg:grid-cols-2 lg:gap-16'>
+    <header class='flex flex-col gap-4'>
+      <h2>Fund what matters</h2>
+      <p class='max-w-md text-base leading-relaxed text-muted-foreground'>
+        Connect workflow spend to team outcomes. Keynes gives your business a
+        consistent way to direct efficient investment toward revenue, retention,
+        and reliability as usage scales.
+      </p>
+    </header>
+
+    <div class='mx-auto flex w-full max-w-sm flex-col gap-4' data-value-section>
+      <div
+        hidden
+        class='flex gap-6 border-b border-taupe-300'
+        role='tablist'
+        aria-label='Illustrative team policies'
+        data-value-tablist
+      >
+        {
+          panels.map((panel, index) => (
+            <button
+              class='-mb-px border-b-2 border-transparent pb-1.5 font-mono text-xs text-muted-foreground transition-colors hover:text-foreground aria-selected:border-foreground aria-selected:font-medium aria-selected:text-foreground'
+              id={`value-tab-${panel.id}`}
+              role='tab'
+              type='button'
+              aria-controls={`value-panel-${panel.id}`}
+              aria-selected={index === 0 ? "true" : "false"}
+              tabindex={index === 0 ? 0 : -1}
+              data-value-tab
+            >
+              {panel.tab}
+            </button>
+          ))
+        }
+      </div>
+
+      {
+        panels.map((panel) => (
+          <section
+            id={`value-panel-${panel.id}`}
+            role='tabpanel'
+            aria-labelledby={`value-tab-${panel.id}`}
+            tabindex='0'
+            data-value-panel
+          >
+            <Card>
+              <CardHeader class='flex w-full items-center justify-between bg-taupe-700'>
+                <CardTitle class='text-xs'>{panel.file}</CardTitle>
+                <CardTitle class='text-xs'>{`{}`} TypeScript</CardTitle>
+              </CardHeader>
+              <CardContent class='border-b-2 p-0'>
+                <CodeScrollArea
+                  label={`${panel.file} policy`}
+                  code={panel.policy}
+                />
+              </CardContent>
+              <CardContent class='flex flex-col gap-4'>
+                {panel.bars.map((bar) => (
+                  <div class='flex flex-col gap-1.5'>
+                    <p class='flex items-baseline justify-between gap-3 text-xs'>
+                      {bar.name}
+                      <span
+                        class:list={[
+                          "font-mono text-xs",
+                          bar.approved ? "text-emerald-700" : "text-rose-700",
+                        ]}
+                      >
+                        {bar.approved ? "APPROVED" : "DENIED"}
+                      </span>
+                    </p>
+                    <div class='relative h-3 border-b' aria-hidden='true'>
+                      <span
+                        class='absolute bottom-0 left-0 h-1.5 bg-foreground'
+                        style={{ width: bar.allowed }}
+                      />
+                      {!bar.approved && (
+                        <span
+                          class='absolute bottom-0 h-1.5 bg-rose-200'
+                          style={{
+                            left: bar.allowed,
+                            width: bar.refused,
+                          }}
+                        />
+                      )}
+                      <span
+                        class='absolute inset-y-0 border-l'
+                        style={{ left: bar.mark }}
+                      />
+                    </div>
+                    <div class='relative flex justify-between font-mono text-tiny text-muted-foreground'>
+                      <span>0</span>
+                      <span
+                        class='absolute -translate-x-1/2'
+                        style={{ left: bar.mark }}
+                      >
+                        limit: {bar.limit}
+                      </span>
+                      <span>{panel.available}</span>
+                    </div>
+                  </div>
+                ))}
+              </CardContent>
+            </Card>
+          </section>
+        ))
+      }
+    </div>
+  </article>
+</Section>
+
+<script>
+  for (const section of document.querySelectorAll<HTMLElement>(
+    "[data-value-section]",
+  )) {
+    const tablist = section.querySelector<HTMLElement>("[data-value-tablist]");
+    const tabs = Array.from(
+      section.querySelectorAll<HTMLButtonElement>("[data-value-tab]"),
+    );
+    const panels = Array.from(
+      section.querySelectorAll<HTMLElement>("[data-value-panel]"),
+    );
+
+    if (!tablist || tabs.length === 0 || panels.length === 0) continue;
+
+    tablist.hidden = false;
+
+    const select = (index: number, focus = false) => {
+      tabs.forEach((tab, tabIndex) => {
+        const active = tabIndex === index;
+        tab.setAttribute("aria-selected", String(active));
+        tab.tabIndex = active ? 0 : -1;
+        if (active && focus) tab.focus();
+      });
+      panels.forEach((panel, panelIndex) => {
+        panel.hidden = panelIndex !== index;
+      });
+    };
+
+    tabs.forEach((tab, index) => {
+      tab.addEventListener("click", () => select(index));
+      tab.addEventListener("keydown", (event) => {
+        const offset =
+          event.key === "ArrowRight" ? 1
+          : event.key === "ArrowLeft" ? -1
+          : 0;
+        if (offset === 0 && event.key !== "Home" && event.key !== "End") return;
+
+        event.preventDefault();
+        const nextIndex =
+          event.key === "Home" ? 0
+          : event.key === "End" ? tabs.length - 1
+          : (index + offset + tabs.length) % tabs.length;
+        select(nextIndex, true);
+      });
+    });
+
+    select(0);
+  }
+</script>

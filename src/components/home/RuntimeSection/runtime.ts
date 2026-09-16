@@ -1,4 +1,3 @@
-import { highlightRuntimeCode } from "./highlight";
 import { runtimeTabs } from "./tabs";
 
 for (const section of document.querySelectorAll<HTMLElement>(
@@ -23,14 +22,7 @@ for (const section of document.querySelectorAll<HTMLElement>(
     section.querySelectorAll<HTMLElement>("[data-runtime-panel]"),
   );
 
-  if (
-    !demo ||
-    !controls ||
-    !tablist ||
-    !previous ||
-    !next
-  )
-    continue;
+  if (!demo || !controls || !tablist || !previous || !next) continue;
 
   demo.classList.add("flex", "h-132", "flex-col");
   tablist.hidden = false;
@@ -92,13 +84,4 @@ for (const section of document.querySelectorAll<HTMLElement>(
   });
 
   select(0);
-  const observer = new IntersectionObserver(
-    (entries) => {
-      if (!entries.some((entry) => entry.isIntersecting)) return;
-      observer.disconnect();
-      void highlightRuntimeCode(demo);
-    },
-    { rootMargin: "200px" },
-  );
-  observer.observe(demo);
 }

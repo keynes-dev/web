@@ -22,6 +22,7 @@
   --font-heading: var(--font-ibm-plex-sans);
   --font-mono: var(--font-ibm-plex-mono);
   --font-sans: var(--font-ibm-plex-sans);
+  --text-tiny: 0.625rem;
   --color-ring: var(--ring);
   --color-border: var(--border);
   --color-muted-foreground: var(--muted-foreground);

@@ -1,14 +1,17 @@
-type SyntaxSpan = Awaited<ReturnType<typeof import("gpu-lexer").parse>>[number];
+import { parse } from "gpu-lexer";
 
+type SyntaxSpan = Awaited<ReturnType<typeof parse>>[number];
+
+// Tuned for dark code panels (`bg-taupe-600` via CodeScrollArea).
 const tokenClasses: Record<string, string> = {
-  comment: "text-muted-foreground",
-  string: "text-fuchsia-700",
-  number: "text-amber-700",
-  keyword: "text-red-700",
-  type: "text-amber-700",
-  function: "text-blue-700",
-  constant: "text-blue-700",
-  operator: "text-muted-foreground",
+  comment: "text-taupe-300",
+  string: "text-fuchsia-300",
+  number: "text-amber-300",
+  keyword: "text-violet-300",
+  type: "text-amber-300",
+  function: "text-sky-300",
+  constant: "text-sky-300",
+  operator: "text-taupe-300",
 };
 
 function renderTokens(code: HTMLElement, source: string, tokens: SyntaxSpan[]) {
@@ -32,18 +35,17 @@ function renderTokens(code: HTMLElement, source: string, tokens: SyntaxSpan[]) {
   code.replaceChildren(fragment);
 }
 
-export async function highlightRuntimeCode(root: HTMLElement) {
-  const blocks = Array.from(
-    root.querySelectorAll<HTMLElement>("[data-runtime-code]"),
-  );
+// Highlights every `[data-code]` block in `root`, including blocks inside
+// hidden tab panels so switching tabs never reveals unhighlighted code.
+export async function highlightCode(root: ParentNode = document) {
+  const blocks = Array.from(root.querySelectorAll<HTMLElement>("[data-code]"));
   if (!blocks.length || !("gpu" in navigator)) return;
   try {
-    const { parse } = await import("gpu-lexer");
     for (const block of blocks) {
       const source = block.textContent ?? "";
       renderTokens(block, source, await parse(source));
     }
   } catch (error) {
-    console.warn("Runtime code highlighting was unavailable.", error);
+    console.warn("Code highlighting was unavailable.", error);
   }
 }
