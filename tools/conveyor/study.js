@@ -30,7 +30,9 @@ const baseline = parameters.has("baseline");
 const attempt = full
   ? baseline
     ? "loop-baseline"
-    : "loop-optimized"
+    : parameters.has("seams")
+      ? "loop-translated"
+      : "loop-optimized"
   : "indexed";
 const original = document.querySelector("#original");
 const candidate = document.querySelector("#candidate");

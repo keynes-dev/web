@@ -32,7 +32,7 @@ export function transform(point, binding, frame) {
   let p = point;
   let offset = [0, 0, 0];
   if (binding.startsWith("slats:")) {
-    const top = binding === "slats:top";
+    const top = binding.split(":")[1] === "top";
     offset = [
       0,
       top
@@ -41,7 +41,8 @@ export function transform(point, binding, frame) {
       (top ? -1 : 1) * mod(frame.beltShift, BELT.slat),
     ];
   } else if (binding.startsWith("roller:")) {
-    p = rotate(p, "x", -frame.beltShift / BELT.rollerR);
+    if (!binding.endsWith(":fixed"))
+      p = rotate(p, "x", -frame.beltShift / BELT.rollerR);
     offset = [
       0,
       BELT.top - BELT.slatRise - BELT.rollerR,
