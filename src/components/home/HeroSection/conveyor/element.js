@@ -17,7 +17,10 @@ export class ConveyorBelt extends HTMLElement {
     if (this.#conveyor || this.#connection) return;
     const connection = {};
     this.#connection = connection;
-    void import("./main.js").then(({ createConveyor }) => {
+    const renderer = import.meta.env.DEV
+      ? import("./svg-preview.js")
+      : import("./main.js");
+    void renderer.then(({ createConveyor }) => {
       if (this.#connection !== connection) return;
       this.#conveyor = createConveyor(this);
     });

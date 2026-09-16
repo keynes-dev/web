@@ -2,7 +2,13 @@
 
 The complete 13.950005467999828-second conveyor loop now has an SVG renderer. The comparison page runs it beside the original Three.js renderer with a shared seek time. This work belongs to [KEY-110](https://linear.app/keynes/issue/KEY-110/replace-the-passive-threejs-hero-loop-with-responsive-svgcss-animation).
 
-The complete loop has passed the Chromium visual checkpoint and now has an initial optimization pass. Geometry uses shared templates and a lossless compact encoding; the renderer caches visibility and skips offscreen and unchanged work. See the [optimization measurements](evidence/optimization.md). The performance gate still fails, so the production homepage and its Three.js dependencies remain unchanged.
+The complete loop has passed the Chromium visual checkpoint and now has an initial optimization pass. Geometry uses shared templates and a lossless compact encoding; the renderer caches visibility and skips offscreen and unchanged work. See the [optimization measurements](evidence/optimization.md). The performance gate still fails, so production builds retain Three.js. At the user's request, Astro dev mode temporarily uses SVG on the homepage for inspection.
+
+## Inspect on the homepage
+
+Run `pnpm --filter @keynes/web dev` from this checkout. The development homepage loads `svg-preview.js` with the checked-in `svg-geometry.json`; it needs no ignored capture artifacts or comparison server. It keeps the hero's existing framing, background, description, and custom-element lifecycle. The preview exposes `window.conveyor.controls.seek/start/stop` for inspection.
+
+To restore Three.js in development, replace the conditional renderer import in `conveyor/element.js` with `import("./main.js")`. Production builds already select that renderer. To refresh the checked-in artwork after a geometry change, run the full export and compile commands below, then copy `.artifacts/conveyor/loop-packed.json` to `apps/web/src/components/home/HeroSection/conveyor/svg-geometry.json` and format that file.
 
 ## Run the comparison
 
