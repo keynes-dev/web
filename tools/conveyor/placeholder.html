@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+  <meta charset="utf-8" />
+  <title>Conveyor placeholder capture</title>
+  <style>
+    body {
+      margin: 0;
+      background: #ffedd4;
+      color: #2b2422;
+      font: 14px sans-serif;
+    }
+    header {
+      padding: 12px;
+    }
+    #drawing {
+      width: 2000px;
+      height: 580px;
+      --conveyor-ground: #ffedd4;
+    }
+    output {
+      display: block;
+      padding: 12px;
+      white-space: pre-wrap;
+    }
+  </style>
+  <header>
+    <button id="compare" disabled>Capture matching 580px reference</button>
+    <button id="export" disabled>Export responsive placeholders</button>
+  </header>
+  <output id="status">Ready</output>
+  <div id="drawing"></div>
+  <script type="module" src="./placeholder.js"></script>
+</html>

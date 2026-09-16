@@ -8,8 +8,8 @@ import {
   bounds,
   frameView,
   polygonPath,
-  projectedTriangle,
   projectIndexed,
+  projectedPose,
   bindingVisible,
   transform,
   segmentPath,
@@ -27,49 +27,23 @@ import {
   createRollerMarks,
 } from "./belt.js";
 
+import { stationaryGeometry, prepareStaticScene } from "./static-scene.js";
+
+import { stationaryStrokes } from "./stationary-strokes.js";
+
 export function createGate(
   container,
   data,
-  { place = choosePlace, record = false } = {},
+  { place = choosePlace, record = false, staticCache } = {},
 ) {
   const timeline = createTimeline(data.sky);
   const belt = continuousBelt(data.groups);
   const groups = splitRollerMarks(
     data.groups.filter((g) => !g.binding.startsWith("slats:")),
   );
-  const fixedRollers = groups
-    .filter((group) => data.staticTriangles && group.binding.endsWith(":fixed"))
-    .map((group) => projectIndexed(group, timeline.describe(0)));
-  const rollerTriangles = [
-    ...belt.triangles,
-    ...fixedRollers.flatMap((group) => group.triangles),
-  ];
-  const rollerLines = [
-    ...belt.lines,
-    ...fixedRollers.flatMap((group) => group.lines),
-  ];
-  let staticQuery = spatialIndex(
-    data.occluders
-      .map((t) =>
-        projectedTriangle(
-          [t.slice(0, 3), t.slice(3, 6), t.slice(6, 9)],
-          t[9],
-          true,
-        ),
-      )
-      .filter(Boolean),
-  );
-  let staticLines = data.staticLines.map((l) => ({
-    a: l.slice(0, 3),
-    b: l.slice(3, 6),
-    fine: l[6],
-    bounds: bounds([l.slice(0, 3), l.slice(3, 6)]),
-  }));
-  let staticColors = data.staticColors.map((t) => ({
-    ...t,
-    bounds: bounds(t.points),
-    path: polygonPath(t.points),
-  }));
+  const fixed = stationaryGeometry(data);
+  const rollerTriangles = fixed.triangles;
+  let staticQuery, staticLines, staticColors;
   let depthPixel = 0;
   let strokeMargin = 0;
   let initialized = false;
@@ -80,7 +54,7 @@ export function createGate(
     box[1] <= viewport[3] &&
     box[3] >= viewport[1];
   function offsetSurface(triangle) {
-    if (data.staticTriangles && triangle.color !== "ink")
+    if (triangle.color !== "ink")
       triangle.plane[2] -=
         Math.max(Math.abs(triangle.plane[0]), Math.abs(triangle.plane[1])) *
           depthPixel +
@@ -88,59 +62,12 @@ export function createGate(
     return triangle;
   }
   function prepareStatic() {
-    if (!data.staticTriangles) return;
-    const faces = [
-      ...data.staticTriangles,
-      ...rollerTriangles.map((t) => [...t.points.flat(), t.color]),
-    ].map((t) =>
-      offsetSurface(
-        projectedTriangle(
-          [t.slice(0, 3), t.slice(3, 6), t.slice(6, 9)],
-          t[9],
-          true,
-        ),
-      ),
-    );
-    staticQuery = spatialIndex(faces.filter((t) => t.color !== "glass"));
-    staticColors = [];
-    for (const face of faces) {
-      if (face.color === "ground") continue;
-      let fragments = [face.points];
-      for (const other of staticQuery(face.bounds)) {
-        if (other.color === face.color) continue;
-        fragments = fragments.flatMap((p) =>
-          subtractTriangle(p, other, face.plane),
-        );
-        if (!fragments.length) break;
-      }
-      for (const points of fragments)
-        staticColors.push({
-          ...face,
-          points,
-          bounds: bounds(points),
-          path: polygonPath(points),
-        });
-    }
-    staticLines = [];
-    for (const l of [
-      ...data.staticSourceLines,
-      ...rollerLines.map((line) => [...line.a, ...line.b, line.fine]),
-    ]) {
-      const a = l.slice(0, 3),
-        b = l.slice(3, 6);
-      for (const [start, end] of visibleSegments(
-        a,
-        b,
-        staticQuery(bounds([a, b])),
-      ))
-        staticLines.push({
-          a: start,
-          b: end,
-          fine: l[6],
-          bounds: bounds([start, end]),
-        });
-    }
+    const prepared = prepareStaticScene(data, fixed, depthPixel);
+    staticQuery = prepared.query;
+    staticColors = prepared.colors;
+    staticLines = prepared.lines;
   }
+
   const moving = groups.filter((group) => !group.binding.startsWith("roller:"));
   const localCorners = new Map(
     moving.map((group) => {
@@ -160,28 +87,31 @@ export function createGate(
     }),
   );
   const prepared = new Map();
+  const vertexBuffers = new Map(moving.map((group) => [group.binding, []]));
+  const frameBounds = new Map();
+  function groupBounds(group, frame) {
+    let box = frameBounds.get(group.binding);
+    if (!box) {
+      box = bounds(
+        localCorners
+          .get(group.binding)
+          .map((p) => transform(p, group.binding, frame)),
+      );
+      frameBounds.set(group.binding, box);
+    }
+    return box;
+  }
   let revision = 0;
   const boxCache = translatedBoxCache();
   function prepareGroup(group, frame) {
-    const pose = [
-      [0, 0, 0],
-      [1, 0, 0],
-      [0, 1, 0],
-      [0, 0, 1],
-    ]
-      .flatMap((p) => transform(p, group.binding, frame))
-      .join(",");
+    const pose = projectedPose(group.binding, frame);
     const previous = prepared.get(group.binding);
-    if (previous?.pose === pose) return previous.geometry;
     if (
-      !inView(
-        bounds(
-          localCorners
-            .get(group.binding)
-            .map((p) => transform(p, group.binding, frame)),
-        ),
-      )
-    ) {
+      previous &&
+      pose.every((point, i) => point.every((v, k) => v === previous.pose[i][k]))
+    )
+      return previous.geometry;
+    if (!inView(groupBounds(group, frame))) {
       const geometry = {
         binding: group.binding,
         triangles: [],
@@ -198,7 +128,7 @@ export function createGate(
       : null;
     const geometry = cached
       ? translateBox(cached)
-      : projectIndexed(group, frame);
+      : projectIndexed(group, frame, pose, vertexBuffers.get(group.binding));
     geometry.binding = group.binding;
     geometry.triangles = geometry.triangles
       .filter((t) => inView(t.bounds))
@@ -252,13 +182,9 @@ export function createGate(
   svg.setAttribute("role", "img");
   svg.style.cssText = "display:block;width:100%;height:100%;overflow:hidden";
   const paths = {};
-  let seams, marks;
+  let seams, marks, stationary;
   for (const kind of [
     "static",
-    "fixedInk",
-    "fixedLamp",
-    "fixedLine",
-    "fixedFine",
     "ground",
     "ink",
     "lamp",
@@ -269,7 +195,10 @@ export function createGate(
     "clipped",
     "glass",
   ]) {
-    const path = document.createElementNS(ns, "path");
+    const path = document.createElementNS(
+      ns,
+      kind === "stationaryLine" || kind === "stationaryFine" ? "g" : "path",
+    );
     if (/line|fine/i.test(kind)) {
       path.setAttribute("fill", "none");
       path.setAttribute("stroke", "currentColor");
@@ -296,7 +225,7 @@ export function createGate(
     }
   }
   const boxLayer = createBoxLayer(svg, moving);
-  const staticObstacles = (data.staticTriangles ?? [])
+  const staticObstacles = data.staticTriangles
     .filter((t) =>
       [0, 3, 6].some(
         (i) =>
@@ -318,10 +247,6 @@ export function createGate(
     "d",
     data.ground + rollerTriangles.map((t) => polygonPath(t.points)).join(""),
   );
-  paths.fixedInk.setAttribute("d", data.fixedColors.ink);
-  paths.fixedLamp.setAttribute("d", data.fixedColors.lamp);
-  paths.fixedLine.setAttribute("d", data.fixedStrokes[0]);
-  paths.fixedFine.setAttribute("d", data.fixedStrokes[1]);
   let time = data.start;
   const samples = [];
   const costs = [];
@@ -335,6 +260,7 @@ export function createGate(
     }
   }
   let lastGeometry = "";
+  let lastDrawnTime;
   let lastLamp;
   const lastPaths = new Map();
   function writePath(kind, value) {
@@ -343,9 +269,12 @@ export function createGate(
     lastPaths.set(kind, value);
   }
   function draw(t) {
+    if (lastDrawnTime === t) return;
     const began = performance.now();
     time = t;
+    lastDrawnTime = t;
     const frame = timeline.describe(t);
+    frameBounds.clear();
     seams.draw(frame.beltShift);
     marks.draw(frame.beltShift);
     const active = moving.filter((group) =>
@@ -358,26 +287,14 @@ export function createGate(
           (g) =>
             !g.binding.startsWith("box:") && !g.binding.startsWith("roller:"),
         )
-        .map((g) =>
-          bounds(
-            localCorners
-              .get(g.binding)
-              .map((p) => transform(p, g.binding, frame)),
-          ),
-        ),
+        .map((g) => groupBounds(g, frame)),
     ];
     const geometry = active
       .filter((group) => {
         if (!group.binding.startsWith("box:")) return true;
-        const boxBounds = bounds(
-          localCorners
-            .get(group.binding)
-            .map((p) => transform(p, group.binding, frame)),
-        );
+        const boxBounds = groupBounds(group, frame);
         const cached =
-          data.staticTriangles &&
-          inView(boxBounds) &&
-          !obstacles.some((b) => overlaps(boxBounds, b))
+          inView(boxBounds) && !obstacles.some((b) => overlaps(boxBounds, b))
             ? boxCache.get(group, frame, offsetSurface)
             : null;
         boxLayer.draw(group.binding, cached);
@@ -442,23 +359,7 @@ export function createGate(
       fills[triangle.color] += path;
     }
     const filledAt = performance.now();
-    const stationaryStrokes = ["", ""];
-    for (const line of staticLines) {
-      if (!inView(line.bounds)) continue;
-      const dependency = dependencies(line.bounds);
-      if (line.output?.dependency === dependency) {
-        stationaryStrokes[line.fine] += line.output.path;
-        continue;
-      }
-      const occluders = dynamicQuery(line.bounds);
-      let path = "";
-      if (!occluders.length) path = segmentPath(line.a, line.b);
-      else
-        for (const [a, b] of visibleSegments(line.a, line.b, occluders))
-          path += segmentPath(a, b);
-      line.output = { dependency, path };
-      stationaryStrokes[line.fine] += path;
-    }
+    stationary.draw(dependencies, dynamicQuery);
     const strokes = ["", ""];
     let clipped = "";
     for (const group of geometry)
@@ -513,8 +414,6 @@ export function createGate(
     writePath("lamp", fills.lamp);
     writePath("glass", fills.glass);
     writePath("clipped", clipped);
-    writePath("stationaryLine", stationaryStrokes[0]);
-    writePath("stationaryFine", stationaryStrokes[1]);
     writePath("line", strokes[0]);
     writePath("fine", strokes[1]);
     recordCost(performance.now() - began, [
@@ -524,9 +423,10 @@ export function createGate(
       performance.now() - clippedAt,
     ]);
   }
+  let lastView;
+  let lastRatio;
+  let lastHeight;
   function resize() {
-    prepared.clear();
-    boxCache.clear();
     const placement = typeof place === "function" ? place() : place;
     const ratio = Math.min(devicePixelRatio, CONFIG.maxPixelRatio);
     const view = frameView(
@@ -534,6 +434,18 @@ export function createGate(
       container.clientHeight,
       placement,
     );
+    if (
+      lastHeight === container.clientHeight &&
+      lastRatio === ratio &&
+      lastView?.every((value, i) => value === view[i])
+    )
+      return false;
+    lastHeight = container.clientHeight;
+    lastView = view;
+    lastRatio = ratio;
+    lastDrawnTime = undefined;
+    prepared.clear();
+    boxCache.clear();
     const margin =
       (CONFIG.lineWidth * ratio * 2 * CONFIG.frustum) / CONFIG.weighedAt;
     strokeMargin = margin;
@@ -547,7 +459,16 @@ export function createGate(
       (2 * CONFIG.frustum * (placement.zoom ?? 1)) /
       (Math.max(1, container.clientHeight) * ratio);
     prepareStatic();
-    seams.resize(staticQuery, margin);
+    stationary = stationaryStrokes(
+      [paths.stationaryLine, paths.stationaryFine],
+      staticLines,
+      inView,
+    );
+    seams.resize(
+      staticQuery,
+      margin,
+      staticCache?.depthPixel === depthPixel ? staticCache.masks : undefined,
+    );
     marks.resize(
       staticQuery,
       (CONFIG.fineWidth * ratio * 2 * CONFIG.frustum) / CONFIG.weighedAt,
@@ -556,47 +477,18 @@ export function createGate(
       margin,
       (CONFIG.fineWidth * ratio * 2 * CONFIG.frustum) / CONFIG.weighedAt,
     );
-    svg.setAttribute(
-      "viewBox",
-      frameView(container.clientWidth, container.clientHeight, placement).join(
-        " ",
-      ),
-    );
-    // Match the reference's DPR-dependent LineMaterial width, including its current scaling.
-    paths.line.setAttribute(
-      "stroke-width",
-      String(
-        (CONFIG.lineWidth * ratio * 2 * CONFIG.frustum) / CONFIG.weighedAt,
-      ),
-    );
-    paths.fixedLine.setAttribute(
-      "stroke-width",
-      paths.line.getAttribute("stroke-width"),
-    );
-    paths.fixedFine.setAttribute(
-      "stroke-width",
-      String(
-        (CONFIG.fineWidth * ratio * 2 * CONFIG.frustum) / CONFIG.weighedAt,
-      ),
-    );
-    paths.fine.setAttribute(
-      "stroke-width",
-      String(
-        (CONFIG.fineWidth * ratio * 2 * CONFIG.frustum) / CONFIG.weighedAt,
-      ),
-    );
-    paths.stationaryLine.setAttribute(
-      "stroke-width",
-      paths.line.getAttribute("stroke-width"),
-    );
-    paths.stationaryFine.setAttribute(
-      "stroke-width",
-      paths.fine.getAttribute("stroke-width"),
-    );
+    svg.setAttribute("viewBox", view.join(" "));
+    // Preserve the reference's DPR-dependent stroke weights.
+    const fineWidth =
+      (CONFIG.fineWidth * ratio * 2 * CONFIG.frustum) / CONFIG.weighedAt;
+    for (const name of ["line", "stationaryLine"])
+      paths[name].setAttribute("stroke-width", String(margin));
+    for (const name of ["fine", "stationaryFine"])
+      paths[name].setAttribute("stroke-width", String(fineWidth));
+    return true;
   }
   const observer = new ResizeObserver(() => {
-    resize();
-    if (initialized) draw(time);
+    if (resize() && initialized) draw(time);
   });
   observer.observe(container);
   resize();

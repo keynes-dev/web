@@ -152,11 +152,6 @@ export function unpackGeometry(data) {
       .filter((t) => t.color !== "glass")
       .map((t) => polygonPath(t.points))
       .join(""),
-    fixedStrokes: ["", ""],
-    fixedColors: { ink: "", lamp: "", glass: "" },
-    staticColors: [],
-    staticLines: [],
-    occluders: [],
     staticTriangles,
     staticSourceLines: stationary.lines.map(([a, b, fine]) => [
       ...round(point(a)),

@@ -1,53 +1,23 @@
 import { createRequire } from "node:module";
 import { fileURLToPath } from "node:url";
-import { mkdir, readFile, writeFile } from "node:fs/promises";
+import { mkdir, writeFile } from "node:fs/promises";
 const require = createRequire(import.meta.url);
 const { createServer } = await import(
   require.resolve("vite", { paths: [require.resolve("astro")] })
 );
 const root = fileURLToPath(new URL("../../", import.meta.url));
 const evidence = new URL("../../../../.artifacts/conveyor/", import.meta.url);
+const port = Number(process.env.CONVEYOR_PORT ?? 4342);
 const server = await createServer({
   configFile: false,
   root,
-  server: { host: "127.0.0.1", port: 4342, strictPort: true },
+  cacheDir: fileURLToPath(new URL(`vite-${port}/`, evidence)),
+  server: { host: "127.0.0.1", port, strictPort: true },
   plugins: [
     {
       name: "conveyor-local-evidence",
       configureServer(server) {
         server.middlewares.use(async (req, res, next) => {
-          if (
-            [
-              "/gate-geometry.json",
-              "/gate-compiled.json",
-              "/loop-compiled.json",
-              "/loop-packed.json",
-              "/baseline-compiled.json",
-            ].includes(req.url)
-          ) {
-            res.setHeader("Content-Type", "application/json");
-            const file =
-              req.url === "/baseline-compiled.json"
-                ? "optimization/baseline-compiled.json"
-                : req.url.slice(1);
-            res.end(await readFile(new URL(file, evidence)));
-            return;
-          }
-          if (req.url?.split("?")[0] === "/baseline-gate.js") {
-            const source = await readFile(
-              new URL("optimization/baseline-gate.js", evidence),
-              "utf8",
-            );
-            res.setHeader("Content-Type", "text/javascript");
-            res.end(
-              source.replace(
-                /from "([.][^"]+)"/g,
-                (_, path) =>
-                  `from "${new URL(path, "http://localhost/tools/conveyor/gate.js").pathname}"`,
-              ),
-            );
-            return;
-          }
           if (!req.url?.startsWith("/evidence/")) return next();
           const name = req.url.slice("/evidence/".length);
           if (
@@ -79,5 +49,5 @@ const server = await createServer({
 });
 await server.listen();
 console.log(
-  "Conveyor comparison: http://127.0.0.1:4342/tools/conveyor/index.html",
+  `Conveyor comparison: http://127.0.0.1:${port}/tools/conveyor/index.html`,
 );

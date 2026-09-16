@@ -2,7 +2,7 @@
 <html lang="en">
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Conveyor SVG fidelity gate</title>
+  <title>Conveyor SVG full loop comparison</title>
   <style>
     :root {
       font-family: monospace;
@@ -52,20 +52,25 @@
     <button id="reference">Reference</button><button id="svg">SVG</button
     ><button id="overlay">Overlay</button>
     <label
-      ><span id="time-label">Turn time</span>
+      ><span id="time-label">Loop time</span>
       <input id="time" type="number" min="0" max="1.9" step="0.001" value="0"
     /></label>
-    <button id="play">Play turn</button
-    ><button id="measure">Measure turn</button>
+    <button id="play">Play loop</button
+    ><button id="measure">Measure loop</button>
     <button id="capture-frame">Capture frame</button
     ><button id="capture-phases">Capture phase boundaries</button>
-    <button id="capture">Capture turn</button
+    <button id="capture">Capture loop</button
     ><button id="baseline">Capture full reference</button>
   </header>
   <div class="drawing">
     <div id="original"></div>
     <div id="candidate"></div>
   </div>
-  <output id="status">Loading reference and SVG gate...</output>
-  <script type="module" src="./study.js"></script>
+  <output id="status">Loading reference and SVG renderer...</output>
+  <script type="module">
+    import("./study.js").catch((error) => {
+      document.querySelector("#status").textContent = error.message;
+      throw error;
+    });
+  </script>
 </html>

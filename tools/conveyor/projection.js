@@ -135,12 +135,17 @@ export function projectedTriangle(
 }
 
 export function bounds(points) {
-  return [
-    Math.min(...points.map((p) => p[0])),
-    Math.min(...points.map((p) => p[1])),
-    Math.max(...points.map((p) => p[0])),
-    Math.max(...points.map((p) => p[1])),
-  ];
+  let left = Infinity,
+    top = Infinity,
+    right = -Infinity,
+    bottom = -Infinity;
+  for (const point of points) {
+    left = Math.min(left, point[0]);
+    top = Math.min(top, point[1]);
+    right = Math.max(right, point[0]);
+    bottom = Math.max(bottom, point[1]);
+  }
+  return [left, top, right, bottom];
 }
 
 export function planeAt(plane, point) {
@@ -324,23 +329,31 @@ export const polygonPath = (points) =>
 export const segmentPath = (a, b) =>
   `M${number(a[0])},${number(a[1])}L${number(b[0])},${number(b[1])}`;
 
-export function projectIndexed(group, frame) {
-  const origin = transform([0, 0, 0], group.binding, frame);
-  const axes = [
+export function projectedPose(binding, frame) {
+  return [
+    [0, 0, 0],
     [1, 0, 0],
     [0, 1, 0],
     [0, 0, 1],
-  ].map((p) => transform(p, group.binding, frame).map((v, i) => v - origin[i]));
-  const vertices = [];
+  ].map((p) => transform(p, binding, frame));
+}
+
+// Returned geometry borrows the optional buffer; keep one buffer per moving group.
+export function projectIndexed(
+  group,
+  frame,
+  pose = projectedPose(group.binding, frame),
+  vertices = [],
+) {
+  const origin = pose[0];
+  const axes = pose.slice(1).map((p) => p.map((v, i) => v - origin[i]));
   for (let i = 0; i < group.vertices.length; i += 3) {
     const x = group.vertices[i],
       y = group.vertices[i + 1],
       z = group.vertices[i + 2];
-    vertices.push(
-      origin.map(
-        (v, k) => v + x * axes[0][k] + y * axes[1][k] + z * axes[2][k],
-      ),
-    );
+    const point = vertices[i / 3] ?? (vertices[i / 3] = [0, 0, 0]);
+    for (let k = 0; k < 3; k++)
+      point[k] = origin[k] + x * axes[0][k] + y * axes[1][k] + z * axes[2][k];
   }
   const triangles = [];
   for (const [a, b, c, color, double] of group.faces) {

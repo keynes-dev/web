@@ -1,19 +1,8 @@
 import { createConveyor } from "../../src/components/home/HeroSection/conveyor/main.js";
-import { createGate } from "./gate.js";
 import { unpackGeometry } from "./geometry-codec.js";
 import { createConveyor as createSvgConveyor } from "./conveyor.js";
-import * as THREE from "three";
-import { createBelt } from "../../src/components/home/HeroSection/conveyor/parts/belt.js";
-import { createMachine } from "../../src/components/home/HeroSection/conveyor/parts/machine.js";
-import { createBoxes } from "../../src/components/home/HeroSection/conveyor/parts/boxes.js";
-import { createArm } from "../../src/components/home/HeroSection/conveyor/parts/arm.js";
-import { createTimeline } from "../../src/components/home/HeroSection/conveyor/timeline.js";
-import { host } from "../../src/components/home/HeroSection/conveyor/host.js";
-import { camera } from "../../src/components/home/HeroSection/conveyor/view.js";
-import {
-  choosePlace,
-  CONFIG,
-} from "../../src/components/home/HeroSection/conveyor/config.js";
+import packed from "../../src/components/home/HeroSection/conveyor/svg-geometry.json";
+import { CONFIG } from "../../src/components/home/HeroSection/conveyor/config.js";
 
 const parameters = new URLSearchParams(location.search);
 const nativeDpr = devicePixelRatio;
@@ -25,72 +14,16 @@ if (parameters.has("dpr"))
     value: renderDpr,
     configurable: true,
   });
-const full = parameters.has("full");
-const baseline = parameters.has("baseline");
-const attempt = full
-  ? baseline
-    ? "loop-baseline"
-    : parameters.has("seams")
-      ? "loop-translated"
-      : "loop-optimized"
-  : "indexed";
+const attempt = "loop-svg";
 const original = document.querySelector("#original");
 const candidate = document.querySelector("#candidate");
 const status = document.querySelector("#status");
 const slider = document.querySelector("#time");
-const packed = await (
-  await fetch(
-    full
-      ? baseline
-        ? "/baseline-compiled.json"
-        : "/loop-packed.json"
-      : "/gate-compiled.json",
-  )
-).json();
-const data = full && !baseline ? unpackGeometry(packed) : packed;
-function gateReference() {
-  const scene = new THREE.Scene();
-  const parts = [
-    createBelt(scene),
-    createMachine(scene),
-    createBoxes(scene),
-    createArm(scene),
-  ];
-  const timeline = createTimeline(data.sky);
-  const controls = host(original, {
-    scene,
-    camera,
-    update(t) {
-      const frame = timeline.describe(t);
-      for (const part of parts) part.apply(frame);
-    },
-    loop: timeline.loop,
-    still: data.start,
-    place: choosePlace,
-  });
-  controls.pause();
-  return { controls, timeline, destroy: controls.destroy };
-}
-let reference = full ? createConveyor(original) : gateReference();
+const data = unpackGeometry(packed);
+let reference = createConveyor(original);
 slider.max = String(data.duration);
-if (full) {
-  document.title = "Conveyor SVG full loop comparison";
-  document.querySelector("#play").textContent = "Play loop";
-  document.querySelector("#capture").textContent = "Capture loop";
-  document.querySelector("#measure").textContent = "Measure loop";
-  document.querySelector("#time-label").textContent = "Loop time";
-}
-const svgConveyor =
-  full && !baseline
-    ? createSvgConveyor(candidate, { data, record: true })
-    : null;
-svgConveyor?.controls.stop();
-const baselineModule = "/baseline-gate.js";
-const gate = svgConveyor
-  ? { ...svgConveyor, draw: svgConveyor.controls.seek }
-  : (baseline
-      ? (await import(/* @vite-ignore */ baselineModule)).createGate
-      : createGate)(candidate, data, { record: true });
+const drawing = createSvgConveyor(candidate, { data, record: true });
+drawing.controls.stop();
 let mode = "reference",
   playing = false,
   animation = 0;
@@ -103,9 +36,9 @@ function setMode(next) {
 function draw(offset) {
   const t = data.start + offset;
   reference.controls.seek(t);
-  gate.draw(t);
+  drawing.controls.seek(t);
   slider.value = String(offset);
-  status.textContent = `${mode} | ${full ? "loop" : "turn"} ${offset.toFixed(3)}s | SVG update ${gate.samples.at(-1).toFixed(2)}ms`;
+  status.textContent = `${mode} | loop ${offset.toFixed(3)}s | SVG update ${drawing.samples.at(-1).toFixed(2)}ms`;
 }
 function stop() {
   playing = false;
@@ -183,7 +116,7 @@ document.querySelector("#measure").addEventListener("click", async () => {
       const offset = ((now - begin) / 1000) % data.duration;
       const start = performance.now();
       if (mode === "reference") reference.controls.seek(data.start + offset);
-      else gate.draw(data.start + offset);
+      else drawing.controls.seek(data.start + offset);
       if (now - begin > data.duration * 1000) {
         intervals.push(now - last);
         updates.push(performance.now() - start);
@@ -209,7 +142,7 @@ document.querySelector("#measure").addEventListener("click", async () => {
       updates,
       costs:
         mode === "svg"
-          ? gate.costs
+          ? drawing.costs
               .slice(-updates.length)
               .reduce(
                 (sum, row) => sum.map((v, i) => v + row[i] / updates.length),
@@ -240,7 +173,7 @@ async function captureFrame(offset, tag) {
     `${name}-reference.png`,
     await (await fetch(canvas.toDataURL())).blob(),
   );
-  const svg = gate.svg.cloneNode(true);
+  const svg = drawing.svg.cloneNode(true);
   svg.setAttribute("xmlns", "http://www.w3.org/2000/svg");
   svg.setAttribute("width", original.clientWidth);
   svg.setAttribute("height", original.clientHeight);
@@ -345,7 +278,7 @@ document.querySelector("#baseline").addEventListener("click", async () => {
     JSON.stringify(metadata()),
   );
   reference.destroy();
-  reference = full ? createConveyor(original) : gateReference();
+  reference = createConveyor(original);
   status.textContent = "Reference capture complete";
 });
 draw(0);
@@ -355,7 +288,7 @@ window.addEventListener(
   "pagehide",
   () => {
     stop();
-    gate.destroy();
+    drawing.destroy();
     reference.destroy();
   },
   { once: true },

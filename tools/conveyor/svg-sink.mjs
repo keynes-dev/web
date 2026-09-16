@@ -12,6 +12,9 @@ export class Element {
   append(child) {
     this.children.push(child);
   }
+  replaceChildren(...children) {
+    this.children = children;
+  }
   remove() {}
 }
 

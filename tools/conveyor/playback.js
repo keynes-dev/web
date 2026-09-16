@@ -36,7 +36,7 @@ export function playback({
     last = clock.now();
     callback = clock.request(tick);
   }
-  draw(still);
+  draw(elapsed);
   return {
     seek(time) {
       if (!Number.isFinite(time))

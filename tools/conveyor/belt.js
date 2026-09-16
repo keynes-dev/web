@@ -63,13 +63,25 @@ export function createSeams(svg, surfaces) {
     draw(shift) {
       for (const layer of layers) layer.draw(shift);
     },
-    resize(query, width) {
-      for (const layer of layers) layer.resize(query, width);
+    resize(query, width, masks) {
+      layers.forEach((layer, index) =>
+        layer.resize(query, width, masks?.[index]),
+      );
     },
   };
 }
 
 let nextId = 0;
+export function clipBeltSurface(top, query) {
+  let fragments = [top];
+  const plane = projectedTriangle(top.slice(0, 3), "ground", true).plane;
+  for (const other of query(bounds(top))) {
+    fragments = fragments.flatMap((p) => subtractTriangle(p, other, plane));
+    if (!fragments.length) break;
+  }
+  return fragments.map(polygonPath).join("");
+}
+
 function createFaceSeams(svg, { points: top, from, to, direction }) {
   const ns = "http://www.w3.org/2000/svg";
   const make = (tag) => document.createElementNS(ns, tag);
@@ -102,14 +114,8 @@ function createFaceSeams(svg, { points: top, from, to, direction }) {
         `translate(${-z / Math.SQRT2} ${z / Math.sqrt(6)})`,
       );
     },
-    resize(query, width) {
-      let fragments = [top];
-      const plane = projectedTriangle(top.slice(0, 3), "ground", true).plane;
-      for (const other of query(bounds(top))) {
-        fragments = fragments.flatMap((p) => subtractTriangle(p, other, plane));
-        if (!fragments.length) break;
-      }
-      outline.setAttribute("d", fragments.map(polygonPath).join(""));
+    resize(query, width, mask) {
+      outline.setAttribute("d", mask ?? clipBeltSurface(top, query));
       strip.setAttribute("stroke-width", String(width));
     },
   };

@@ -4,6 +4,9 @@ import { Icon } from "astro-icon/components";
 import Section from "@/components/section/Section.astro";
 import Button from "@/components/ui/Button.astro";
 import { accessLinks } from "../access-links";
+
+const gridWidth = 32;
+const gridHeight = gridWidth / Math.sqrt(3);
 ---
 
 <Section class="bg-orange-100">
@@ -15,11 +18,15 @@ import { accessLinks } from "../access-links";
     <defs>
       <pattern
         id="hero-grid"
-        width="32"
-        height="16"
+        width={gridWidth}
+        height={gridHeight}
         patternUnits="userSpaceOnUse"
       >
-        <path d="M0 8 16 0 32 8 16 16Z" fill="none" stroke="currentColor" />
+        <path
+          d={`M0 ${gridHeight / 2} 16 0 32 ${gridHeight / 2} 16 ${gridHeight}Z`}
+          fill="none"
+          stroke="currentColor"
+        />
       </pattern>
     </defs>
     <rect width="100%" height="100%" fill="url(#hero-grid)" />
@@ -54,11 +61,50 @@ import { accessLinks } from "../access-links";
   <conveyor-belt
     slot="full-bleed"
     style="--conveyor-ground: var(--color-orange-100)"
-    class="pointer-events-none relative block h-56 border-border/10 text-foreground sm:h-64 lg:absolute lg:inset-0 lg:h-auto"
+    class="pointer-events-none relative block h-56 overflow-hidden border-border/10 text-foreground sm:h-64 lg:absolute lg:inset-0 lg:h-auto"
     role="img"
     aria-label="A machine sorting shapes into boxes on a conveyor belt: each box receives the shape that fits the hole in its lid, and one that arrives the wrong way up is turned over by a mechanical arm."
-  ></conveyor-belt>
+  >
+    <picture data-conveyor-placeholder class="absolute inset-0" aria-hidden="true">
+      <source
+        media="(prefers-reduced-motion: reduce) and (min-width: 64rem)"
+        srcset="/conveyor-reduced-416-1x.webp 1x, /conveyor-reduced-416-2x.webp 2x"
+      />
+      <source
+        media="(prefers-reduced-motion: reduce) and (min-width: 40rem)"
+        srcset="/conveyor-reduced-256-1x.webp 1x, /conveyor-reduced-256-2x.webp 2x"
+      />
+      <source
+        media="(prefers-reduced-motion: reduce)"
+        srcset="/conveyor-reduced-224-1x.webp 1x, /conveyor-reduced-224-2x.webp 2x"
+      />
+      <source
+        media="(min-width: 64rem)"
+        srcset="/conveyor-first-416-1x.webp 1x, /conveyor-first-416-2x.webp 2x"
+      />
+      <source
+        media="(min-width: 40rem)"
+        srcset="/conveyor-first-256-1x.webp 1x, /conveyor-first-256-2x.webp 2x"
+      />
+      <img
+        src="/conveyor-first-224-1x.webp"
+        srcset="/conveyor-first-224-1x.webp 1x, /conveyor-first-224-2x.webp 2x"
+        alt=""
+        width="772"
+        height="224"
+        loading="eager"
+        fetchpriority="high"
+        class="absolute top-0 left-[56%] h-full w-auto max-w-none -translate-x-1/2 lg:left-[73%]"
+      />
+    </picture>
+  </conveyor-belt>
 </Section>
+
+<style>
+  conveyor-belt[data-ready] [data-conveyor-placeholder] {
+    display: none;
+  }
+</style>
 
 <script>
   import "./conveyor/element.js";

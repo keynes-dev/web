@@ -33,9 +33,19 @@ function fixture() {
   };
 }
 
+test("the initial drawing matches the clock and loading time does not advance it", () => {
+  const { control, frames, advance } = fixture();
+  assert.deepEqual(frames, [0]);
+  advance(5000);
+  assert.deepEqual(frames, [0]);
+  control.setVisible(true);
+  advance(16);
+  assert.deepEqual(frames, [0, 0.016]);
+});
+
 test("seeking is deterministic, wraps negative times, and stops the clock", () => {
   const { control, frames, callbacks, advance } = fixture();
-  assert.deepEqual(frames, [3]);
+  assert.deepEqual(frames, [0]);
   control.setVisible(true);
   advance(16);
   control.seek(-1);

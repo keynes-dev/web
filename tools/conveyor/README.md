@@ -6,27 +6,29 @@ The complete loop has passed the Chromium visual checkpoint and now has an initi
 
 ## Inspect on the homepage
 
+The homepage serves a first-frame WebP while the renderer initializes. Normal playback starts at time zero, matching that image; reduced motion selects the matching mid-drop still. Each pose has separate 224, 256, and 416 CSS-pixel height captures at DPR 1 and 2. Depth clipping depends on the actual height, and browser SVG rasterization differs from librsvg around the apertures and gripper, so these images must be captured in the browser at their final resolution.
+
+To regenerate after artwork, timeline, or palette changes, run the comparison server, open `/tools/conveyor/placeholder.html`, and click **Export responsive placeholders**. Wait for **Capture complete**, then run `node apps/web/tools/conveyor/export-placeholder.mjs`. The converter verifies that lossless WebP encoding preserves every painted pixel. The capture page records the light homepage palette; update it alongside theme changes. Raw PNG and SVG captures stay in ignored `.artifacts/conveyor/`, and the existing social image is unchanged.
+
 Run `pnpm --filter @keynes/web dev` from this checkout. The development homepage loads `svg-preview.js` with the checked-in `svg-geometry.json`; it needs no ignored capture artifacts or comparison server. It keeps the hero's existing framing, background, description, and custom-element lifecycle. The preview exposes `window.conveyor.controls.seek/start/stop` for inspection.
 
-To restore Three.js in development, replace the conditional renderer import in `conveyor/element.js` with `import("./main.js")`. Production builds already select that renderer. To refresh the checked-in artwork after a geometry change, run the full export and compile commands below, then copy `.artifacts/conveyor/loop-packed.json` to `apps/web/src/components/home/HeroSection/conveyor/svg-geometry.json` and format that file.
+The preview loads one precomputed belt-mask variant for its initial CSS height and DPR, alongside placeholder decoding. These masks remove the expensive belt-surface clipping from startup. Unlisted heights, fractional DPRs, custom zooms, and subsequent resizes with a different clipping depth use runtime clipping. To regenerate all six variants after geometry or projection changes, run `node apps/web/tools/conveyor/export-static.mjs`. `static-scene.test.mjs` checks the generated masks against current geometry and compares complete SVG output at five loop poses. See [startup measurements](evidence/startup.md).
+
+To restore Three.js in development, replace the conditional renderer import in `conveyor/element.js` with `import("./main.js")`. Production builds already select that renderer. To refresh the checked-in artwork after a geometry change, run `node apps/web/tools/conveyor/export-loop.mjs` and `node apps/web/tools/conveyor/compile-gate.mjs --full`, then copy `.artifacts/conveyor/loop-packed.json` to `apps/web/src/components/home/HeroSection/conveyor/svg-geometry.json` and format that file.
 
 ## Run the comparison
 
 From the repository root:
 
 ```sh
-node apps/web/tools/conveyor/export-gate.mjs
-node apps/web/tools/conveyor/compile-gate.mjs
-node apps/web/tools/conveyor/export-loop.mjs
-node apps/web/tools/conveyor/compile-gate.mjs --full
 node apps/web/tools/conveyor/serve.mjs
 ```
 
-Open `http://127.0.0.1:4342/tools/conveyor/index.html?full`. Choose Reference, SVG, or Overlay. Loop time seeks both renderers. Play loop uses one clock to repeat the complete cycle. Capture frame saves the current pose; Capture loop saves 839 synchronized pairs at 60 samples per second, including the loop endpoint. Capture phase boundaries also samples immediately before and after phase transitions.
+Open `http://127.0.0.1:4342/tools/conveyor/index.html`. Choose Reference, SVG, or Overlay. Loop time seeks both renderers. Play loop uses one clock to repeat the complete cycle. Capture frame saves the current pose; Capture loop saves 839 synchronized pairs at 60 samples per second, including the loop endpoint. Capture phase boundaries also samples immediately before and after phase transitions.
 
-Add `&dpr=1` or `&dpr=2` to force the rendering pixel ratio for comparisons. This controls the original WebGL buffer, line weights, SVG line weights, and exported PNG resolution. It does not emulate a physical device or change the browser's native pixel ratio. Capture metadata records both values. Without this parameter, the page uses the browser's pixel ratio.
+Add `?dpr=1` or `?dpr=2` to force the rendering pixel ratio for comparisons. This controls the original WebGL buffer, line weights, SVG line weights, and exported PNG resolution. It does not emulate a physical device or change the browser's native pixel ratio. Capture metadata records both values. Without this parameter, the page uses the browser's pixel ratio.
 
-Captures and exported geometry live in ignored `.artifacts/conveyor/`, outside the production bundle. The full comparison loads `loop-packed.json`, which the compiler generates alongside the expanded diagnostic geometry. Use `&seams` for this attempt's `loop-translated` capture prefix, keeping earlier `loop-optimized` and `loop-seams` evidence separate. The local comparison server accepts only flat PNG, SVG, and JSON evidence filenames. All SVG geometry is live vector artwork; the captures are verification evidence, not animation assets.
+The comparison imports the same checked-in `svg-geometry.json` as the homepage and uses the `loop-svg` capture prefix. It needs no generated reference files to run. Partial-scene and archived-renderer modes have been removed; earlier evidence records the source revisions needed to reproduce those comparisons. Captures live in ignored `.artifacts/conveyor/`, outside the production bundle. The local comparison server accepts only flat PNG, SVG, and JSON evidence filenames. All SVG geometry is live vector artwork; the captures are verification evidence, not animation assets.
 
 ## What is implemented
 
@@ -40,9 +42,17 @@ Upright and inverted boxes reuse artwork. Away from the machine, each box moves 
 
 Persistent SVG paths hold fills and outlines. Clipping uses projected depth rather than average object depth. Glass renders last with the original tint and opacity, clipped against opaque geometry. Fine line visibility accounts for the original material's depth offset at the current height and rendering pixel ratio. At articulated arm and rotating-box intersections, clipping the full stroke preserves the tapered ends produced by the original depth test. Opaque static fills retain their complete triangle coverage; merging their boundaries had introduced transparent gaps and was removed from the full renderer.
 
+Stationary strokes use ordered batches of up to 128 source segments. Each batch retains its SVG path and skips processing when overlapping moving-group revisions are unchanged. Resize rebuilds the batches for the new viewport. Fills and translucent glass retain their combined paths. See the [stationary stroke measurements](evidence/stationary-batches.md) for the measured CPU and SVG-write changes and the remaining slow-frame limits.
+
+Moving groups share their projected pose between change detection and vertex projection, compare numeric poses instead of string signatures, and reuse vertex storage per group. Group bounds are calculated once per frame. Bounds scans avoid intermediate coordinate arrays. Returned projected geometry borrows its supplied vertex buffer; callers must not share that buffer between groups or retain it as an immutable frame snapshot. Visibility and clipping rules are unchanged. See the [geometry reuse measurements](evidence/geometry-reuse.md) for the modest and variable timing gains.
+
 `conveyor.js` supplies seek/start/stop and destroy controls around the SVG drawing. Its clock pauses for offscreen and hidden documents, holds the original mid-drop still for reduced motion, and cancels callbacks and listeners on destruction. The comparison controls explicitly seek the renderer so deterministic captures can inspect every pose.
 
 ## Verification
+
+Startup skips repeated draws at the same time and ignores resize notifications when the viewBox, CSS height, and DPR are unchanged. Real size changes invalidate the drawing even when the aspect ratio stays constant. The focused `startup.test.mjs` uses checked-in geometry and covers initialization, resizing, DPR changes, and removal.
+
+On 2026-09-16, a Node SVG-sink comparison at 1280x416 and DPR 2 measured median startup preparation of 2,143 ms before this change and 1,260 ms after it, across three runs after one warmup per version. The sequence creates the gate, requests frame zero again, and delivers the initial resize notification. This measures geometry and SVG writes, not network transfer or browser painting; browser startup timing remains NOT RUN. Playback and startup tests, lint, typecheck, and build passed. The projection and optimization suites could not run because this checkout lacks their generated `gate-geometry.json` and `loop-compiled.json` reference artifacts.
 
 The [full-loop visual checkpoint](evidence/visual-acceptance.md) records 2,722 frame comparisons, the inspected differences, checks, and remaining acceptance limits.
 

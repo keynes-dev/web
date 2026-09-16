@@ -9,9 +9,9 @@ import { playback } from "./playback.js";
 // separate until the SVG renderer passes its visual and performance checks.
 export function createConveyor(
   container,
-  { data, place = choosePlace, record = false },
+  { data, place = choosePlace, record = false, staticCache },
 ) {
-  const drawing = createGate(container, data, { place, record });
+  const drawing = createGate(container, data, { place, record, staticCache });
   const first = drawing.timeline.cycles.find((cycle) => cycle.entry);
   const still = first.start + first.dropStart + 0.7;
   const clock = playback({
