@@ -17,8 +17,8 @@ const modes = [
 const tableRows = [
   { label: "Data persistence", values: [false, true, true] },
   { label: "Database transactions", values: [false, false, true] },
-  { label: "Network required", values: [false, true, true] },
-  { label: "Database operator", values: ["N/A", "Keynes", "You"] },
+  { label: "Network required?", values: [false, true, true] },
+  { label: "Database operator", values: ["In-Process", "Keynes Cloud", "Your PostgreSQL DB"] },
 ] as const;
 ---
 
@@ -39,9 +39,9 @@ const tableRows = [
           <CardHeader>
             <CardTitle>{mode.name}</CardTitle>
           </CardHeader>
-          <CardContent class="relative overflow-hidden bg-violet-50 p-0">
+          <CardContent class="relative overflow-hidden p-0 last:rounded-b-[calc(var(--radius-sm)-1px)]">
             <svg
-              class="pointer-events-none absolute inset-0 size-full text-border/10"
+              class="pointer-events-none absolute inset-0 size-full text-border/5"
               aria-hidden="true"
             >
               <defs>
@@ -110,7 +110,7 @@ const tableRows = [
                       name={value ? "hugeicons:tick-02" : "hugeicons:cancel-01"}
                       class:list={[
                         "size-4",
-                        value ? "text-green-500" : "text-red-500",
+                        value ? "text-emerald-600" : "text-rose-600",
                       ]}
                       aria-hidden="true"
                     />

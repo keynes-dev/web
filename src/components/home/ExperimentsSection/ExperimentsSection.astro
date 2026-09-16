@@ -1,5 +1,6 @@
 ---
 import Section from "@/components/section/Section.astro";
+import Badge from "@/components/ui/Badge.astro";
 import Card from "@/components/ui/Card.astro";
 import CardHeader from "@/components/ui/CardHeader.astro";
 import CardTitle from "@/components/ui/CardTitle.astro";
@@ -12,13 +13,11 @@ import { dataCreditLimits, tokenLimits } from "./data";
 <Section id="how-experiments" aria-label="Experiments">
   <article class="grid min-w-0 items-center gap-10 lg:grid-cols-2 lg:gap-16">
     <header class="flex flex-col gap-4">
-      <h2>Find the right budget.</h2>
-      <div class="max-w-3xl text-base leading-relaxed text-muted-foreground">
-        <p class="max-w-md text-foreground">
-          Enrich the same leads with different data-credit and AI-token budgets.
-          Find where more data and deeper analysis stop improving results.
-        </p>
-      </div>
+      <Badge className="bg-violet-500 border-2 border-violet-700">Coming soon!</Badge>
+      <h2>Charting the efficient frontier</h2>
+      <p class="max-w-md text-foreground">
+        Spending more isn't always the answer, and cheaper isn't always better. Experiments help you test your resource policies so that you can find the optimal point on each workflow's cost-quality curve and avoid learning costly lessons in production.
+      </p>
     </header>
     <Card class="mx-auto w-full max-w-sm">
       <CardHeader>

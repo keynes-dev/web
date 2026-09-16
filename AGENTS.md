@@ -13,9 +13,9 @@ holds positioned artwork. Header and footer use native semantic elements with
 matching rail classes and shared `GridMarks.astro`.
 
 Compose `Card.astro`, `CardHeader.astro`, `CardTitle.astro`, `CardContent.astro`,
-and `CardFooter.astro` for standardized cards. Each part accepts native HTML
-attributes and merges Tailwind `class` overrides with its defaults. Do not add
-single-use card wrappers. Render shared navigation and access-link data
+and `CardFooter.astro` for standardized cards. Compose `Badge.astro` for compact
+status labels. Each part accepts native HTML attributes and merges Tailwind
+`class` overrides with its defaults. Do not add single-use card wrappers. Render shared navigation and access-link data
 at their call sites so each caller controls styling.
 
 Render charts as build-time SVG. Keep chart data and D3 curve generation beside

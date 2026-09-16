@@ -24,24 +24,24 @@ const glyphRules: Rule[] = [
   nameRule([
     "node process",
     "your postgresql",
-    "one transaction",
+    "transaction",
     "your app",
     "keynes",
   ]),
 ];
 
 export const localGlyph = paintAscii(
-  [...glyphBox("node process", ["", "   [ app ]  <------->  [ sqlite ]", ""])],
+  [...glyphBox("node process", ["", "  [ app ]  <------->  [ PGLite ]", ""])],
   glyphRules,
 );
 
 const transactionBox = (() => {
   const width = 30;
   const inner = width - 2;
-  const title = "one transaction";
+  const title = "transaction";
   return [
     "+-- " + title + " " + "-".repeat(width - 6 - title.length) + "+",
-    "|" + " [ your row ] [ keynes.* ]".padEnd(inner) + "|",
+    "|" + " [ your app ] [ keynes.* ]".padEnd(inner) + "|",
     "+" + "-".repeat(inner) + "+",
   ];
 })();
@@ -49,7 +49,7 @@ const transactionBox = (() => {
 export const embeddedGlyph = paintAscii(
   [
     ...glyphBox(
-      "your postgresql",
+      "PostgreSQL DB",
       transactionBox.map((line) => "  " + line),
     ),
   ],
@@ -57,10 +57,11 @@ export const embeddedGlyph = paintAscii(
 );
 
 export const hostedGlyph = paintAscii(
-  glyphBox("hosted service", [
-    "    [ your app ]",
-    "      | network",
-    "      +--> [ keynes + postgres ]",
+  glyphBox("Keynes Cloud", [
+    "             network",
+    "               ||",
+    "    [ app ] <--||--> [ Keynes ]",
+    "               ||",
   ]),
   glyphRules,
 );

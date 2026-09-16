@@ -2,29 +2,29 @@ export const runtimeTabs = [
   {
     id: "runtime",
     label: "Runtime",
-    title: "Define resource budgets",
+    title: "Give your agents the business",
     description:
-      "See shared resources flow from the GTM budget into Growth Operations and Sales Development, with approvals and denials visible at each branch.",
+      "As agents are making more and more business decisions, they need to understand your business context, policies, and resource limitations at the moment of decision. Keynes allows you to model your resource policy in code and give it to your agents as runtime context.",
   },
   {
     id: "budget",
     label: "Budget",
-    title: "Give every team a clear allocation.",
+    title: "Budgets, all the way down.",
     description:
-      "Create the GTM budget once, then allocate data credits, AI tokens, and email sends to the teams that use them.",
+      "It's simple. Define a budget for your organization and the resources it uses. Then, split that budget into sub budgets for your teams, workflows, and agents. Keynes automatically manages resource requests, asynchronous usage settlement, and overages.",
   },
   {
     id: "policy",
     label: "Policy",
-    title: "Turn business context into limits.",
+    title: "Define business policy as code.",
     description:
-      "Evaluate each request against live availability and lead intent, returning an explicit limit, decision, and reason.",
+      "It's okay to have favorites. Not every workflow request is the same. Keynes allows you to use custom business context to determine which requests are approved or denied. Test and iterate policies to find the right balance between cost and quality per run.",
   },
   {
     id: "workflow",
     label: "Workflow",
-    title: "Give every denial a backup plan.",
+    title: "Write smarter workflows.",
     description:
-      "Request resources before doing work, follow the approved path, and switch to a cheaper plan or retry when Keynes returns a denial reason.",
+      "Keynes exposes a typed API of your resources, budgets, and policies so that you can write smarter code. Instead of crossing your fingers and avoiding thinking about billing failures and endless retries, give your app a backup plan and handle limitations gracefully.",
   },
 ] as const;
