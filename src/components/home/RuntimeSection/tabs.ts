@@ -25,6 +25,6 @@ export const runtimeTabs = [
     label: "Workflow",
     title: "Write smarter workflows.",
     description:
-      "Keynes exposes a typed API of your resources, budgets, and policies so that you can write smarter code. Instead of crossing your fingers and avoiding thinking about billing failures and endless retries, give your app a backup plan and handle limitations gracefully.",
+      "Your app owns workflow orchestration. Keynes exposes a typed API of your resources, budgets, and policies so that you can write business-aware code. Instead of crossing your fingers and avoiding thinking about billing failures and endless retries, give your app a backup plan and handle limitations gracefully.",
   },
 ] as const;
