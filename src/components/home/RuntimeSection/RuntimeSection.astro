@@ -12,13 +12,14 @@ import { runtimeTabs } from "./tabs";
 >
   <article class="grid items-center gap-8 lg:grid-cols-2" data-runtime-section>
     <header class="space-y-4">
-      <h2 data-runtime-title>{runtimeTabs[0].title}</h2>
-      <p
-        class="max-w-md text-base leading-relaxed text-muted-foreground"
-        data-runtime-description
-      >
-        {runtimeTabs[0].description}
-      </p>
+      {runtimeTabs.map((tab) => (
+        <div class="space-y-4" data-runtime-copy={tab.id}>
+          <h2>{tab.title}</h2>
+          <p class="max-w-md text-base leading-relaxed text-muted-foreground">
+            {tab.description}
+          </p>
+        </div>
+      ))}
       <div hidden class="flex gap-4" data-runtime-controls>
         <button
           type="button"

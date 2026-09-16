@@ -5,9 +5,8 @@ for (const section of document.querySelectorAll<HTMLElement>(
   "[data-runtime-section]",
 )) {
   const demo = section.querySelector<HTMLElement>("[data-runtime-demo]");
-  const title = section.querySelector<HTMLElement>("[data-runtime-title]");
-  const description = section.querySelector<HTMLElement>(
-    "[data-runtime-description]",
+  const descriptions = Array.from(
+    section.querySelectorAll<HTMLElement>("[data-runtime-copy]"),
   );
   const controls = section.querySelector<HTMLElement>(
     "[data-runtime-controls]",
@@ -26,8 +25,6 @@ for (const section of document.querySelectorAll<HTMLElement>(
 
   if (
     !demo ||
-    !title ||
-    !description ||
     !controls ||
     !tablist ||
     !previous ||
@@ -48,8 +45,9 @@ for (const section of document.querySelectorAll<HTMLElement>(
     const selected = runtimeTabs[index];
     if (!selected) return;
 
-    title.textContent = selected.title;
-    description.textContent = selected.description;
+    descriptions.forEach((description) => {
+      description.hidden = description.dataset.runtimeCopy !== selected.id;
+    });
     previous.disabled = index === 0;
     next.disabled = index === runtimeTabs.length - 1;
 
