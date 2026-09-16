@@ -10,6 +10,7 @@ import {
   projectedTriangle,
   projectIndexed,
   bindingVisible,
+  transform,
   segmentPath,
   spatialIndex,
   subtractTriangle,
@@ -18,7 +19,11 @@ import {
 
 import { clippedStroke } from "./strokes.js";
 
-export function createGate(container, data, { place = choosePlace } = {}) {
+export function createGate(
+  container,
+  data,
+  { place = choosePlace, record = false } = {},
+) {
   const timeline = createTimeline(data.sky);
   let staticQuery = spatialIndex(
     data.occluders
@@ -44,6 +49,12 @@ export function createGate(container, data, { place = choosePlace } = {}) {
   }));
   let depthPixel = 0;
   let initialized = false;
+  let viewport = [-Infinity, -Infinity, Infinity, Infinity];
+  const inView = (box) =>
+    box[0] <= viewport[2] &&
+    box[2] >= viewport[0] &&
+    box[1] <= viewport[3] &&
+    box[3] >= viewport[1];
   function offsetSurface(triangle) {
     if (data.staticTriangles && triangle.color !== "ink")
       triangle.plane[2] -=
@@ -101,6 +112,100 @@ export function createGate(container, data, { place = choosePlace } = {}) {
     }
   }
   const moving = data.groups;
+  const localCorners = new Map(
+    moving.map((group) => {
+      const low = [Infinity, Infinity, Infinity],
+        high = [-Infinity, -Infinity, -Infinity];
+      group.vertices.forEach((v, i) => {
+        const axis = i % 3;
+        low[axis] = Math.min(low[axis], v);
+        high[axis] = Math.max(high[axis], v);
+      });
+      return [
+        group.binding,
+        Array.from({ length: 8 }, (_, i) =>
+          low.map((v, axis) => (i & (1 << axis) ? high[axis] : v)),
+        ),
+      ];
+    }),
+  );
+  const prepared = new Map();
+  let revision = 0;
+  function prepareGroup(group, frame) {
+    const pose = [
+      [0, 0, 0],
+      [1, 0, 0],
+      [0, 1, 0],
+      [0, 0, 1],
+    ]
+      .flatMap((p) => transform(p, group.binding, frame))
+      .join(",");
+    const previous = prepared.get(group.binding);
+    if (previous?.pose === pose) return previous.geometry;
+    if (
+      !inView(
+        bounds(
+          localCorners
+            .get(group.binding)
+            .map((p) => transform(p, group.binding, frame)),
+        ),
+      )
+    ) {
+      const geometry = {
+        binding: group.binding,
+        triangles: [],
+        lines: [],
+        colors: [],
+        revision: ++revision,
+        ground: "",
+      };
+      prepared.set(group.binding, { pose, geometry });
+      return geometry;
+    }
+    const geometry = projectIndexed(group, frame);
+    geometry.triangles = geometry.triangles
+      .filter((t) => inView(t.bounds))
+      .map(offsetSurface);
+    for (const triangle of geometry.triangles) triangle.binding = group.binding;
+    geometry.ground = geometry.triangles
+      .map((t) => polygonPath(t.points))
+      .join("");
+    const ownQuery = spatialIndex(geometry.triangles);
+    const query = (box) => [...staticQuery(box), ...ownQuery(box)];
+    const articulated =
+      ["upper", "fore", "wrist", "rotor", "jaw:-1", "jaw:1"].includes(
+        group.binding,
+      ) ||
+      (group.binding.startsWith("box:") &&
+        Math.abs(Math.sin(frame.boxes[Number(group.binding.slice(4))].roll)) >
+          1e-8);
+    geometry.lines = geometry.lines.filter((l) => inView(bounds([l.a, l.b])));
+    if (!articulated)
+      geometry.lines = geometry.lines.flatMap((line) =>
+        visibleSegments(line.a, line.b, query(bounds([line.a, line.b]))).map(
+          ([a, b]) => ({ a, b, fine: line.fine }),
+        ),
+      );
+    geometry.articulated = articulated;
+    geometry.revision = ++revision;
+    geometry.bounds = bounds(geometry.triangles.flatMap((t) => t.points));
+    geometry.colors = [];
+    for (const face of geometry.triangles) {
+      if (face.color === "ground") continue;
+      let fragments = [face.points];
+      for (const other of query(face.bounds)) {
+        if (other.color === face.color) continue;
+        fragments = fragments.flatMap((p) =>
+          subtractTriangle(p, other, face.plane),
+        );
+        if (!fragments.length) break;
+      }
+      for (const points of fragments)
+        geometry.colors.push({ ...face, points, bounds: bounds(points) });
+    }
+    prepared.set(group.binding, { pose, geometry });
+    return geometry;
+  }
   const ns = "http://www.w3.org/2000/svg";
   const svg = document.createElementNS(ns, "svg");
   svg.setAttribute("aria-label", "Conveyor sorting shapes into boxes");
@@ -152,29 +257,67 @@ export function createGate(container, data, { place = choosePlace } = {}) {
   let time = data.start;
   const samples = [];
   const costs = [];
+  function recordCost(elapsed, phases) {
+    if (!record) return;
+    samples.push(elapsed);
+    costs.push(phases);
+    if (samples.length > 16384) {
+      samples.splice(0, 8192);
+      costs.splice(0, 8192);
+    }
+  }
+  let lastGeometry = "";
+  let lastLamp;
   function draw(t) {
     const began = performance.now();
     time = t;
     const frame = timeline.describe(t);
     const geometry = moving
       .filter((group) => bindingVisible(group.binding, frame))
-      .map((group) => projectIndexed(group, frame));
-    const dynamicTriangles = geometry
-      .flatMap((g) => g.triangles)
-      .map(offsetSurface);
+      .map((group) => prepareGroup(group, frame));
+    if (frame.lamp !== lastLamp) {
+      lastLamp = frame.lamp;
+      svg.style.setProperty(
+        "--conveyor-lamp",
+        `#${frame.lamp.toString(16).padStart(6, "0")}`,
+      );
+    }
+    const signature = geometry.map((g) => g.revision).join(",");
+    if (signature === lastGeometry) {
+      const elapsed = performance.now() - began;
+      recordCost(elapsed, [elapsed, 0, 0, 0]);
+      return;
+    }
+    lastGeometry = signature;
+    const dynamicTriangles = geometry.flatMap((g) => g.triangles);
     const dynamicQuery = spatialIndex(dynamicTriangles);
+    const groupQuery = spatialIndex(geometry.filter((g) => g.triangles.length));
+    const dependencies = (box, binding) =>
+      groupQuery(box)
+        .filter((g) => g.binding !== binding)
+        .map((g) => g.revision)
+        .join(",");
     const query = (box) => [...staticQuery(box), ...dynamicQuery(box)];
     const projectedAt = performance.now();
-    const triangles = [...staticColors, ...dynamicTriangles];
+    const triangles = [...staticColors, ...geometry.flatMap((g) => g.colors)];
     const fills = { ink: "", lamp: "", glass: "" };
     for (const [index, triangle] of triangles.entries()) {
+      if (!inView(triangle.bounds)) continue;
       if (triangle.color === "ground") continue;
+      const dependency = dependencies(triangle.bounds, triangle.binding);
+      if (triangle.output?.dependency === dependency) {
+        fills[triangle.color] += triangle.output.path;
+        continue;
+      }
       let fragments = [triangle.points];
       const occluders =
         index < staticColors.length
           ? dynamicQuery(triangle.bounds)
-          : query(triangle.bounds);
+          : dynamicQuery(triangle.bounds).filter(
+              (t) => t.binding !== triangle.binding,
+            );
       if (index < staticColors.length && !occluders.length) {
+        triangle.output = { dependency, path: triangle.path };
         fills[triangle.color] += triangle.path;
         continue;
       }
@@ -185,16 +328,27 @@ export function createGate(container, data, { place = choosePlace } = {}) {
         );
         if (!fragments.length) break;
       }
-      fills[triangle.color] += fragments.map(polygonPath).join("");
+      const path = fragments.map(polygonPath).join("");
+      triangle.output = { dependency, path };
+      fills[triangle.color] += path;
     }
     const filledAt = performance.now();
     const strokes = ["", ""];
     for (const line of staticLines) {
+      if (!inView(line.bounds)) continue;
+      const dependency = dependencies(line.bounds);
+      if (line.output?.dependency === dependency) {
+        strokes[line.fine] += line.output.path;
+        continue;
+      }
       const occluders = dynamicQuery(line.bounds);
-      if (!occluders.length) strokes[line.fine] += segmentPath(line.a, line.b);
+      let path = "";
+      if (!occluders.length) path = segmentPath(line.a, line.b);
       else
         for (const [a, b] of visibleSegments(line.a, line.b, occluders))
-          strokes[line.fine] += segmentPath(a, b);
+          path += segmentPath(a, b);
+      line.output = { dependency, path };
+      strokes[line.fine] += path;
     }
     let clipped = "";
     for (const group of geometry)
@@ -206,21 +360,30 @@ export function createGate(container, data, { place = choosePlace } = {}) {
             CONFIG.frustum) /
           CONFIG.weighedAt;
         const box = bounds([line.a, line.b]);
-        const occluders = query([
+        const expanded = [
           box[0] - width / 2,
           box[1] - width / 2,
           box[2] + width / 2,
           box[3] + width / 2,
-        ]);
+        ];
+        const dependency = dependencies(expanded, group.binding);
+        if (line.output?.dependency === dependency) {
+          clipped += line.output.clipped;
+          strokes[line.fine] += line.output.path;
+          continue;
+        }
+        const boxQuery = group.articulated ? query : dynamicQuery;
+        const occluders = boxQuery([
+          box[0] - width / 2,
+          box[1] - width / 2,
+          box[2] + width / 2,
+          box[3] + width / 2,
+        ]).filter((t) => group.articulated || t.binding !== group.binding);
         const visible = visibleSegments(line.a, line.b, occluders);
+        let path = "",
+          clippedPath = "";
         if (
-          (["upper", "fore", "wrist", "rotor", "jaw:-1", "jaw:1"].includes(
-            group.binding,
-          ) ||
-            (group.binding.startsWith("box:") &&
-              Math.abs(
-                Math.sin(frame.boxes[Number(group.binding.slice(4))].roll),
-              ) > 1e-8)) &&
+          group.articulated &&
           visible.length &&
           !(
             visible.length === 1 &&
@@ -228,27 +391,21 @@ export function createGate(container, data, { place = choosePlace } = {}) {
             visible[0][1].every((v, i) => Math.abs(v - line.b[i]) < 1e-8)
           )
         )
-          clipped += clippedStroke(line.a, line.b, width, occluders);
-        else
-          for (const [a, b] of visible) strokes[line.fine] += segmentPath(a, b);
+          clippedPath = clippedStroke(line.a, line.b, width, occluders);
+        else for (const [a, b] of visible) path += segmentPath(a, b);
+        line.output = { dependency, path, clipped: clippedPath };
+        strokes[line.fine] += path;
+        clipped += clippedPath;
       }
     const clippedAt = performance.now();
-    paths.ground.setAttribute(
-      "d",
-      dynamicTriangles.map((t) => polygonPath(t.points)).join(""),
-    );
+    paths.ground.setAttribute("d", geometry.map((g) => g.ground).join(""));
     paths.ink.setAttribute("d", fills.ink);
     paths.lamp.setAttribute("d", fills.lamp);
     paths.glass.setAttribute("d", fills.glass);
     paths.clipped.setAttribute("d", clipped);
-    svg.style.setProperty(
-      "--conveyor-lamp",
-      `#${frame.lamp.toString(16).padStart(6, "0")}`,
-    );
     paths.line.setAttribute("d", strokes[0]);
     paths.fine.setAttribute("d", strokes[1]);
-    samples.push(performance.now() - began);
-    costs.push([
+    recordCost(performance.now() - began, [
       projectedAt - began,
       filledAt - projectedAt,
       clippedAt - filledAt,
@@ -256,8 +413,22 @@ export function createGate(container, data, { place = choosePlace } = {}) {
     ]);
   }
   function resize() {
+    prepared.clear();
     const placement = typeof place === "function" ? place() : place;
     const ratio = Math.min(devicePixelRatio, CONFIG.maxPixelRatio);
+    const view = frameView(
+      container.clientWidth,
+      container.clientHeight,
+      placement,
+    );
+    const margin =
+      (CONFIG.lineWidth * ratio * 2 * CONFIG.frustum) / CONFIG.weighedAt;
+    viewport = [
+      view[0] - margin,
+      view[1] - margin,
+      view[0] + view[2] + margin,
+      view[1] + view[3] + margin,
+    ];
     depthPixel =
       (2 * CONFIG.frustum * (placement.zoom ?? 1)) /
       (Math.max(1, container.clientHeight) * ratio);

@@ -1,5 +1,6 @@
 import { createConveyor } from "../../src/components/home/HeroSection/conveyor/main.js";
 import { createGate } from "./gate.js";
+import { unpackGeometry } from "./geometry-codec.js";
 import { createConveyor as createSvgConveyor } from "./conveyor.js";
 import * as THREE from "three";
 import { createBelt } from "../../src/components/home/HeroSection/conveyor/parts/belt.js";
@@ -25,14 +26,26 @@ if (parameters.has("dpr"))
     configurable: true,
   });
 const full = parameters.has("full");
-const attempt = full ? "loop" : "indexed";
+const baseline = parameters.has("baseline");
+const attempt = full
+  ? baseline
+    ? "loop-baseline"
+    : "loop-optimized"
+  : "indexed";
 const original = document.querySelector("#original");
 const candidate = document.querySelector("#candidate");
 const status = document.querySelector("#status");
 const slider = document.querySelector("#time");
-const data = await (
-  await fetch(full ? "/loop-compiled.json" : "/gate-compiled.json")
+const packed = await (
+  await fetch(
+    full
+      ? baseline
+        ? "/baseline-compiled.json"
+        : "/loop-packed.json"
+      : "/gate-compiled.json",
+  )
 ).json();
+const data = full && !baseline ? unpackGeometry(packed) : packed;
 function gateReference() {
   const scene = new THREE.Scene();
   const parts = [
@@ -65,11 +78,17 @@ if (full) {
   document.querySelector("#measure").textContent = "Measure loop";
   document.querySelector("#time-label").textContent = "Loop time";
 }
-const svgConveyor = full ? createSvgConveyor(candidate, { data }) : null;
+const svgConveyor =
+  full && !baseline
+    ? createSvgConveyor(candidate, { data, record: true })
+    : null;
 svgConveyor?.controls.stop();
+const baselineModule = "/baseline-gate.js";
 const gate = svgConveyor
   ? { ...svgConveyor, draw: svgConveyor.controls.seek }
-  : createGate(candidate, data);
+  : (baseline
+      ? (await import(/* @vite-ignore */ baselineModule)).createGate
+      : createGate)(candidate, data, { record: true });
 let mode = "reference",
   playing = false,
   animation = 0;
@@ -133,51 +152,83 @@ const metadata = () => ({
 });
 document.querySelector("#measure").addEventListener("click", async () => {
   stop();
-  const intervals = [],
-    updates = [];
-  let last = await nextFrame();
-  const begin = last;
-  while (last - begin < data.duration * 4000) {
-    const now = await nextFrame();
-    const offset = ((now - begin) / 1000) % data.duration;
-    const start = performance.now();
-    if (mode === "reference") reference.controls.seek(data.start + offset);
-    else gate.draw(data.start + offset);
-    if (now - begin > data.duration * 1000) {
-      intervals.push(now - last);
-      updates.push(performance.now() - start);
-    }
-    last = now;
-  }
-  const sorted = [...updates].sort((a, b) => a - b);
-  const result = {
-    ...metadata(),
-    mode,
-    samples: intervals.length,
-    under25ms: intervals.filter((n) => n < 25).length / intervals.length,
-    updateP50: sorted[Math.floor(sorted.length * 0.5)],
-    updateP99: sorted[Math.floor(sorted.length * 0.99)],
-    intervals,
-    updates,
-    costs:
-      mode === "svg"
-        ? gate.costs
-            .slice(-updates.length)
-            .reduce(
-              (sum, row) => sum.map((v, i) => v + row[i] / updates.length),
-              [0, 0, 0, 0],
-            )
-        : undefined,
+  const controls = [...document.querySelectorAll("button,input,select")];
+  for (const control of controls) control.disabled = true;
+  status.textContent = `Measuring ${attempt} ${mode}: one warm-up loop and three measured loops`;
+  const longTasks = [];
+  const observer = PerformanceObserver.supportedEntryTypes.includes("longtask")
+    ? new PerformanceObserver((list) =>
+        longTasks.push(
+          ...list
+            .getEntries()
+            .map(({ startTime, duration }) => ({ startTime, duration })),
+        ),
+      )
+    : null;
+  observer?.observe({ entryTypes: ["longtask"] });
+  let hidden = document.hidden;
+  const visibility = () => {
+    hidden ||= document.hidden;
   };
-  await save(
-    `${attempt}-performance-${mode}-${original.clientWidth}.json`,
-    JSON.stringify(result),
-  );
-  status.textContent = JSON.stringify(
-    { ...result, intervals: undefined, updates: undefined },
-    null,
-    2,
-  );
+  document.addEventListener("visibilitychange", visibility);
+  try {
+    const intervals = [],
+      updates = [];
+    let last = await nextFrame();
+    const begin = last;
+    while (last - begin < data.duration * 4000) {
+      const now = await nextFrame();
+      const offset = ((now - begin) / 1000) % data.duration;
+      const start = performance.now();
+      if (mode === "reference") reference.controls.seek(data.start + offset);
+      else gate.draw(data.start + offset);
+      if (now - begin > data.duration * 1000) {
+        intervals.push(now - last);
+        updates.push(performance.now() - start);
+      }
+      last = now;
+    }
+    const sorted = [...updates].sort((a, b) => a - b);
+    const result = {
+      ...metadata(),
+      mode,
+      attempt,
+      hiddenDuringMeasurement: hidden,
+      longTasks: observer
+        ? longTasks.filter(
+            (task) => task.startTime > begin + data.duration * 1000,
+          )
+        : null,
+      samples: intervals.length,
+      under25ms: intervals.filter((n) => n < 25).length / intervals.length,
+      updateP50: sorted[Math.floor(sorted.length * 0.5)],
+      updateP99: sorted[Math.floor(sorted.length * 0.99)],
+      intervals,
+      updates,
+      costs:
+        mode === "svg"
+          ? gate.costs
+              .slice(-updates.length)
+              .reduce(
+                (sum, row) => sum.map((v, i) => v + row[i] / updates.length),
+                [0, 0, 0, 0],
+              )
+          : undefined,
+    };
+    await save(
+      `${attempt}-performance-${mode}-${original.clientWidth}.json`,
+      JSON.stringify(result),
+    );
+    status.textContent = JSON.stringify(
+      { ...result, intervals: undefined, updates: undefined },
+      null,
+      2,
+    );
+  } finally {
+    observer?.disconnect();
+    document.removeEventListener("visibilitychange", visibility);
+    for (const control of controls) control.disabled = false;
+  }
 });
 async function captureFrame(offset, tag) {
   draw(offset);

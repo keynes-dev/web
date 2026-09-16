@@ -1,5 +1,6 @@
 import { readFile, writeFile } from "node:fs/promises";
 import { gzipSync } from "node:zlib";
+import { packGeometry } from "./geometry-codec.js";
 import { createTimeline } from "../../src/components/home/HeroSection/conveyor/timeline.js";
 import {
   bounds,
@@ -9,6 +10,8 @@ import {
   subtractTriangle,
   polygonPath,
   segmentPath,
+  project,
+  projectedTriangle,
 } from "./projection.js";
 
 const directory = new URL("../../../../.artifacts/conveyor/", import.meta.url);
@@ -184,6 +187,33 @@ await writeFile(
   new URL(full ? "loop-compiled.json" : "gate-compiled.json", directory),
   json,
 );
+if (full) {
+  const fixed = source.groups.find((g) => g.binding === "static");
+  const visible = {
+    ...fixed,
+    triangles: fixed.triangles.filter((t) =>
+      projectedTriangle(
+        [
+          project(t.slice(0, 3)),
+          project(t.slice(3, 6)),
+          project(t.slice(6, 9)),
+        ],
+        t[9],
+        t[10],
+      ),
+    ),
+  };
+  const packed = JSON.stringify(
+    packGeometry(JSON.parse(json), indexed(visible)),
+  );
+  await writeFile(new URL("loop-packed.json", directory), packed);
+  console.log(
+    JSON.stringify({
+      packedBytes: packed.length,
+      packedGzip: gzipSync(packed).length,
+    }),
+  );
+}
 console.log(
   JSON.stringify({
     bytes: json.length,

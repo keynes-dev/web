@@ -11,8 +11,11 @@ const sharp = require(
 const directory = new URL("../../../../.artifacts/conveyor/", import.meta.url);
 const names = await readdir(directory);
 const records = [];
+const attempt = process.argv.includes("--optimized")
+  ? "loop-optimized"
+  : "loop";
 const captures = names.filter((name) =>
-  /^loop-capture-(cycle|phase-)-\d+-[12]\.json$/.test(name),
+  new RegExp(`^${attempt}-capture-(cycle|phase-)-\\d+-[12]\\.json$`).test(name),
 );
 const decode = async (name) =>
   sharp(await readFile(new URL(name, directory)))
@@ -34,7 +37,7 @@ for (const manifest of captures) {
     continue;
   const comparisons = [];
   for (let frame = 0; frame < metadata.times.length; frame++) {
-    const stem = `loop-${metadata.width}-${metadata.dpr}-${prefix}${String(frame).padStart(3, "0")}`;
+    const stem = `${attempt}-${metadata.width}-${metadata.dpr}-${prefix}${String(frame).padStart(3, "0")}`;
     const [reference, candidate] = await Promise.all([
       decode(`${stem}-reference.png`),
       decode(`${stem}-candidate.png`),
@@ -143,6 +146,7 @@ const sourceFiles = [
   "compile-gate.mjs",
   "export-loop.mjs",
   "strokes.js",
+  "geometry-codec.js",
 ];
 const digest = createHash("sha256");
 for (const file of sourceFiles)
@@ -150,7 +154,14 @@ for (const file of sourceFiles)
 const report = {
   cpu: cpus()[0].model,
   geometrySha256: createHash("sha256")
-    .update(await readFile(new URL("loop-compiled.json", directory)))
+    .update(
+      await readFile(
+        new URL(
+          attempt === "loop" ? "loop-compiled.json" : "loop-packed.json",
+          directory,
+        ),
+      ),
+    )
     .digest("hex"),
   referenceRevision: execFileSync("git", ["rev-parse", "HEAD"], {
     encoding: "utf8",
@@ -158,13 +169,13 @@ const report = {
   implementationSha256: digest.digest("hex"),
   generatedAt: new Date().toISOString(),
   scope:
-    "Chromium visual comparisons. Optimization and production replacement remain deferred.",
+    "Chromium visual comparisons. Production replacement is not accepted by this report.",
   interpretation:
     "Ink mismatches have no matching visible stroke pixel within one CSS pixel. A stroke pixel has at least 35 levels of luminance contrast against the comparison background after alpha compositing; this includes subpixel hairlines at DPR 1. This identifies inspection candidates; it is not an automatic visual-fidelity verdict. Missing interior counts opaque reference pixels with no candidate fill away from reference boundaries.",
   records,
 };
 await writeFile(
-  new URL("loop-visual-report.json", directory),
+  new URL(`${attempt}-visual-report.json`, directory),
   JSON.stringify(report, null, 2),
 );
 for (const record of records)

@@ -7,8 +7,11 @@ import { playback } from "./playback.js";
 
 // The comparison page supplies the exported artwork. Production loading stays
 // separate until the SVG renderer passes its visual and performance checks.
-export function createConveyor(container, { data, place = choosePlace }) {
-  const drawing = createGate(container, data, { place });
+export function createConveyor(
+  container,
+  { data, place = choosePlace, record = false },
+) {
+  const drawing = createGate(container, data, { place, record });
   const first = drawing.timeline.cycles.find((cycle) => cycle.entry);
   const still = first.start + first.dropStart + 0.7;
   const clock = playback({

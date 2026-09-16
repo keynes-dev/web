@@ -21,10 +21,31 @@ const server = await createServer({
               "/gate-geometry.json",
               "/gate-compiled.json",
               "/loop-compiled.json",
+              "/loop-packed.json",
+              "/baseline-compiled.json",
             ].includes(req.url)
           ) {
             res.setHeader("Content-Type", "application/json");
-            res.end(await readFile(new URL(req.url.slice(1), evidence)));
+            const file =
+              req.url === "/baseline-compiled.json"
+                ? "optimization/baseline-compiled.json"
+                : req.url.slice(1);
+            res.end(await readFile(new URL(file, evidence)));
+            return;
+          }
+          if (req.url?.split("?")[0] === "/baseline-gate.js") {
+            const source = await readFile(
+              new URL("optimization/baseline-gate.js", evidence),
+              "utf8",
+            );
+            res.setHeader("Content-Type", "text/javascript");
+            res.end(
+              source.replace(
+                /from "([.][^"]+)"/g,
+                (_, path) =>
+                  `from "${new URL(path, "http://localhost/tools/conveyor/gate.js").pathname}"`,
+              ),
+            );
             return;
           }
           if (!req.url?.startsWith("/evidence/")) return next();
