@@ -1,4 +1,6 @@
+import { routes } from "@/components/site/routes";
+
 export const accessLinks = [
-  { href: "/access", label: "Get access today", variant: "default" },
-  { href: "/docs", label: "Read docs", variant: "outline" },
+  { href: routes.signup, label: "Sign up", variant: "default" },
+  { href: routes.docs, label: "Read docs", variant: "outline" },
 ] as const;

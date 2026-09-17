@@ -14,8 +14,10 @@ const {
   variant = "default",
   size = "default",
   class: className,
+  type,
   ...attrs
 } = Astro.props;
+const buttonType = type === "submit" || type === "reset" ? type : "button";
 const classes = cn(
   "inline-flex shrink-0 items-center justify-center gap-2 rounded-sm text-sm font-medium whitespace-nowrap transition-colors select-none focus-visible:outline-2 focus-visible:outline-ring disabled:pointer-events-none disabled:opacity-50",
   {
@@ -31,11 +33,11 @@ const classes = cn(
 ---
 
 {attrs.href !== undefined ? (
-  <a class={classes} {...attrs}>
+  <a class={classes} type={type} {...attrs}>
     <slot />
   </a>
 ) : (
-  <button type="button" class={classes} {...attrs}>
+  <button type={buttonType} class={classes} {...attrs}>
     <slot />
   </button>
 )}

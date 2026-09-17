@@ -14,18 +14,15 @@ const ringPitch = 110;
 const innerRingCenter = 185;
 const diagram = { width: 960, height: 480, centerX: 480, centerY: 480 };
 
-const ringAt = (centerRadius: number) => ({
-  innerRadius: centerRadius - ringWidth / 2,
-  outerRadius: centerRadius + ringWidth / 2,
-});
-
-const rings = {
-  frameworks: ringAt(innerRingCenter),
-  observability: ringAt(innerRingCenter + ringPitch),
-  resources: ringAt(innerRingCenter + ringPitch * 2),
+const ringAt = (index: number) => {
+  const centerRadius = innerRingCenter + ringPitch * index;
+  return {
+    innerRadius: centerRadius - ringWidth / 2,
+    outerRadius: centerRadius + ringWidth / 2,
+  };
 };
 
-type Ring = (typeof rings)[keyof typeof rings];
+type Ring = ReturnType<typeof ringAt>;
 
 const pointOnArc = (radius: number, angle: number) => {
   const radians = (angle * Math.PI) / 180;
@@ -81,8 +78,8 @@ const iconPosition = (ring: Ring, index: number, sectorCount: number) => {
     aria-label='Integration groups'
   >
     {
-      groups.map((group) => {
-        const ring = rings[group.id];
+      groups.map((group, groupIndex) => {
+        const ring = ringAt(groupIndex);
         return (
           <g
             data-integration-group={group.id}
@@ -94,7 +91,7 @@ const iconPosition = (ring: Ring, index: number, sectorCount: number) => {
               d={bandPath(ring)}
               role='button'
               tabindex='0'
-              aria-label={group.label}
+              aria-label={group.title}
               aria-pressed='false'
             />
             <path
@@ -112,10 +109,10 @@ const iconPosition = (ring: Ring, index: number, sectorCount: number) => {
   </svg>
 
   {
-    groups.map((group) => {
-      const ring = rings[group.id];
+    groups.map((group, groupIndex) => {
+      const ring = ringAt(groupIndex);
       return (
-        <ul class='contents' aria-label={group.label}>
+        <ul class='contents' aria-label={group.title}>
           {group.tools.map((tool, index) => {
             const position = iconPosition(ring, index, group.tools.length);
             return (

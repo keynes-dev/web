@@ -15,6 +15,7 @@
     "@astrojs/cloudflare": "14.3.1",
     "@iconify-json/fa-solid": "1.2.2",
     "@iconify-json/hugeicons": "1.2.34",
+    "@supabase/server": "1.6.1",
     "@tailwindcss/vite": "^4.3.3",
     "astro": "7.3.2",
     "astro-icon": "1.2.0",

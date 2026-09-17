@@ -1,0 +1,544 @@
+---
+import { actions, isInputError } from "astro:actions";
+
+import Section from "@/components/section/Section.astro";
+import SiteFooter from "@/components/site/SiteFooter.astro";
+import SiteHeader from "@/components/site/SiteHeader.astro";
+import Button from "@/components/ui/Button.astro";
+import Card from "@/components/ui/Card.astro";
+import CardContent from "@/components/ui/CardContent.astro";
+import CardHeader from "@/components/ui/CardHeader.astro";
+import BaseLayout from "@/layouts/BaseLayout.astro";
+
+export const prerender = false;
+
+const result = Astro.getActionResult(actions.requestAccess);
+const inputError = isInputError(result?.error) ? result.error : undefined;
+const submitted = result?.data?.submitted === true;
+const failed = result?.error && !inputError;
+const serverErrors = [
+  { fieldId: "full-name", message: inputError?.fields.full_name?.[0] },
+  { fieldId: "email", message: inputError?.fields.email?.[0] },
+  { fieldId: "company", message: inputError?.fields.company?.[0] },
+  { fieldId: "building", message: inputError?.fields.building?.[0] },
+  { fieldId: "problem", message: inputError?.fields.problem?.[0] },
+].filter(
+  (error): error is { fieldId: string; message: string } =>
+    typeof error.message === "string",
+);
+
+const inputClasses =
+  "min-h-10 w-full rounded-sm border-2 bg-background px-3 py-2 text-base text-foreground outline-none placeholder:text-muted-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring aria-invalid:border-danger aria-invalid:focus-visible:outline-danger";
+const errorInputClasses = "border-danger focus-visible:outline-danger";
+---
+
+<BaseLayout
+  title='Request access | Keynes'
+  description='Request access to Keynes and tell us what you are building.'
+>
+  <SiteHeader />
+  <main>
+    <Section rails='dashed'>
+      <div class='mx-auto flex max-w-2xl flex-col gap-8 p-4'>
+        {
+          submitted ?
+            <Card role='status' aria-live='polite'>
+              <CardHeader>
+                <h2>Thanks. Your request is in.</h2>
+              </CardHeader>
+              <CardContent class='p-5 sm:p-6'>
+                <p class='section-description'>We'll be in touch.</p>
+              </CardContent>
+            </Card>
+          : <div class='contents'>
+              <div data-form-panel>
+                <Card>
+                  <CardContent class='p-5 sm:p-6'>
+                    <form
+                      method='POST'
+                      action={actions.requestAccess}
+                      class='flex flex-col gap-6'
+                      novalidate
+                      data-access-form
+                    >
+                      <header class='flex flex-col gap-4'>
+                        <h1>Request access</h1>
+                        <p class='section-description'>
+                          Keynes is currently in private beta. Please fill out
+                          the form below to request access. We are looking for
+                          teams building complex agent workflows that are
+                          solving real problems and are willing to share
+                          feedback.
+                        </p>
+                      </header>
+
+                      <p
+                        class='rounded-sm border-2 border-danger bg-danger-subtle p-3 text-danger outline-none'
+                        role='alert'
+                        tabindex='-1'
+                        hidden={!failed}
+                        data-service-error
+                      >
+                        We couldn't send your request. Try again.
+                      </p>
+
+                      <div class='flex flex-col gap-2'>
+                        <label class='font-medium' for='full-name'>
+                          Full name{" "}
+                          <span class='text-danger' aria-hidden='true'>
+                            *
+                          </span>
+                          <span class='sr-only'>(required)</span>
+                        </label>
+                        <input
+                          class:list={[
+                            inputClasses,
+                            inputError?.fields.full_name && errorInputClasses,
+                          ]}
+                          id='full-name'
+                          name='full_name'
+                          type='text'
+                          autocomplete='name'
+                          maxlength='200'
+                          required
+                          data-error-id='full-name-error'
+                          data-required-message='Enter your full name.'
+                          aria-invalid={
+                            inputError?.fields.full_name ? "true" : undefined
+                          }
+                          aria-describedby='full-name-error'
+                        />
+                        <p
+                          id='full-name-error'
+                          class='text-sm text-danger'
+                          hidden={!inputError?.fields.full_name}
+                        >
+                          <span class='sr-only'>Error:</span>{" "}
+                          <span data-error-message>
+                            {inputError?.fields.full_name?.[0]}
+                          </span>
+                        </p>
+                      </div>
+
+                      <div class='flex flex-col gap-2'>
+                        <label class='font-medium' for='email'>
+                          Email{" "}
+                          <span class='text-danger' aria-hidden='true'>
+                            *
+                          </span>
+                          <span class='sr-only'>(required)</span>
+                        </label>
+                        <p
+                          id='email-help'
+                          class='text-sm text-muted-foreground'
+                        >
+                          We'll only use this to respond to your request.
+                        </p>
+                        <input
+                          class:list={[
+                            inputClasses,
+                            inputError?.fields.email && errorInputClasses,
+                          ]}
+                          id='email'
+                          name='email'
+                          type='email'
+                          autocomplete='email'
+                          maxlength='320'
+                          inputmode='email'
+                          required
+                          data-error-id='email-error'
+                          data-required-message='Enter your email address.'
+                          data-type-message='Enter a valid email address.'
+                          aria-invalid={
+                            inputError?.fields.email ? "true" : undefined
+                          }
+                          aria-describedby='email-help email-error'
+                        />
+                        <p
+                          id='email-error'
+                          class='text-sm text-danger'
+                          hidden={!inputError?.fields.email}
+                        >
+                          <span class='sr-only'>Error:</span>{" "}
+                          <span data-error-message>
+                            {inputError?.fields.email?.[0]}
+                          </span>
+                        </p>
+                      </div>
+
+                      <div class='flex flex-col gap-2'>
+                        <label class='font-medium' for='company'>
+                          Company
+                        </label>
+                        <input
+                          class:list={[
+                            inputClasses,
+                            inputError?.fields.company && errorInputClasses,
+                          ]}
+                          id='company'
+                          name='company'
+                          type='text'
+                          autocomplete='organization'
+                          maxlength='200'
+                          data-error-id='company-error'
+                          aria-invalid={
+                            inputError?.fields.company ? "true" : undefined
+                          }
+                          aria-describedby='company-error'
+                        />
+                        <p
+                          id='company-error'
+                          class='text-sm text-danger'
+                          hidden={!inputError?.fields.company}
+                        >
+                          <span class='sr-only'>Error:</span>{" "}
+                          <span data-error-message>
+                            {inputError?.fields.company?.[0]}
+                          </span>
+                        </p>
+                      </div>
+
+                      <div class='flex flex-col gap-2'>
+                        <label class='font-medium' for='building'>
+                          What are you building?
+                        </label>
+                        <p
+                          id='building-help'
+                          class='text-sm text-muted-foreground'
+                        >
+                          A short description is enough. Up to 2,000 characters.
+                        </p>
+                        <textarea
+                          class:list={[
+                            inputClasses,
+                            "min-h-32 resize-y",
+                            inputError?.fields.building && errorInputClasses,
+                          ]}
+                          id='building'
+                          name='building'
+                          rows='5'
+                          maxlength='2000'
+                          data-error-id='building-error'
+                          aria-invalid={
+                            inputError?.fields.building ? "true" : undefined
+                          }
+                          aria-describedby='building-help building-error'
+                        />
+                        <p
+                          id='building-error'
+                          class='text-sm text-danger'
+                          hidden={!inputError?.fields.building}
+                        >
+                          <span class='sr-only'>Error:</span>{" "}
+                          <span data-error-message>
+                            {inputError?.fields.building?.[0]}
+                          </span>
+                        </p>
+                      </div>
+
+                      <div class='flex flex-col gap-2'>
+                        <label class='font-medium' for='problem'>
+                          What problem are you trying to solve?
+                        </label>
+                        <p
+                          id='problem-help'
+                          class='text-sm text-muted-foreground'
+                        >
+                          What breaks, slows down, or costs too much today?
+                        </p>
+                        <textarea
+                          class:list={[
+                            inputClasses,
+                            "min-h-32 resize-y",
+                            inputError?.fields.problem && errorInputClasses,
+                          ]}
+                          id='problem'
+                          name='problem'
+                          rows='5'
+                          maxlength='2000'
+                          data-error-id='problem-error'
+                          aria-invalid={
+                            inputError?.fields.problem ? "true" : undefined
+                          }
+                          aria-describedby='problem-help problem-error'
+                        />
+                        <p
+                          id='problem-error'
+                          class='text-sm text-danger'
+                          hidden={!inputError?.fields.problem}
+                        >
+                          <span class='sr-only'>Error:</span>{" "}
+                          <span data-error-message>
+                            {inputError?.fields.problem?.[0]}
+                          </span>
+                        </p>
+                      </div>
+
+                      <Button type='submit' size='lg' class='w-full'>
+                        <span data-submit-label>Request access</span>
+                      </Button>
+                      <div
+                        class='rounded-sm border-2 border-danger bg-danger-subtle p-3 text-danger outline-none'
+                        tabindex='-1'
+                        hidden={serverErrors.length === 0}
+                        data-form-errors
+                      >
+                        <ul class='list-disc space-y-1 pl-5' data-error-list>
+                          {serverErrors.map(({ fieldId, message }) => (
+                            <li>
+                              <a
+                                class='underline underline-offset-2'
+                                href={`#${fieldId}`}
+                              >
+                                {message}
+                              </a>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                      <span
+                        class='sr-only'
+                        aria-live='polite'
+                        data-submit-status
+                      />
+                    </form>
+                  </CardContent>
+                </Card>
+              </div>
+              <div hidden data-success-panel role='status' tabindex='-1'>
+                <Card>
+                  <CardHeader>
+                    <h2>Thanks you!</h2>
+                  </CardHeader>
+                  <CardContent class='p-5 sm:p-6'>
+                    <p class='section-description'>
+                      Thanks for reaching out. We'll be in touch.
+                    </p>
+                  </CardContent>
+                </Card>
+              </div>
+            </div>
+        }
+      </div>
+    </Section>
+  </main>
+  <SiteFooter />
+</BaseLayout>
+
+<script>
+  import { actions, isInputError } from "astro:actions";
+
+  type Field = HTMLInputElement | HTMLTextAreaElement;
+  type FieldError = { field: Field; message: string };
+
+  const form = document.querySelector<HTMLFormElement>("[data-access-form]");
+  const errorSummary = form?.querySelector<HTMLElement>("[data-form-errors]");
+  const errorList = form?.querySelector<HTMLUListElement>("[data-error-list]");
+  const serviceError = form?.querySelector<HTMLElement>("[data-service-error]");
+  const formPanel = document.querySelector<HTMLElement>("[data-form-panel]");
+  const successPanel = document.querySelector<HTMLElement>(
+    "[data-success-panel]",
+  );
+  const submitButton = form?.querySelector<HTMLButtonElement>(
+    'button[type="submit"]',
+  );
+  const submitLabel = form?.querySelector<HTMLElement>("[data-submit-label]");
+  const submitStatus = form?.querySelector<HTMLElement>("[data-submit-status]");
+  const fields = form?.querySelectorAll<Field>("input, textarea");
+
+  const getConstraintMessage = (field: Field) => {
+    if (field.name === "full_name") {
+      field.setCustomValidity(
+        field.value.trim() ? "" : (field.dataset.requiredMessage ?? ""),
+      );
+    } else {
+      field.setCustomValidity("");
+    }
+
+    if (field.validity.valid) return undefined;
+    if (field.validity.valueMissing) {
+      return field.dataset.requiredMessage ?? "Complete this field.";
+    }
+    if (field.validity.typeMismatch) {
+      return field.dataset.typeMessage ?? "Enter a valid value.";
+    }
+    if (field.validity.tooLong) {
+      return `Use ${field.maxLength} characters or fewer.`;
+    }
+    return field.validationMessage;
+  };
+
+  const setFieldError = (field: Field, message?: string) => {
+    const errorId = field.dataset.errorId;
+    const error = errorId ? document.getElementById(errorId) : null;
+    const messageElement = error?.querySelector<HTMLElement>(
+      "[data-error-message]",
+    );
+    const invalid = message !== undefined;
+
+    if (invalid) field.setAttribute("aria-invalid", "true");
+    else field.removeAttribute("aria-invalid");
+    field.classList.toggle("border-danger", invalid);
+    field.classList.toggle("focus-visible:outline-danger", invalid);
+
+    if (error) error.hidden = !invalid;
+    if (messageElement && message !== undefined) {
+      messageElement.textContent = message;
+    }
+  };
+
+  const getVisibleErrors = () => {
+    const errors: FieldError[] = [];
+    fields?.forEach((field) => {
+      if (field.getAttribute("aria-invalid") !== "true") return;
+      const errorId = field.dataset.errorId;
+      const message =
+        errorId ?
+          document
+            .getElementById(errorId)
+            ?.querySelector<HTMLElement>("[data-error-message]")
+            ?.textContent?.trim()
+        : undefined;
+      if (message) errors.push({ field, message });
+    });
+    return errors;
+  };
+
+  const renderSummary = (errors: FieldError[], focus = false) => {
+    errorList?.replaceChildren();
+
+    if (errors.length === 0) {
+      if (errorSummary) errorSummary.hidden = true;
+      return;
+    }
+
+    errors.forEach(({ field, message }) => {
+      const item = document.createElement("li");
+      const link = document.createElement("a");
+      link.className = "underline underline-offset-2";
+      link.href = `#${field.id}`;
+      link.textContent = message;
+      item.append(link);
+      errorList?.append(item);
+    });
+
+    if (errorSummary) {
+      errorSummary.hidden = false;
+      if (focus) errorSummary.focus();
+    }
+  };
+
+  const getNamedField = (name: string) => {
+    const field = form?.elements.namedItem(name);
+    return (
+        field instanceof HTMLInputElement ||
+          field instanceof HTMLTextAreaElement
+      ) ?
+        field
+      : undefined;
+  };
+
+  const clearErrors = () => {
+    fields?.forEach((field) => setFieldError(field));
+    renderSummary([]);
+  };
+
+  const setPending = (pending: boolean) => {
+    if (submitButton) submitButton.disabled = pending;
+    if (submitLabel) {
+      submitLabel.textContent = pending ? "Sending..." : "Request access";
+    }
+    if (submitStatus) {
+      submitStatus.textContent = pending ? "Submitting your request." : "";
+    }
+  };
+
+  const showServiceError = () => {
+    clearErrors();
+    if (serviceError) {
+      serviceError.hidden = false;
+      serviceError.focus();
+    }
+  };
+
+  if (errorSummary && !errorSummary.hidden) errorSummary.focus();
+  else if (serviceError && !serviceError.hidden) serviceError.focus();
+
+  errorList?.addEventListener("click", (event) => {
+    if (!(event.target instanceof HTMLAnchorElement)) return;
+    const field = document.getElementById(event.target.hash.slice(1));
+    if (!(
+      field instanceof HTMLInputElement || field instanceof HTMLTextAreaElement
+    )) {
+      return;
+    }
+    event.preventDefault();
+    field.focus();
+  });
+
+  fields?.forEach((field) => {
+    field.addEventListener("input", () => {
+      if (field.getAttribute("aria-invalid") !== "true") return;
+      setFieldError(field, getConstraintMessage(field));
+      renderSummary(getVisibleErrors());
+    });
+  });
+
+  form?.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    if (serviceError) serviceError.hidden = true;
+
+    const errors: FieldError[] = [];
+    fields?.forEach((field) => {
+      const message = getConstraintMessage(field);
+      setFieldError(field, message);
+      if (message) errors.push({ field, message });
+    });
+
+    if (errors.length > 0) {
+      renderSummary(errors, true);
+      return;
+    }
+
+    setPending(true);
+    try {
+      const { data, error } = await actions.requestAccess(new FormData(form));
+
+      if (isInputError(error)) {
+        clearErrors();
+        const serverFieldErrors = [
+          { name: "full_name", message: error.fields.full_name?.[0] },
+          { name: "email", message: error.fields.email?.[0] },
+          { name: "company", message: error.fields.company?.[0] },
+          { name: "building", message: error.fields.building?.[0] },
+          { name: "problem", message: error.fields.problem?.[0] },
+        ];
+        const renderedErrors: FieldError[] = [];
+        serverFieldErrors.forEach(({ name, message }) => {
+          const field = getNamedField(name);
+          if (!field || !message) return;
+          setFieldError(field, message);
+          renderedErrors.push({ field, message });
+        });
+        renderSummary(renderedErrors, true);
+        setPending(false);
+        return;
+      }
+
+      if (error || data?.submitted !== true) {
+        showServiceError();
+        setPending(false);
+        return;
+      }
+
+      if (formPanel) formPanel.hidden = true;
+      if (successPanel) {
+        successPanel.hidden = false;
+        successPanel.focus();
+      }
+    } catch {
+      showServiceError();
+      setPending(false);
+    }
+  });
+</script>

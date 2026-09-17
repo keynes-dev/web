@@ -1,33 +1,6 @@
-export type IntegrationGroup = {
-  id: "resources" | "frameworks" | "observability";
-  label: string;
-  title: string;
-  description: string;
-  icon: string;
-  accent: string;
-  tools: readonly { label: string; icon: string }[];
-};
-
 export const integrationGroups = [
   {
-    id: "resources",
-    label: "Models and paid tools",
-    title: "Usage",
-    description:
-      "Connect Keynes to model and tool providers to forecast spend before work starts, then settle each budget against the usage they report.",
-    icon: "hugeicons:coins-01",
-    accent: "var(--color-orange-200)",
-    tools: [
-      { label: "Gemini", icon: "google-gemini-icon" },
-      { label: "OpenAI", icon: "openai-icon" },
-      { label: "Anthropic", icon: "anthropic-icon" },
-      { label: "Twilio", icon: "twilio-icon" },
-      { label: "Firecrawl", icon: "firecrawl" },
-    ],
-  },
-  {
-    id: "frameworks",
-    label: "Agent frameworks",
+    id: "orchestration",
     title: "Orchestration",
     description:
       "Give your agent runtime live budget and policy context, so your app can choose work, models, and tools within the limits you set.",
@@ -40,7 +13,6 @@ export const integrationGroups = [
   },
   {
     id: "observability",
-    label: "Observability and analytics",
     title: "Observability",
     description:
       "Carry budget and policy context through OpenTelemetry, so your existing traces show what an agent could spend, what it used, and why Keynes allowed or denied the work.",
@@ -54,4 +26,21 @@ export const integrationGroups = [
       { label: "Langfuse", icon: "langfuse" },
     ],
   },
-] as const satisfies readonly IntegrationGroup[];
+  {
+    id: "usage",
+    title: "Usage",
+    description:
+      "Connect Keynes to model and tool providers to forecast spend before work starts, then settle each budget against the usage they report.",
+    icon: "hugeicons:coins-01",
+    accent: "var(--color-orange-200)",
+    tools: [
+      { label: "Gemini", icon: "google-gemini-icon" },
+      { label: "OpenAI", icon: "openai-icon" },
+      { label: "Anthropic", icon: "anthropic-icon" },
+      { label: "Twilio", icon: "twilio-icon" },
+      { label: "Firecrawl", icon: "firecrawl" },
+    ],
+  },
+] as const;
+
+export type IntegrationGroup = (typeof integrationGroups)[number];

@@ -2,31 +2,35 @@
 import { Icon } from "astro-icon/components";
 
 import Section from "@/components/section/Section.astro";
+import { routes } from "@/components/site/routes";
 import Button from "@/components/ui/Button.astro";
 import { accessLinks } from "./access-links";
 ---
 
-<Section rails="dashed">
-  <div class="flex flex-col items-center gap-8">
-    <header class="relative flex max-w-3xl flex-col gap-4 text-center">
+<Section rails='dashed'>
+  <div class='flex flex-col items-center gap-8'>
+    <header class='relative flex max-w-3xl flex-col gap-4 text-center'>
       <h2>Put your agents on a budget</h2>
-      <p class="section-description">
-        Apache-2.0. Start locally with zero setup — no account, no keys, no network required.
+      <p class='section-description'>
+        Apache-2.0. Start locally with zero setup — no account, no keys, no
+        network required.
       </p>
     </header>
-    <div class="flex flex-wrap justify-center gap-3">
-      {accessLinks.map((link) => (
-        <Button href={link.href} size="lg" variant={link.variant}>
-          {link.label}
-          {link.href === "/access" && (
-            <Icon
-              name="hugeicons:arrow-right-01"
-              class="size-4"
-              aria-hidden="true"
-            />
-          )}
-        </Button>
-      ))}
+    <div class='flex flex-wrap justify-center gap-3'>
+      {
+        (
+          <Button href={routes.signup} size='lg' variant='default'>
+            Get access today
+            {routes.signup === routes.signup && (
+              <Icon
+                name='hugeicons:arrow-right-01'
+                class='size-4'
+                aria-hidden='true'
+              />
+            )}
+          </Button>
+        )
+      }
     </div>
   </div>
 </Section>

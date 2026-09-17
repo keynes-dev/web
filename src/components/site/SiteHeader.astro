@@ -5,6 +5,7 @@ import Section from "@/components/section/Section.astro";
 import Button from "@/components/ui/Button.astro";
 import Logo from "./Logo.astro";
 import { navigation } from "./navigation";
+import { routes } from "./routes";
 ---
 
 <header class="sticky top-0 z-60 border-y bg-background">
@@ -15,7 +16,7 @@ import { navigation } from "./navigation";
       <GridMarks position="top" />
       <GridMarks />
       <div class="flex items-center gap-8">
-        <a aria-label="Keynes home" href="/">
+        <a aria-label="Keynes home" href={routes.home}>
           <Logo />
         </a>
         <nav aria-label="Main navigation" class="hidden md:block">
@@ -34,7 +35,7 @@ import { navigation } from "./navigation";
         </nav>
       </div>
       <div class="flex items-center">
-        <Button href="/access" variant="link" size="sm">
+        <Button href={routes.signup} variant="link" size="sm">
           Get access
         </Button>
         <!-- <button
@@ -78,7 +79,7 @@ import { navigation } from "./navigation";
         <GridMarks position="top" />
         <GridMarks />
         <div class="flex items-center gap-8">
-          <a aria-label="Keynes home" href="/">
+          <a aria-label="Keynes home" href={routes.home}>
             <Logo />
           </a>
           <h2 id="navigation-title" class="sr-only">
@@ -86,7 +87,7 @@ import { navigation } from "./navigation";
           </h2>
         </div>
         <div class="flex items-center">
-          <Button href="/access" variant="link" size="sm">
+          <Button href={routes.signup} variant="link" size="sm">
             Get access
           </Button>
           <form method="dialog">
@@ -120,7 +121,7 @@ import { navigation } from "./navigation";
           </li>
         ))}
       </ul>
-      <Button href="/access" size="lg">
+      <Button href={routes.signup} size="lg">
         Get access
       </Button>
     </nav>

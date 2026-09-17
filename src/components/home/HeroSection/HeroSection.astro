@@ -2,6 +2,7 @@
 import { Icon } from "astro-icon/components";
 
 import Section from "@/components/section/Section.astro";
+import { routes } from "@/components/site/routes";
 import Button from "@/components/ui/Button.astro";
 import { accessLinks } from "../access-links";
 
@@ -46,18 +47,16 @@ const gridHeight = gridWidth / Math.sqrt(3);
         </header>
         <div class='flex flex-wrap gap-3'>
           {
-            accessLinks.map((link) => (
-              <Button href={link.href} size='lg' variant={link.variant}>
-                {link.label}
-                {link.href === "/access" && (
-                  <Icon
-                    name='hugeicons:arrow-right-01'
-                    class='size-4'
-                    aria-hidden='true'
-                  />
-                )}
+            (
+              <Button href={routes.signup} size='lg' variant='default'>
+                Get access today
+                <Icon
+                  name='hugeicons:arrow-right-01'
+                  class='size-4'
+                  aria-hidden='true'
+                />
               </Button>
-            ))
+            )
           }
         </div>
       </div>
