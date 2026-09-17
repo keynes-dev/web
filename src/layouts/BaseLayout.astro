@@ -9,8 +9,9 @@ interface Props {
 
 const { title, description } = Astro.props;
 const canonical = new URL(Astro.url.pathname, Astro.site);
-const image = new URL("/conveyor-first-frame.png", Astro.site);
-const imageAlt = "Keynes conveyor illustration: an isometric machine sorting shapes into boxes.";
+const image = new URL("/opengraph.png", Astro.site);
+const imageAlt =
+  "Keynes conveyor illustration: an isometric machine sorting shapes into boxes.";
 const website = {
   "@context": "https://schema.org",
   "@type": "WebSite",
@@ -20,36 +21,42 @@ const website = {
 ---
 
 <!doctype html>
-<html lang="en" class="overflow-x-clip">
+<html lang='en' class='overflow-x-clip'>
   <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta charset='utf-8' />
+    <meta name='viewport' content='width=device-width, initial-scale=1' />
     <title>{title}</title>
-    <meta name="description" content={description} />
-    <link rel="canonical" href={canonical} />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta property="og:type" content="website" />
-    <meta property="og:site_name" content="Keynes" />
-    <meta property="og:locale" content="en_US" />
-    <meta property="og:title" content={title} />
-    <meta property="og:description" content={description} />
-    <meta property="og:url" content={canonical} />
-    <meta property="og:image" content={image} />
-    <meta property="og:image:type" content="image/png" />
-    <meta property="og:image:width" content="1200" />
-    <meta property="og:image:height" content="630" />
-    <meta property="og:image:alt" content={imageAlt} />
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content={title} />
-    <meta name="twitter:description" content={description} />
-    <meta name="twitter:image" content={image} />
-    <meta name="twitter:image:alt" content={imageAlt} />
-    <script is:inline type="application/ld+json" set:html={JSON.stringify(website).replace(/</g, "\\u003c")} />
-    <meta name="generator" content={Astro.generator} />
-    <Font cssVariable="--font-ibm-plex-sans" preload />
-    <Font cssVariable="--font-ibm-plex-mono" />
+    <meta name='description' content={description} />
+    <link rel='canonical' href={canonical} />
+    <link rel='icon' type='image/svg+xml' href='/favicon.svg' />
+    <meta property='og:type' content='website' />
+    <meta property='og:site_name' content='Keynes' />
+    <meta property='og:locale' content='en_US' />
+    <meta property='og:title' content={title} />
+    <meta property='og:description' content={description} />
+    <meta property='og:url' content={canonical} />
+    <meta property='og:image' content={image} />
+    <meta property='og:image:type' content='image/png' />
+    <meta property='og:image:width' content='1200' />
+    <meta property='og:image:height' content='630' />
+    <meta property='og:image:alt' content={imageAlt} />
+    <meta name='twitter:card' content='summary_large_image' />
+    <meta name='twitter:title' content={title} />
+    <meta name='twitter:description' content={description} />
+    <meta name='twitter:image' content={image} />
+    <meta name='twitter:image:alt' content={imageAlt} />
+    <script
+      is:inline
+      type='application/ld+json'
+      set:html={JSON.stringify(website).replace(/</g, "\\u003c")}
+    />
+    <meta name='generator' content={Astro.generator} />
+    <Font cssVariable='--font-ibm-plex-sans' preload />
+    <Font cssVariable='--font-ibm-plex-mono' />
   </head>
-  <body class="relative min-h-screen overflow-x-clip bg-background text-foreground antialiased">
+  <body
+    class='relative min-h-screen overflow-x-clip bg-background text-foreground antialiased'
+  >
     <slot />
   </body>
 </html>
