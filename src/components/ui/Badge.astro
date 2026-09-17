@@ -2,17 +2,14 @@
 import type { HTMLAttributes } from "astro/types";
 import { cn } from "@/lib/utils";
 
-type Props = HTMLAttributes<"span"> & {
-  className?: string;
-};
+type Props = HTMLAttributes<"span">;
 
-const { class: classAttr, className, ...attrs } = Astro.props;
+const { class: className, ...attrs } = Astro.props;
 ---
 
 <span
   class={cn(
-    "inline-flex w-fit shrink-0 items-center rounded-full bg-foreground px-3 py-1 text-xs font-semibold whitespace-nowrap text-white",
-    classAttr,
+    "inline-flex w-fit shrink-0 items-center rounded-full bg-inverse px-3 py-1 text-xs font-semibold whitespace-nowrap text-inverse-foreground",
     className,
   )}
   {...attrs}

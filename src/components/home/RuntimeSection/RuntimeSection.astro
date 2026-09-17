@@ -15,7 +15,7 @@ import { runtimeTabs } from "./tabs";
       {runtimeTabs.map((tab) => (
         <div class="flex flex-col gap-4" data-runtime-copy={tab.id}>
           <h2>{tab.title}</h2>
-          <p class="max-w-md text-base leading-relaxed text-muted-foreground">
+          <p class="section-description max-w-md">
             {tab.description}
           </p>
         </div>

@@ -69,22 +69,20 @@ const groups = [
 <Section aria-label='Resource examples' padded={false}>
   <header class='relative z-10 flex flex-col gap-4 px-4 py-8 sm:px-8 sm:py-10'>
     <h2>Model every resource</h2>
-    <p class='max-w-2xl text-base leading-relaxed text-muted-foreground'>
+    <p class='section-description max-w-2xl'>
       When resource limits are scattered across prompts and application code,
       they become impossible to manage. Keynes makes those limits explicit and
       enforceable.
     </p>
   </header>
 
-  <div slot='full-bleed' class='grid grid-cols-1 border-t md:grid-cols-2'>
+  <div
+    slot='full-bleed'
+    class='grid grid-cols-1 border-t md:grid-cols-2 md:[&>section+section]:border-l'
+  >
     {
-      groups.map((group, index) => (
-        <section
-          class:list={[
-            "min-w-0",
-            index > 0 && "border-t md:border-t-0 md:border-l",
-          ]}
-        >
+      groups.map((group) => (
+        <section class='min-w-0 border-t first:border-t-0 md:border-t-0'>
           <header class='border-b px-4 py-2'>
             <h2 class='text-sm font-medium tracking-tight text-foreground'>
               <span class='flex items-center gap-2'>
@@ -98,30 +96,18 @@ const groups = [
               </span>
             </h2>
           </header>
-          <div class='grid grid-cols-2'>
-            {group.resources.map((resource, resourceIndex) => {
-              const isLastRow = resourceIndex >= group.resources.length - 2;
-
-              return (
-                <article
-                  class:list={[
-                    "flex min-w-0 flex items-center gap-3 border-b p-4 text-muted-foreground transition-colors hover:bg-card hover:text-foreground",
-                    resourceIndex % 2 === 0 && "border-r",
-                    isLastRow && "border-b-0",
-                  ]}
-                >
-                  <Icon
-                    name={resource.icon}
-                    class='size-4'
-                    stroke-width='1.5'
-                    aria-hidden='true'
-                  />
-                  <div class='min-w-0'>
-                    <p class='text-sm '>{resource.title}</p>
-                  </div>
-                </article>
-              );
-            })}
+          <div class='grid grid-cols-2 [&>article:nth-child(odd)]:border-r [&>article:nth-last-child(-n+2)]:border-b-0'>
+            {group.resources.map((resource) => (
+              <article class='flex min-w-0 items-center gap-3 border-b p-4 text-muted-foreground transition-colors hover:bg-card hover:text-foreground'>
+                <Icon
+                  name={resource.icon}
+                  class='size-4'
+                  stroke-width='1.5'
+                  aria-hidden='true'
+                />
+                <p class='min-w-0 text-sm'>{resource.title}</p>
+              </article>
+            ))}
           </div>
         </section>
       ))

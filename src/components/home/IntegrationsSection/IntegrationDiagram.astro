@@ -1,0 +1,242 @@
+---
+import { Icon } from "astro-icon/components";
+import Card from "@/components/ui/Card.astro";
+import type { IntegrationGroup } from "./content";
+
+interface Props {
+  groups: readonly IntegrationGroup[];
+}
+
+const { groups } = Astro.props;
+
+const ringWidth = 34;
+const ringPitch = 110;
+const innerRingCenter = 185;
+const diagram = { width: 960, height: 480, centerX: 480, centerY: 480 };
+
+const ringAt = (centerRadius: number) => ({
+  innerRadius: centerRadius - ringWidth / 2,
+  outerRadius: centerRadius + ringWidth / 2,
+});
+
+const rings = {
+  frameworks: ringAt(innerRingCenter),
+  observability: ringAt(innerRingCenter + ringPitch),
+  resources: ringAt(innerRingCenter + ringPitch * 2),
+};
+
+type Ring = (typeof rings)[keyof typeof rings];
+
+const pointOnArc = (radius: number, angle: number) => {
+  const radians = (angle * Math.PI) / 180;
+  return {
+    x: diagram.centerX + radius * Math.cos(radians),
+    y: diagram.centerY - radius * Math.sin(radians),
+  };
+};
+
+const bandPath = (ring: Ring) =>
+  [
+    `M ${diagram.centerX - ring.outerRadius} ${diagram.centerY}`,
+    `A ${ring.outerRadius} ${ring.outerRadius} 0 0 1 ${diagram.centerX + ring.outerRadius} ${diagram.centerY}`,
+    `L ${diagram.centerX + ring.innerRadius} ${diagram.centerY}`,
+    `A ${ring.innerRadius} ${ring.innerRadius} 0 0 0 ${diagram.centerX - ring.innerRadius} ${diagram.centerY}`,
+    "Z",
+  ].join(" ");
+
+const ringOutlinePath = (ring: Ring) =>
+  [
+    `M ${diagram.centerX - ring.outerRadius} ${diagram.centerY}`,
+    `A ${ring.outerRadius} ${ring.outerRadius} 0 0 1 ${diagram.centerX + ring.outerRadius} ${diagram.centerY}`,
+    `M ${diagram.centerX - ring.innerRadius} ${diagram.centerY}`,
+    `A ${ring.innerRadius} ${ring.innerRadius} 0 0 1 ${diagram.centerX + ring.innerRadius} ${diagram.centerY}`,
+  ].join(" ");
+
+const dividerPath = (ring: Ring, sectorCount: number) =>
+  Array.from({ length: sectorCount - 1 }, (_, index) => {
+    const angle = 180 - (180 / sectorCount) * (index + 1);
+    const outer = pointOnArc(ring.outerRadius, angle);
+    const inner = pointOnArc(ring.innerRadius, angle);
+    return `M ${outer.x} ${outer.y} L ${inner.x} ${inner.y}`;
+  }).join(" ");
+
+const iconPosition = (ring: Ring, index: number, sectorCount: number) => {
+  const angle = 180 - (180 / sectorCount) * (index + 0.5);
+  const centerRadius = (ring.innerRadius + ring.outerRadius) / 2;
+  const point = pointOnArc(centerRadius, angle);
+  return {
+    x: (point.x / diagram.width) * 100,
+    y: (point.y / diagram.height) * 100,
+  };
+};
+---
+
+<div class='integration-diagram relative aspect-[2/1] overflow-hidden [container-type:inline-size]'>
+  <svg
+    class='absolute inset-0 size-full'
+    viewBox='0 0 960 480'
+    preserveAspectRatio='none'
+    fill='none'
+    role='group'
+    aria-label='Integration groups'
+  >
+    {
+      groups.map((group) => {
+        const ring = rings[group.id];
+        return (
+          <g
+            data-integration-group={group.id}
+            style={`--integration-accent: ${group.accent};`}
+          >
+            <path
+              data-integration-trigger={group.id}
+              class='integration-band'
+              d={bandPath(ring)}
+              role='button'
+              tabindex='0'
+              aria-label={group.label}
+              aria-pressed='false'
+            />
+            <path
+              class='pointer-events-none stroke-foreground/20'
+              d={ringOutlinePath(ring)}
+            />
+            <path
+              class='pointer-events-none stroke-foreground/20'
+              d={dividerPath(ring, group.tools.length)}
+            />
+          </g>
+        );
+      })
+    }
+  </svg>
+
+  {
+    groups.map((group) => {
+      const ring = rings[group.id];
+      return (
+        <ul class='contents' aria-label={group.label}>
+          {group.tools.map((tool, index) => {
+            const position = iconPosition(ring, index, group.tools.length);
+            return (
+              <li
+                class='integration-logo'
+                data-integration-group={group.id}
+                style={`--integration-accent: ${group.accent}; --logo-x: ${position.x}%; --logo-y: ${position.y}%;`}
+              >
+                <button
+                  class='group relative block cursor-pointer'
+                  data-integration-trigger={group.id}
+                  type='button'
+                  aria-label={tool.label}
+                  aria-pressed='false'
+                >
+                  <span class='integration-label' aria-hidden='true'>
+                    {tool.label}
+                  </span>
+                  <Card class='logo-tile size-14 items-center justify-center rounded-xl border bg-card'>
+                    <Icon
+                      name={`integrations/${tool.icon}`}
+                      class='size-7'
+                      aria-hidden='true'
+                    />
+                  </Card>
+                </button>
+              </li>
+            );
+          })}
+        </ul>
+      );
+    })
+  }
+
+  <div
+    class='pointer-events-none absolute inset-x-0 bottom-0 z-10 h-px bg-border'
+    aria-hidden='true'
+  ></div>
+</div>
+
+<style>
+  .integration-band {
+    cursor: pointer;
+    fill: var(--muted);
+    transition: fill 160ms ease;
+  }
+  [data-integration-highlighted] .integration-band {
+    fill: var(--integration-accent);
+  }
+  .integration-logo {
+    position: absolute;
+    left: var(--logo-x);
+    top: var(--logo-y);
+    transform: translate(-50%, -50%);
+  }
+  .logo-tile {
+    transition:
+      background-color 160ms ease,
+      transform 160ms ease,
+      box-shadow 160ms ease;
+  }
+  .integration-label {
+    position: absolute;
+    bottom: calc(100% + 0.5rem);
+    left: 50%;
+    z-index: 20;
+    transform: translate(-50%, 0.25rem);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    background: var(--card);
+    padding: 0.25rem 0.5rem;
+    font-family: var(--font-mono);
+    font-size: 0.625rem;
+    line-height: 1rem;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition:
+      opacity 160ms ease,
+      transform 160ms ease;
+  }
+  .group:hover,
+  .group:focus-visible {
+    z-index: 10;
+  }
+  .group:hover .logo-tile,
+  .group:focus-visible .logo-tile,
+  [data-integration-highlighted] .logo-tile {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 0 var(--foreground);
+  }
+  .group:hover .integration-label,
+  .group:focus-visible .integration-label {
+    transform: translate(-50%, 0);
+    opacity: 1;
+  }
+  @media (max-width: 47.999rem) {
+    .integration-diagram .logo-tile {
+      width: clamp(18px, 5.5cqw, 22px);
+      height: clamp(18px, 5.5cqw, 22px);
+      border-radius: clamp(3px, 1cqw, 4px);
+    }
+    .integration-diagram .logo-tile svg {
+      width: clamp(10px, 3cqw, 12px);
+      height: clamp(10px, 3cqw, 12px);
+    }
+    .integration-label {
+      display: none;
+    }
+  }
+  @media (hover: none) {
+    .group:hover .logo-tile {
+      transform: none;
+      box-shadow: none;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .integration-band,
+    .logo-tile,
+    .integration-label {
+      transition: none;
+    }
+  }
+</style>

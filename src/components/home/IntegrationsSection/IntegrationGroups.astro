@@ -1,0 +1,64 @@
+---
+import { Icon } from "astro-icon/components";
+import CardHeader from "@/components/ui/CardHeader.astro";
+import CardTitle from "@/components/ui/CardTitle.astro";
+import type { IntegrationGroup } from "./content";
+
+interface Props {
+  groups: readonly IntegrationGroup[];
+}
+
+const { groups } = Astro.props;
+---
+
+<div>
+  <CardHeader>
+    <CardTitle>Integrations</CardTitle>
+  </CardHeader>
+  <div
+    class='grid w-full grid-cols-1 md:grid-cols-3'
+    aria-label='How Keynes works with your platforms'
+  >
+    {
+      groups.map((group, index) => (
+        <article
+          data-integration-group={group.id}
+          data-integration-trigger={group.id}
+          style={`--integration-accent: ${group.accent};`}
+          role='button'
+          tabindex='0'
+          aria-pressed='false'
+          class:list={[
+            "flex min-w-0 cursor-pointer flex-col gap-3 bg-inverse p-4 text-inverse-foreground transition-colors",
+            index > 0 && "border-t md:border-t-0 md:border-l",
+          ]}
+        >
+          <div class='flex flex-col gap-2'>
+            <div class='flex flex-row items-center gap-2'>
+              <Icon
+                name={group.icon}
+                class='size-4'
+                stroke-width='1.5'
+                aria-hidden='true'
+              />
+              <h3 class='text-lg font-medium tracking-tight'>{group.title}</h3>
+            </div>
+            <p class='text-sm leading-relaxed text-taupe-400'>
+              {group.description}
+            </p>
+          </div>
+        </article>
+      ))
+    }
+  </div>
+</div>
+
+<style>
+  [data-integration-highlighted] {
+    background-color: var(--integration-accent);
+    color: var(--foreground);
+  }
+  [data-integration-highlighted] p {
+    color: var(--muted-foreground);
+  }
+</style>

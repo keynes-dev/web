@@ -8,7 +8,7 @@ const { class: className, ...attrs } = Astro.props;
 
 <footer
   class={cn(
-    "border-t-2 p-3",
+    "rounded-b-[calc(var(--radius-sm)-2px)] border-t-2 border-border p-3",
     className,
   )}
   {...attrs}

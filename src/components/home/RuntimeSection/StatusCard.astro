@@ -10,15 +10,23 @@ interface Props {
 const { status, detail } = Astro.props;
 const styles =
   status === "approved"
-    ? { label: "Approved", swatch: "bg-emerald-500", header: "bg-emerald-100" }
-    : { label: "Denied", swatch: "bg-red-500", header: "bg-red-100" };
+    ? {
+        label: "Approved",
+        swatch: "bg-success-indicator",
+        header: "bg-success-subtle",
+      }
+    : {
+        label: "Denied",
+        swatch: "bg-danger-indicator",
+        header: "bg-danger-subtle",
+      };
 ---
 
-<Card class="overflow-hidden border" aria-label={`${styles.label}: ${detail}`}>
+<Card aria-label={`${styles.label}: ${detail}`}>
   <CardHeader
     class={[
       styles.header,
-      "flex items-center justify-between rounded-t-[calc(var(--radius-sm)-1px)] border-b py-1.5 text-xs text-foreground",
+      "flex items-center justify-between py-1.5 text-xs text-foreground",
     ].join(" ")}
   >
     <CardTitle class="font-sans text-xs text-foreground">Agent</CardTitle>
@@ -30,7 +38,7 @@ const styles =
       <span class="font-mono text-xs">{styles.label}</span>
     </span>
   </CardHeader>
-  <CardContent class="flex items-center justify-between gap-2 bg-background last:rounded-b-[calc(var(--radius-sm)-1px)]">
+  <CardContent class="flex items-center justify-between gap-2 bg-background">
     <span class="truncate font-mono text-xs text-muted-foreground">
       {detail}
     </span>

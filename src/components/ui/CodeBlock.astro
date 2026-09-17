@@ -1,0 +1,56 @@
+---
+import { Code } from "astro:components";
+import { cn } from "@/lib/utils";
+import type { HTMLAttributes } from "astro/types";
+
+interface Props extends Omit<HTMLAttributes<"pre">, "lang"> {
+  source: string;
+  label: string;
+  wrap?: boolean;
+  lineNumbers?: boolean;
+  lang?: "typescript" | "sql";
+}
+
+const {
+  source,
+  label,
+  wrap = true,
+  lineNumbers = false,
+  lang = "typescript",
+  class: className,
+  ...attrs
+} = Astro.props;
+---
+
+<Code
+  code={source}
+  lang={lang}
+  theme='catppuccin-frappe'
+  wrap={wrap}
+  aria-label={label}
+  data-code-line-numbers={lineNumbers ? "" : undefined}
+  class={cn(
+    "m-0 min-h-0 min-w-0 flex-1 overflow-auto p-3 font-mono text-xs leading-snug",
+    !wrap && "whitespace-pre",
+    className,
+  )}
+  {...attrs}
+/>
+
+<style is:global>
+  [data-code-line-numbers] {
+    counter-reset: code-line;
+  }
+
+  [data-code-line-numbers] .line::before {
+    display: inline-block;
+    width: 2rem;
+    margin-right: 0.75rem;
+    border-right: 1px solid color-mix(in oklab, currentColor 30%, transparent);
+    padding-right: 0.75rem;
+    color: color-mix(in oklab, currentColor 65%, transparent);
+    text-align: right;
+    content: counter(code-line);
+    counter-increment: code-line;
+  }
+</style>

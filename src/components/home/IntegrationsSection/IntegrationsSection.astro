@@ -1,0 +1,121 @@
+---
+import Section from "@/components/section/Section.astro";
+import IntegrationDiagram from "./IntegrationDiagram.astro";
+import IntegrationGroups from "./IntegrationGroups.astro";
+import { integrationGroups } from "./content";
+---
+
+<Section
+  id='integrations'
+  aria-labelledby='integrations-title'
+  class='scroll-mt-20'
+  padded={false}
+  data-integrations-section
+>
+  <div class='flex flex-col'>
+    <header
+      class='flex flex-col items-center gap-4 px-4 pt-8 text-center sm:px-8 sm:pt-12'
+    >
+      <h2 id='integrations-title'>Bring your own stack.</h2>
+      <p class='section-description max-w-xl'>
+        Keynes plays well with others. Integrate Keynes into your existing
+        orchestration framework, observability tools, and model and tool
+        providers.
+      </p>
+    </header>
+
+    <IntegrationDiagram groups={integrationGroups} />
+  </div>
+
+  <IntegrationGroups groups={integrationGroups} />
+</Section>
+
+<script>
+  for (const section of document.querySelectorAll<HTMLElement>(
+    "[data-integrations-section]",
+  )) {
+    const triggers = Array.from(
+      section.querySelectorAll<HTMLElement | SVGElement>(
+        "[data-integration-trigger]",
+      ),
+    );
+    const groups = Array.from(
+      section.querySelectorAll<HTMLElement | SVGElement>(
+        "[data-integration-group]",
+      ),
+    );
+    const supportsHover = window.matchMedia("(hover: hover)");
+    let activeGroup: string | null = null;
+    let hoveredGroup: string | null = null;
+    let focusedGroup: string | null = null;
+
+    const groupFor = (element: HTMLElement | SVGElement) =>
+      element.dataset.integrationTrigger ?? null;
+
+    const renderHighlight = () => {
+      const highlightedGroup = hoveredGroup ?? focusedGroup ?? activeGroup;
+
+      groups.forEach((group) => {
+        group.toggleAttribute(
+          "data-integration-highlighted",
+          group.dataset.integrationGroup === highlightedGroup,
+        );
+      });
+      triggers.forEach((trigger) => {
+        trigger.setAttribute(
+          "aria-pressed",
+          String(groupFor(trigger) === activeGroup),
+        );
+      });
+    };
+
+    const toggleGroup = (group: string | null) => {
+      activeGroup = activeGroup === group ? null : group;
+      renderHighlight();
+    };
+
+    triggers.forEach((trigger) => {
+      if (supportsHover.matches) {
+        trigger.addEventListener("pointerenter", () => {
+          hoveredGroup = groupFor(trigger);
+          renderHighlight();
+        });
+        trigger.addEventListener("pointerleave", () => {
+          hoveredGroup = null;
+          renderHighlight();
+        });
+      }
+
+      trigger.addEventListener("focus", () => {
+        focusedGroup = groupFor(trigger);
+        renderHighlight();
+      });
+      trigger.addEventListener("blur", () => {
+        focusedGroup = null;
+        renderHighlight();
+      });
+      trigger.addEventListener("click", () => toggleGroup(groupFor(trigger)));
+      if (!(trigger instanceof HTMLButtonElement)) {
+        trigger.addEventListener("keydown", (event) => {
+          if (!(event instanceof KeyboardEvent)) return;
+          if (event.key !== "Enter" && event.key !== " ") return;
+
+          event.preventDefault();
+          toggleGroup(groupFor(trigger));
+        });
+      }
+    });
+
+    document.addEventListener("click", (event) => {
+      if (
+        event.target instanceof Element &&
+        event.target.closest("[data-integration-trigger]")
+      ) {
+        return;
+      }
+
+      activeGroup = null;
+      renderHighlight();
+    });
+  }
+</script>

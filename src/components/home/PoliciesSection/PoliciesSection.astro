@@ -1,11 +1,70 @@
 ---
 import Section from "@/components/section/Section.astro";
-import CodeScrollArea from "@/components/home/RuntimeSection/CodeScrollArea.astro";
+import CodeBlock from "@/components/ui/CodeBlock.astro";
 import Card from "@/components/ui/Card.astro";
 import CardContent from "@/components/ui/CardContent.astro";
 import CardHeader from "@/components/ui/CardHeader.astro";
 import CardTitle from "@/components/ui/CardTitle.astro";
-import { policyExamples } from "./policies";
+
+const policyExamples = [
+  {
+    id: "sales",
+    tab: "Sales",
+    file: "lead-enrichment-policy.ts",
+    policy: `const salesPolicy = db
+  .selectFrom("opportunity")
+  .select((eb) =>
+    eb.case()
+      .when("stage", "=", "qualified")
+      .then(8).else(2)
+      .end().as("dataCredits"),
+  );`,
+    requested: 6,
+    available: 12,
+    conditions: [
+      { name: "Qualified opportunity", limit: 8 },
+      { name: "New lead", limit: 2 },
+    ],
+  },
+  {
+    id: "support",
+    tab: "Support",
+    file: "ticket-traige-policy.ts",
+    policy: `const supportPolicy = db
+  .selectFrom("ticket")
+  .select((eb) =>
+    eb.case()
+      .when("priority", "=", "urgent")
+      .then(30).else(10)
+      .end().as("minutes"),
+  );`,
+    requested: 25,
+    available: 45,
+    conditions: [
+      { name: "Urgent", limit: 30 },
+      { name: "Normal", limit: 10 },
+    ],
+  },
+  {
+    id: "engineering",
+    tab: "Engineering",
+    file: "ci-remediation-policy.ts",
+    policy: `const ciRemediationPolicy = db
+  .selectFrom("ci_failure")
+  .select((eb) =>
+    eb.case()
+      .when("workClass", "=", "release_blocker")
+      .then(45).else(10)
+      .end().as("sandboxMinutes"),
+  );`,
+    requested: 30,
+    available: 60,
+    conditions: [
+      { name: "Release blocker", limit: 45 },
+      { name: "Routine PR", limit: 10 },
+    ],
+  },
+] as const;
 
 const percent = (value: number, total: number) =>
   `${((100 * value) / total).toFixed(2)}%`;
@@ -23,36 +82,39 @@ const panels = policyExamples.map((example) => ({
 }));
 ---
 
-<Section id='policy-value' aria-label='Team policy value comparison'>
+<Section id='policies' aria-label='Context-aware policy examples'>
   <article class='grid min-w-0 items-center gap-10 lg:grid-cols-2 lg:gap-16'>
     <header class='flex flex-col gap-4'>
       <h2>Context-aware policies</h2>
-      <p class='max-w-md text-base leading-relaxed text-muted-foreground'>
+      <p class='section-description max-w-md'>
         How much is enough? The right amount to budget depends on the current
         context. Keynes lets you build dynamic context-aware resource policies
         that adapt to your business.
       </p>
     </header>
 
-    <div class='mx-auto flex w-full max-w-sm flex-col gap-4' data-value-section>
+    <div
+      class='mx-auto flex w-full max-w-sm flex-col gap-4'
+      data-policies-section
+    >
       <div
         hidden
-        class='flex gap-6'
+        class='flex gap-3'
         role='tablist'
         aria-label='Illustrative team policies'
-        data-value-tablist
+        data-policies-tablist
       >
         {
           panels.map((panel, index) => (
             <button
               class='-mb-px border-b-2 border-transparent pb-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground aria-selected:border-foreground aria-selected:font-medium aria-selected:text-foreground'
-              id={`value-tab-${panel.id}`}
+              id={`policy-tab-${panel.id}`}
               role='tab'
               type='button'
-              aria-controls={`value-panel-${panel.id}`}
+              aria-controls={`policy-panel-${panel.id}`}
               aria-selected={index === 0 ? "true" : "false"}
               tabindex={index === 0 ? 0 : -1}
-              data-value-tab
+              data-policies-tab
             >
               {panel.tab}
             </button>
@@ -63,21 +125,21 @@ const panels = policyExamples.map((example) => ({
       {
         panels.map((panel) => (
           <section
-            id={`value-panel-${panel.id}`}
+            id={`policy-panel-${panel.id}`}
             role='tabpanel'
-            aria-labelledby={`value-tab-${panel.id}`}
+            aria-labelledby={`policy-tab-${panel.id}`}
             tabindex='0'
-            data-value-panel
+            data-policies-panel
           >
             <Card>
-              <CardHeader class='flex w-full items-center justify-between bg-taupe-700'>
+              <CardHeader class='flex w-full items-center justify-between'>
                 <CardTitle class='text-xs'>{panel.file}</CardTitle>
                 <CardTitle class='text-xs'>{`{}`} TypeScript</CardTitle>
               </CardHeader>
               <CardContent class='border-b-2 p-0'>
-                <CodeScrollArea
+                <CodeBlock
                   label={`${panel.file} policy`}
-                  code={panel.policy}
+                  source={panel.policy}
                 />
               </CardContent>
               <CardContent class='flex flex-col gap-4'>
@@ -88,7 +150,7 @@ const panels = policyExamples.map((example) => ({
                       <span
                         class:list={[
                           "font-mono text-xs",
-                          bar.approved ? "text-emerald-600" : "text-red-600",
+                          bar.approved ? "text-success" : "text-danger",
                         ]}
                       >
                         {bar.approved ? "APPROVED" : "DENIED"}
@@ -96,12 +158,12 @@ const panels = policyExamples.map((example) => ({
                     </p>
                     <div class='relative h-3 border-b' aria-hidden='true'>
                       <span
-                        class='absolute bottom-0 left-0 h-1.5 bg-emerald-600'
+                        class='absolute bottom-0 left-0 h-1.5 bg-success'
                         style={{ width: bar.allowed }}
                       />
                       {!bar.approved && (
                         <span
-                          class='absolute bottom-0 h-1.5 bg-red-300'
+                          class='absolute bottom-0 h-1.5 bg-danger-subtle'
                           style={{
                             left: bar.allowed,
                             width: bar.refused,
@@ -135,15 +197,19 @@ const panels = policyExamples.map((example) => ({
 </Section>
 
 <script>
+  import { bindTabs } from "@/lib/tabs";
+
   for (const section of document.querySelectorAll<HTMLElement>(
-    "[data-value-section]",
+    "[data-policies-section]",
   )) {
-    const tablist = section.querySelector<HTMLElement>("[data-value-tablist]");
+    const tablist = section.querySelector<HTMLElement>(
+      "[data-policies-tablist]",
+    );
     const tabs = Array.from(
-      section.querySelectorAll<HTMLButtonElement>("[data-value-tab]"),
+      section.querySelectorAll<HTMLButtonElement>("[data-policies-tab]"),
     );
     const panels = Array.from(
-      section.querySelectorAll<HTMLElement>("[data-value-panel]"),
+      section.querySelectorAll<HTMLElement>("[data-policies-panel]"),
     );
 
     if (!tablist || tabs.length === 0 || panels.length === 0) continue;
@@ -162,22 +228,9 @@ const panels = policyExamples.map((example) => ({
       });
     };
 
-    tabs.forEach((tab, index) => {
-      tab.addEventListener("click", () => select(index));
-      tab.addEventListener("keydown", (event) => {
-        const offset =
-          event.key === "ArrowRight" ? 1
-          : event.key === "ArrowLeft" ? -1
-          : 0;
-        if (offset === 0 && event.key !== "Home" && event.key !== "End") return;
-
-        event.preventDefault();
-        const nextIndex =
-          event.key === "Home" ? 0
-          : event.key === "End" ? tabs.length - 1
-          : (index + offset + tabs.length) % tabs.length;
-        select(nextIndex, true);
-      });
+    bindTabs({
+      tabs,
+      onSelect: ({ index, focus }) => select(index, focus),
     });
 
     select(0);

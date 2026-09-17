@@ -12,8 +12,18 @@
   --muted-foreground: var(--color-taupe-700);
   --border: var(--color-taupe-800);
   --ring: var(--color-blue-700);
-  --chart-3: var(--color-sky-800);
-  --chart-4: var(--color-amber-400);
+  --code: var(--color-taupe-700);
+  --code-foreground: var(--color-orange-50);
+  --inverse: var(--color-taupe-800);
+  --inverse-foreground: var(--color-orange-50);
+  --success: var(--color-emerald-700);
+  --success-indicator: var(--color-emerald-500);
+  --success-subtle: var(--color-emerald-200);
+  --danger: var(--color-red-700);
+  --danger-indicator: var(--color-red-500);
+  --danger-subtle: var(--color-red-200);
+  --chart-confidence: var(--color-sky-800);
+  --chart-cost: var(--color-amber-400);
   --chart-accent: var(--color-sky-700);
   --chart-recommended: var(--color-violet-700);
 }
@@ -24,6 +34,16 @@
   --font-sans: var(--font-ibm-plex-sans);
   --text-tiny: 0.625rem;
   --color-ring: var(--ring);
+  --color-code: var(--code);
+  --color-code-foreground: var(--code-foreground);
+  --color-inverse: var(--inverse);
+  --color-inverse-foreground: var(--inverse-foreground);
+  --color-success: var(--success);
+  --color-success-indicator: var(--success-indicator);
+  --color-success-subtle: var(--success-subtle);
+  --color-danger: var(--danger);
+  --color-danger-indicator: var(--danger-indicator);
+  --color-danger-subtle: var(--danger-subtle);
   --color-border: var(--border);
   --color-muted-foreground: var(--muted-foreground);
   --color-muted: var(--muted);
@@ -55,4 +75,8 @@
   h3 {
     @apply font-heading font-medium text-lg tracking-tight;
   }
+}
+
+@utility section-description {
+  @apply text-base leading-relaxed text-muted-foreground;
 }

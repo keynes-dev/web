@@ -1,4 +1,4 @@
-import { runtimeTabs } from "./tabs";
+import { bindTabs } from "@/lib/tabs";
 
 for (const section of document.querySelectorAll<HTMLElement>(
   "[data-runtime-section]",
@@ -22,28 +22,30 @@ for (const section of document.querySelectorAll<HTMLElement>(
     section.querySelectorAll<HTMLElement>("[data-runtime-panel]"),
   );
 
-  if (!demo || !controls || !tablist || !previous || !next) continue;
+  if (!demo || !controls || !tablist || !previous || !next || !tabs.length) {
+    continue;
+  }
 
-  // The tab bar attaches directly to the active panel once it is interactive,
-  // so the stacked-panel gap of the no-JavaScript fallback is dropped.
-  demo.classList.add("h-132");
-  demo.classList.remove("gap-4");
+  demo.dataset.enhanced = "";
   tablist.hidden = false;
-  tablist.classList.add("flex");
   controls.hidden = false;
-  panels.forEach((panel) => {
-    panel.classList.add("min-h-0", "flex-1");
-  });
 
-  const select = (index: number, focus = false) => {
-    const selected = runtimeTabs[index];
-    if (!selected) return;
+  const select = ({
+    index,
+    focus = false,
+  }: {
+    index: number;
+    focus?: boolean;
+  }) => {
+    const selected = tabs[index];
+    const selectedId = selected?.dataset.runtimeTab;
+    if (!selected || !selectedId) return;
 
     descriptions.forEach((description) => {
-      description.hidden = description.dataset.runtimeCopy !== selected.id;
+      description.hidden = description.dataset.runtimeCopy !== selectedId;
     });
     previous.disabled = index === 0;
-    next.disabled = index === runtimeTabs.length - 1;
+    next.disabled = index === tabs.length - 1;
 
     tabs.forEach((tab, tabIndex) => {
       const active = tabIndex === index;
@@ -52,38 +54,23 @@ for (const section of document.querySelectorAll<HTMLElement>(
       if (active && focus) tab.focus();
     });
     panels.forEach((panel) => {
-      panel.hidden = panel.dataset.runtimePanel !== selected.id;
+      panel.hidden = panel.dataset.runtimePanel !== selectedId;
     });
   };
 
-  tabs.forEach((tab, index) => {
-    tab.addEventListener("click", () => select(index));
-    tab.addEventListener("keydown", (event) => {
-      const offset =
-        event.key === "ArrowRight" ? 1 : event.key === "ArrowLeft" ? -1 : 0;
-      if (offset === 0 && event.key !== "Home" && event.key !== "End") return;
-      event.preventDefault();
-      const nextIndex =
-        event.key === "Home"
-          ? 0
-          : event.key === "End"
-            ? runtimeTabs.length - 1
-            : (index + offset + runtimeTabs.length) % runtimeTabs.length;
-      select(nextIndex, true);
-    });
-  });
+  bindTabs({ tabs, onSelect: select });
   previous.addEventListener("click", () => {
     const index = tabs.findIndex(
       (tab) => tab.getAttribute("aria-selected") === "true",
     );
-    select(index - 1);
+    select({ index: index - 1 });
   });
   next.addEventListener("click", () => {
     const index = tabs.findIndex(
       (tab) => tab.getAttribute("aria-selected") === "true",
     );
-    select(index + 1);
+    select({ index: index + 1 });
   });
 
-  select(0);
+  select({ index: 0 });
 }

@@ -26,11 +26,11 @@ const labels: Record<Resource, string> = {
 const format = new Intl.NumberFormat("en", { notation: "compact" });
 ---
 
-<Card class="h-full min-w-0 overflow-hidden border">
-  <CardHeader class="rounded-t-[calc(var(--radius-sm)-1px)] border-b bg-orange-100 py-1.5">
+<Card class="h-full min-w-0">
+  <CardHeader class="bg-orange-100 py-1.5">
     <CardTitle class="font-sans text-xs text-foreground">{name}</CardTitle>
   </CardHeader>
-  <CardContent class="bg-background last:rounded-b-[calc(var(--radius-sm)-1px)]">
+  <CardContent class="bg-background">
     <dl class="grid gap-2">
       {allocations.map(({ resource, total, reserved = 0, used = 0 }) => {
         const label = labels[resource];

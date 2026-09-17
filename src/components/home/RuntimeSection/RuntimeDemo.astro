@@ -5,21 +5,21 @@ import CardHeader from "@/components/ui/CardHeader.astro";
 import CardTitle from "@/components/ui/CardTitle.astro";
 import CardContent from "@/components/ui/CardContent.astro";
 import CardFooter from "@/components/ui/CardFooter.astro";
+import CodeBlock from "@/components/ui/CodeBlock.astro";
 import BudgetTree from "./BudgetTree.astro";
-import CodeScrollArea from "./CodeScrollArea.astro";
 import ResourceSwatch from "./ResourceSwatch.astro";
-import { policyLineCount, runtimeCode } from "./code";
+import { runtimeCode } from "./code";
 import { runtimeTabs } from "./tabs";
 ---
 
 <div
-  class='mx-auto flex w-full max-w-sm flex-col gap-4'
+  class='group/runtime mx-auto flex w-full max-w-sm flex-col gap-4 data-[enhanced]:h-132 data-[enhanced]:gap-0'
   aria-label='Keynes runtime example'
   data-runtime-demo
 >
   <div
     hidden
-    class='w-fit max-w-full overflow-x-auto'
+    class='hidden w-fit max-w-full overflow-x-auto group-data-[enhanced]/runtime:flex'
     role='tablist'
     aria-label='Demo views'
     data-runtime-tablist
@@ -47,7 +47,7 @@ import { runtimeTabs } from "./tabs";
   </div>
 
   <Card
-    class='rounded-tl-none'
+    class='group-data-[enhanced]/runtime:min-h-0 group-data-[enhanced]/runtime:flex-1 group-data-[enhanced]/runtime:rounded-tl-none'
     aria-label='Runtime view'
     id='runtime-panel-runtime'
     role='tabpanel'
@@ -82,7 +82,7 @@ import { runtimeTabs } from "./tabs";
   </Card>
 
   <Card
-    class='rounded-tl-none'
+    class='group-data-[enhanced]/runtime:min-h-0 group-data-[enhanced]/runtime:flex-1 group-data-[enhanced]/runtime:rounded-tl-none'
     aria-label='Budgets view'
     id='runtime-panel-budget'
     role='tabpanel'
@@ -90,22 +90,17 @@ import { runtimeTabs } from "./tabs";
     tabindex='0'
     data-runtime-panel='budget'
   >
-    <CardHeader
-      class='flex items-center justify-between gap-3 rounded-tl-none bg-taupe-700'
-    >
+    <CardHeader class='flex items-center justify-between gap-3'>
       <CardTitle class='text-xs'>budgets.ts</CardTitle>
-      <span class='font-mono text-xs text-background'>{`{}`} TypeScript</span>
+      <span class='font-mono text-xs'>{`{}`} TypeScript</span>
     </CardHeader>
     <CardContent class='flex min-h-0 flex-1 flex-col p-0'>
-      <CodeScrollArea label='Budget definition code'>
-        <pre
-          class='m-0 overflow-visible whitespace-pre-wrap break-words bg-transparent p-3 font-mono text-xs leading-snug'><code data-code>{runtimeCode.budgets}</code></pre>
-      </CodeScrollArea>
+      <CodeBlock label='Budget definition code' source={runtimeCode.budgets} />
     </CardContent>
   </Card>
 
   <Card
-    class='overflow-hidden rounded-tl-none'
+    class='group-data-[enhanced]/runtime:min-h-0 group-data-[enhanced]/runtime:flex-1 group-data-[enhanced]/runtime:rounded-tl-none'
     aria-label='Policies view'
     id='runtime-panel-policy'
     role='tabpanel'
@@ -114,7 +109,7 @@ import { runtimeTabs } from "./tabs";
     data-runtime-panel='policy'
   >
     <CardHeader
-      class='flex items-center justify-between gap-3 rounded-tl-none bg-taupe-700 font-mono text-xs text-background'
+      class='flex items-center justify-between gap-3 font-mono text-xs'
     >
       <CardTitle class='flex items-center gap-2 text-xs'>
         <Icon name='hugeicons:play' class='size-4' aria-hidden='true' />
@@ -138,15 +133,13 @@ import { runtimeTabs } from "./tabs";
       </span>
     </CardHeader>
     <CardContent class='flex min-h-0 flex-1 flex-col p-0'>
-      <CodeScrollArea label='Policy SQL query'>
-        <div class='flex min-w-max gap-3 p-3'>
-          <pre
-            class='border-r border-taupe-400 pr-3 text-right font-mono text-xs leading-snug text-taupe-300'
-            aria-hidden='true'>{Array.from({ length: policyLineCount }, (_, index) => index + 1).join("\n")}</pre>
-          <pre
-            class='m-0 whitespace-pre font-mono text-xs leading-snug'><code data-code>{runtimeCode.policies}</code></pre>
-        </div>
-      </CodeScrollArea>
+      <CodeBlock
+        label='Policy SQL query'
+        source={runtimeCode.policies}
+        lang='sql'
+        wrap={false}
+        lineNumbers
+      />
     </CardContent>
     <CardFooter class='p-0'>
       <p class='border-b px-3 py-2 font-mono text-xs text-muted-foreground'>
@@ -161,7 +154,7 @@ import { runtimeTabs } from "./tabs";
               >
                 decision
               </th>
-              <td class='px-3 py-2 font-medium text-emerald-500'>APPROVED</td>
+              <td class='px-3 py-2 font-medium text-success'>APPROVED</td>
             </tr>
             <tr class='border-t'>
               <th
@@ -194,7 +187,7 @@ import { runtimeTabs } from "./tabs";
   </Card>
 
   <Card
-    class='overflow-hidden rounded-tl-none'
+    class='group-data-[enhanced]/runtime:min-h-0 group-data-[enhanced]/runtime:flex-1 group-data-[enhanced]/runtime:rounded-tl-none'
     aria-label='Workflow view'
     id='runtime-panel-workflow'
     role='tabpanel'
@@ -203,16 +196,16 @@ import { runtimeTabs } from "./tabs";
     data-runtime-panel='workflow'
   >
     <CardHeader
-      class='flex items-center justify-between gap-3 rounded-tl-none bg-taupe-700 font-mono text-xs text-background'
+      class='flex items-center justify-between gap-3 font-mono text-xs'
     >
       <CardTitle class='text-xs'>lead-enrichment.ts</CardTitle>
       <span>{`{}`} TypeScript</span>
     </CardHeader>
     <CardContent class='flex min-h-0 flex-1 flex-col p-0'>
-      <CodeScrollArea label='Lead enrichment application workflow'>
-        <pre
-          class='m-0 overflow-visible whitespace-pre-wrap break-words bg-transparent p-3 font-mono text-xs leading-snug'><code data-code>{runtimeCode.workflow}</code></pre>
-      </CodeScrollArea>
+      <CodeBlock
+        label='Lead enrichment application workflow'
+        source={runtimeCode.workflow}
+      />
     </CardContent>
   </Card>
 </div>

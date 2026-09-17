@@ -8,7 +8,7 @@ const { class: className, ...attrs } = Astro.props;
 
 <header
   class={cn(
-    "border-b-2 bg-foreground p-3",
+    "rounded-t-[calc(var(--radius-sm)-2px)] border-b-2 border-border bg-inverse p-3 text-inverse-foreground",
     className,
   )}
   {...attrs}
