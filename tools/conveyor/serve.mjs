@@ -6,7 +6,7 @@ const { createServer } = await import(
   require.resolve("vite", { paths: [require.resolve("astro")] })
 );
 const root = fileURLToPath(new URL("../../", import.meta.url));
-const evidence = new URL("../../../../.artifacts/conveyor/", import.meta.url);
+const evidence = new URL("../../.artifacts/conveyor/", import.meta.url);
 const port = Number(process.env.CONVEYOR_PORT ?? 4342);
 const server = await createServer({
   configFile: false,

@@ -12,7 +12,7 @@ for (const height of [224, 256, 416]) {
     for (const pose of ["first", "reduced"]) {
       const source = await readFile(
         new URL(
-          `../../../../.artifacts/conveyor/placeholder-browser-${pose}-${height}-${ratio}.png`,
+          `../../.artifacts/conveyor/placeholder-browser-${pose}-${height}-${ratio}.png`,
           import.meta.url,
         ),
       );

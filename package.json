@@ -3,6 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "type": "module",
+  "packageManager": "pnpm@11.21.0",
   "scripts": {
     "dev": "astro dev",
     "dev:network": "astro dev --host 0.0.0.0",
@@ -25,11 +26,13 @@
   },
   "devDependencies": {
     "@astrojs/check": "0.9.10",
+    "@types/node": "24.13.3",
     "@types/d3-shape": "^3.2.0",
     "typescript": "6.0.3",
     "wrangler": "^4.132.0"
   },
   "engines": {
-    "node": ">=24"
+    "node": ">=24",
+    "pnpm": "11.21.0"
   }
 }

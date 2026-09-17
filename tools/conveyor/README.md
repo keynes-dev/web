@@ -11,14 +11,14 @@ The custom element loads `src/components/home/HeroSection/conveyor/main.js`, whi
 Regenerate responsive belt masks after changing geometry or projection math:
 
 ```sh
-node apps/web/tools/conveyor/export-static.mjs
+node tools/conveyor/export-static.mjs
 ```
 
 The homepage displays responsive WebP placeholders before JavaScript initializes and for reduced motion. To regenerate them, start the local capture server, open the placeholder page, export the captures, then transcode them:
 
 ```sh
-node apps/web/tools/conveyor/serve.mjs
-node apps/web/tools/conveyor/export-placeholder.mjs
+node tools/conveyor/serve.mjs
+node tools/conveyor/export-placeholder.mjs
 ```
 
 The capture page is `http://127.0.0.1:4342/tools/conveyor/placeholder.html`. Raw captures remain in the ignored `.artifacts/conveyor` directory.
@@ -27,11 +27,11 @@ The capture page is `http://127.0.0.1:4342/tools/conveyor/placeholder.html`. Raw
 
 ```sh
 node --test \\
-  apps/web/tools/conveyor/geometry-reuse.test.mjs \\
-  apps/web/tools/conveyor/playback.test.mjs \\
-  apps/web/tools/conveyor/startup.test.mjs \\
-  apps/web/tools/conveyor/static-scene.test.mjs \\
-  apps/web/tools/conveyor/stationary-strokes.test.mjs
-pnpm --filter @keynes/web typecheck
-pnpm --filter @keynes/web build
+  tools/conveyor/geometry-reuse.test.mjs \\
+  tools/conveyor/playback.test.mjs \\
+  tools/conveyor/startup.test.mjs \\
+  tools/conveyor/static-scene.test.mjs \\
+  tools/conveyor/stationary-strokes.test.mjs
+pnpm typecheck
+pnpm build
 ```
