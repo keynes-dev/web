@@ -1,0 +1,72 @@
+---
+import { Icon } from "astro-icon/components";
+import CardHeader from "../ui/CardHeader.astro";
+import CardTitle from "../ui/CardTitle.astro";
+
+const platforms = [
+  {
+    id: "frameworks",
+    title: "Orchestration",
+    icon: "hugeicons:ai-brain-01",
+    description:
+      "Give your agent runtime live budget and policy context, so your app can choose work, models, and tools within the limits you set.",
+  },
+  {
+    id: "observability",
+    title: "Observability",
+    icon: "hugeicons:covariate",
+    description:
+      "Carry budget and policy context through OpenTelemetry, so your existing traces show what an agent could spend, what it used, and why Keynes allowed or denied the work.",
+  },
+  {
+    id: "resources",
+    title: "Usage",
+    icon: "hugeicons:coins-01",
+    description:
+      "Connect Keynes to model and tool providers to forecast spend before work starts, then settle each budget against the usage they report.",
+  },
+] as const;
+---
+
+<div>
+  <CardHeader>
+    <CardTitle> Integrations </CardTitle>
+  </CardHeader>
+  <div
+    class='grid w-full grid-cols-1 md:grid-cols-3'
+    aria-label='How Keynes works with your platforms'
+  >
+    {
+      platforms.map((platform, index) => (
+        <article
+          data-platform-group={platform.id}
+          data-integration-trigger={platform.id}
+          role='button'
+          tabindex='0'
+          aria-pressed='false'
+          class:list={[
+            "flex min-w-0 cursor-pointer flex-col gap-3 bg-taupe-700 p-4 text-background transition-colors",
+            index > 0 && "border-t md:border-t-0 md:border-l",
+          ]}
+        >
+          <div class='flex flex-col gap-2'>
+            <div class='flex flex-row items-center gap-2'>
+              <Icon
+                name={platform.icon}
+                class='size-4'
+                stroke-width='1.5'
+                aria-hidden='true'
+              />
+              <h3 class='text-lg font-medium tracking-tight'>
+                {platform.title}
+              </h3>
+            </div>
+            <p class='text-sm leading-relaxed text-taupe-400'>
+              {platform.description}
+            </p>
+          </div>
+        </article>
+      ))
+    }
+  </div>
+</div>
